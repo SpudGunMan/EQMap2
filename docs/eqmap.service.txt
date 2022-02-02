@@ -1,0 +1,14 @@
+[Unit]
+Description=EQMap
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /home/pi/EQMap/EQMap.py
+WorkingDirectory=/home/pi/EQMap
+Restart=on-abort
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+

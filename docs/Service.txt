@@ -1,0 +1,15 @@
+To see the service file
+sudo systemctl cat eqmap.service
+
+To start the service:
+sudo systemctl start eqmap.service
+
+To stop the service:
+sudo systemctl stop eqmap.service
+
+To enable the service to run at boot:
+sudo systemctl enable eqmap.service
+
+
+
+
