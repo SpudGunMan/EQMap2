@@ -255,13 +255,13 @@ class DisplayManager:
 	# Display title page
 	def displayTitlePage(self):
 		eventPull = datetime.now()
-		eventDayString = eventPull.strftime("%D/%M/%Y")
+		eventDayString = eventPull.strftime("%A %B %d week %U day %j %Z") #https://strftime.org
 		self.displayMap()
 		self.drawCenteredText(90, "Realtime")
 		self.setTextSize(70)
 		self.drawCenteredText(160, "World Earthquake Map")
 		self.setTextSize(40)
-		self.drawText(0, 350, "R2022-2-2" + "Today is " + eventDayString)
+		self.drawText(0, 350, "R2022-2-2" + " Today is " + eventDayString)
 		self.drawRightJustifiedText(350, "C.Lindley")
 		time.sleep(10)
 		
