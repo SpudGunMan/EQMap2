@@ -261,7 +261,7 @@ class DisplayManager:
 		self.setTextSize(70)
 		self.drawCenteredText(160, "World Earthquake Map")
 		self.setTextSize(40)
-		self.drawText(0, 350, "R2022-2-2" + " Today is " + eventDayString)
+		self.drawText(0, 350, "R2022-2-2   " + eventDayString)
 		self.drawRightJustifiedText(350, "C.Lindley")
 		time.sleep(10)
 		
