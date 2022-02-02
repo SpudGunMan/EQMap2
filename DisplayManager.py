@@ -219,7 +219,7 @@ class DisplayManager:
 	def displayNumberOfEvents(self, num):
 		eventPull = datetime.now()
 		eventTimeStringLong = eventPull.strftime("%-I:%M %P %d/%m/%y")
-		self.eventTimeString = eventPull.strftime("%-I:%M %P")
+		self.eventTimeString = eventPull.strftime("%-I:%M%P %Z")
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
 		self.drawCenteredText(self.eventsTextRow, str(num) + " total events drawn at " + eventTimeStringLong)
@@ -255,15 +255,16 @@ class DisplayManager:
 	# Display title page
 	def displayTitlePage(self):
 		eventPull = datetime.now()
-		eventDayString = eventPull.strftime("%A %B %d week %U day %j %Z") #https://strftime.org
+		eventDayString = eventPull.strftime("%A %B %d week %U day %j") #https://strftime.org
 		self.displayMap()
 		self.drawCenteredText(90, "Realtime")
 		self.setTextSize(70)
 		self.drawCenteredText(160, "World Earthquake Map")
-		self.drawCenteredText(180, "" + eventDayString)
 		self.setTextSize(40)
-		self.drawText(0, 350, "R2022-2-2")
-		self.drawRightJustifiedText(350, "C.Lindley")
+		self.drawCenteredText(220, eventDayString)
+		self.setTextSize(20)
+		self.drawText(0, 400, "R2022-2-2")
+		self.drawRightJustifiedText(400, "C.Lindley")
 		time.sleep(10)
 		
 # Create global instance
