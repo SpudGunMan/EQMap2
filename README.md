@@ -17,7 +17,8 @@ This fork adds additoional features
 sudo apt-get install python3-pip python3-dev
 sudo pip3 install pygame
 cd ~
-git clone
+git clone https://github.com/SpudGunMan/EQMap2
+cd EQMap2/
 python3 EQMap.py
 ```
 ## Hardware:
