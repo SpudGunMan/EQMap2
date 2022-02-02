@@ -1,16 +1,15 @@
-![EarthQuakeMap](logo.jpg)
+![EarthQuakeMap](/maps/logo.jpg)
 
-![EarthQuakeMapDisplay](display.jpg)
+![EarthQuakeMapDisplay](/maps/display.jpg)
 
 # About
-This is a Earthquake Map Display for Raspberrypi Attached screen
+This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additoional features
 - command line output
 - working clock
 - fullscreen mode, escape or q to exit
-- new data base display methods!
-- more features soon... open issues/requests
+- new display methods used for additional data on screen
 
 # Installation
 ```shell
@@ -23,7 +22,7 @@ python3 EQMap.py
 ```
 ## Hardware:
 ### Tested
-* Raspberry Pi3
+* Raspberry Pi3 running raspOS-bullseye.Jan28.2022
 * https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
   * works nice with a offical raspberry pi4/usb-c power supply at 3A and pi3
 
