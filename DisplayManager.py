@@ -18,9 +18,6 @@ class DisplayManager:
 
 	# Class constructor
 	def __init__(self):
-		self.topTextRow = 0
-		self.eventsTextRow = 0
-		self.bottomTextRow = 0
 		self.fontSize = 40
 		self.textColor = (255, 255, 255)
 		self.black  = (0, 0, 0)
@@ -30,6 +27,9 @@ class DisplayManager:
 		self.green  = (0, 255, 0)
 		self.blue  = (0, 0, 255)
 		self.eventTimeString = "loading..."
+		self.topTextRow = 0
+		self.eventsTextRow = 0
+		self.bottomTextRow = 0
 
 		pygame.init()
 
@@ -57,12 +57,11 @@ class DisplayManager:
 		# Get its bounding box
 		self.mapImageRect = self.mapImage.get_rect()
 
-		# Center map vertically
-		#self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2;
 		# Center map 
 		self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2
 		self.mapImageRect.x = (self.screenWidth - self.mapImageRect.width) / 2
 
+		# Set the uypper and lower text areas
 		self.topTextRow = self.mapImageRect.y - 35
 		self.eventsTextRow = self.topTextRow + 415
 		self.bottomTextRow = self.topTextRow + 455
@@ -186,7 +185,7 @@ class DisplayManager:
 		self.drawCircle(mapX, mapY, radius, color)
 		return mapX, mapY, radius, color
 
-	# Display current time
+	# Display current time and input
 	def displayCurrentTime(self):
 		timeNow = datetime.now()
 		timeString = timeNow.strftime("%-I:%M %P")
@@ -195,7 +194,7 @@ class DisplayManager:
 			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
 		except:
 			return timeNow
-
+		# Handle Input
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -208,25 +207,22 @@ class DisplayManager:
 				if event.key == pygame.K_q:
 					pygame.quit()
 					sys.exit()
+				if event.key == pygame.K_f:
+					#full screen
+					return timeNow
+				if event.key == pygame.K_w:
+					#window
+					return timeNow
+				if event.key == pygame.K_h:
+					#24 hour
+					return timeNow
+				if event.key == pygame.K_d:
+					#miles km
+					return timeNow
 			elif event.type == pygame.KEYUP:
 				return timeNow
 
-	# Display magnitude
-	def displayMagnitude(self, mag):
-		self.setTextSize(40)
-		self.setTextColor(self.colorFromMag(mag))
-		self.drawCenteredText(self.topTextRow, "Mag: " + str(mag))
-		self.setTextColor(self.white)
-
-	# Display depth
-	def displayDepth(self, depth):
-		self.setTextSize(40)
-		# Convert kilometers to miles
-		miles = depth / 1.609344
-		milesStr = "Depth: {d:.2f} m"
-		self.drawRightJustifiedText(self.topTextRow, milesStr.format(d = miles))
-
-	# Display number of events in DB
+	# Display Events string
 	def displayNumberOfEvents(self, num):
 		eventPull = datetime.now()
 		eventTimeStringLong = eventPull.strftime("%-I:%M %P %d/%m/%y")
@@ -238,17 +234,7 @@ class DisplayManager:
 		self.setTextColor(self.white)
 		return True
 
-	# Display location with color from magnitude
-	def displayLocation(self, location, mag):
-		self.setTextSize(40)
-		try:
-			self.setTextColor(self.colorFromMag(mag))
-			self.drawCenteredText(self.bottomTextRow, location)
-			self.setTextColor(self.white)
-			return True
-		except:
-			return False
-
+	# Display Last EQ Event
 	def displayEventLong(self, location, mag, depth):
 		self.setTextSize(40)
 		self.setTextColor(self.colorFromMag(mag))
@@ -259,9 +245,9 @@ class DisplayManager:
 		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + (milesStr.format(d = miles)))
 		return True
 	
+	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, depth, largestmag):
 		self.setTextSize(40)
-		#pygame.draw.rect(self.screen,self.black,(270,0,(self.screenWidth - 1),35))
 		self.drawRightJustifiedText(self.topTextRow, "LastEQ:" + self.eventTimeString + " High:" + largestmag)
 		return True
 
@@ -313,4 +299,3 @@ while True:
 
 	time.sleep(20)
 """
-
