@@ -18,9 +18,9 @@ class DisplayManager:
 
 	# Class constructor
 	def __init__(self):
-		self.topTextRow = 12
-		self.eventsTextRow = 415
-		self.bottomTextRow = 455
+		self.topTextRow = 0
+		self.eventsTextRow = 0
+		self.bottomTextRow = 0
 		self.fontSize = 40
 		self.textColor = (255, 255, 255)
 		self.black  = (0, 0, 0)
@@ -62,6 +62,10 @@ class DisplayManager:
 		# Center map 
 		self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2
 		self.mapImageRect.x = (self.screenWidth - self.mapImageRect.width) / 2
+
+		self.topTextRow = self.mapImageRect.y - 35
+		self.eventsTextRow = self.topTextRow + 415
+		self.bottomTextRow = self.topTextRow + 455
 
 		# Setup inital font of initial size
 		self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
@@ -129,9 +133,8 @@ class DisplayManager:
 	def drawCenteredText(self, y, text):
 		try:
 			textSurface, rect = self.font.render(text, self.textColor)
-			y2 = (self.mapImageRect.y - 35) + y
 			x = (self.screenWidth - rect.width) / 2
-			self.font.render_to(self.screen, (x, y2), text, self.textColor)
+			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			pygame.display.flip()
 			return True
 		except:
@@ -142,9 +145,8 @@ class DisplayManager:
 	def drawRightJustifiedText(self, y, text):
 		try:
 			textSurface, rect = self.font.render(text, self.textColor)
-			y2 = (self.mapImageRect.y - 35) + y
 			x = (self.mapImageRect.x + self.mapImageRect.width) - rect.width - 2
-			self.font.render_to(self.screen, (x, y2), text, self.textColor)
+			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			pygame.display.flip()
 			return True
 		except:
@@ -172,7 +174,7 @@ class DisplayManager:
 	# Draw a circle with size based on mag at lon, lat position on map
 	def mapEarthquake(self, lon, lat, mag, color):
 		# Calculate map X and Y
-		mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0
+		mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
 		mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
 
 		# Determine circle radius from mag
@@ -189,8 +191,8 @@ class DisplayManager:
 		timeNow = datetime.now()
 		timeString = timeNow.strftime("%-I:%M %P")
 		try:
-			pygame.draw.rect(self.screen,self.black,(0,0,260,35))
-			self.drawText(0, self.topTextRow, "Time: " + timeString)
+			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,35))
+			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
 		except:
 			return timeNow
 
@@ -268,14 +270,14 @@ class DisplayManager:
 		eventPull = datetime.now()
 		eventDayString = eventPull.strftime("%A %B %d week %U day %j") #https://strftime.org
 		self.displayMap()
-		self.drawCenteredText(90, "Realtime")
+		self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
 		self.setTextSize(70)
-		self.drawCenteredText(160, "World Earthquake Map")
+		self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 		self.setTextSize(40)
-		self.drawCenteredText(220, eventDayString)
+		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 		self.setTextSize(20)
-		self.drawText(0, 400, "R2022-2-2")
-		self.drawRightJustifiedText(400, "C.Lindley")
+		self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "R2022-2-2")
+		self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
 		self.setTextSize(40)
 		time.sleep(10)
 		
