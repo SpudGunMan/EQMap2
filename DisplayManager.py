@@ -256,7 +256,7 @@ class DisplayManager:
 		eventPull = datetime.now()
 		if self.time24h:
 			eventTimeStringLong = eventPull.strftime("%-H:%M %d/%m %Y")
-			self.eventTimeString = eventPull.strftime("%-H:%M%")
+			self.eventTimeString = eventPull.strftime("%-H:%M")
 		else:
 			eventTimeStringLong = eventPull.strftime("%-I:%M %P %m/%d %Y")
 			self.eventTimeString = eventPull.strftime("%-I:%M%P")
@@ -281,7 +281,7 @@ class DisplayManager:
 			milesStr = str(depth) + "km"
 		
 		location = location[:24] #truncate long names centering from pygame will just overlap badly
-		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + milesStr)
+		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + "@" + milesStr)
 		return True
 	
 	# Display LastEQ/High Mag String
