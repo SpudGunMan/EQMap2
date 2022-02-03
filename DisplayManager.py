@@ -204,12 +204,14 @@ class DisplayManager:
 
 	# Display magnitude
 	def displayMagnitude(self, mag):
+		self.setTextSize(40)
 		self.setTextColor(self.colorFromMag(mag))
 		self.drawCenteredText(self.topTextRow, "Mag: " + str(mag))
 		self.setTextColor(self.white)
 
 	# Display depth
 	def displayDepth(self, depth):
+		self.setTextSize(40)
 		# Convert kilometers to miles
 		miles = depth / 1.609344
 		milesStr = "Depth: {d:.2f} m"
@@ -229,16 +231,17 @@ class DisplayManager:
 
 	# Display location with color from magnitude
 	def displayLocation(self, location, mag):
+		self.setTextSize(40)
 		try:
 			self.setTextColor(self.colorFromMag(mag))
 			self.drawCenteredText(self.bottomTextRow, location)
 			self.setTextColor(self.white)
 			return True
 		except:
-			print(location)
 			return False
 
 	def displayEventLong(self, location, mag, depth):
+		self.setTextSize(40)
 		self.setTextColor(self.colorFromMag(mag))
 		# Convert kilometers to miles, otherwise change to just pront depth TODO add menu option
 		miles = depth / 1.609344
@@ -248,6 +251,7 @@ class DisplayManager:
 		return True
 	
 	def displayDBStats(self, mag, depth, largestmag):
+		self.setTextSize(40)
 		#pygame.draw.rect(self.screen,self.black,(270,0,(self.screenWidth - 1),35))
 		self.drawRightJustifiedText(self.topTextRow, "LastEQ:" + self.eventTimeString + " High:" + largestmag)
 		return True
@@ -265,6 +269,7 @@ class DisplayManager:
 		self.setTextSize(20)
 		self.drawText(0, 400, "R2022-2-2")
 		self.drawRightJustifiedText(400, "C.Lindley")
+		self.setTextSize(40)
 		time.sleep(10)
 		
 # Create global instance
