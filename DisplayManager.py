@@ -58,7 +58,10 @@ class DisplayManager:
 		self.mapImageRect = self.mapImage.get_rect()
 
 		# Center map vertically
-		self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2;
+		#self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2;
+		# Center map 
+		self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2
+		self.mapImageRect.x = (self.screenWidth - self.mapImageRect.width) / 2
 
 		# Setup inital font of initial size
 		self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
@@ -76,10 +79,12 @@ class DisplayManager:
 	def backlight(self, b):
 		if b:
 			# Turn backlight on
-			os.system("sudo sh -c 'echo 0 > /sys/class/backlight/rpi_backlight/bl_power'")
+			#os.system("sudo sh -c 'echo 0 > /sys/class/backlight/rpi_backlight/bl_power'")
+			return True
 		else:
 			# Turn backlight off
-			os.system("sudo sh -c 'echo 1 > /sys/class/backlight/rpi_backlight/bl_power'")
+			#os.system("sudo sh -c 'echo 1 > /sys/class/backlight/rpi_backlight/bl_power'")
+			return False
 
 	# Select color from magnitude
 	def colorFromMag(self, mag):
@@ -124,8 +129,9 @@ class DisplayManager:
 	def drawCenteredText(self, y, text):
 		try:
 			textSurface, rect = self.font.render(text, self.textColor)
+			y2 = (self.mapImageRect.y - 35) + y
 			x = (self.screenWidth - rect.width) / 2
-			self.font.render_to(self.screen, (x, y), text, self.textColor)
+			self.font.render_to(self.screen, (x, y2), text, self.textColor)
 			pygame.display.flip()
 			return True
 		except:
@@ -136,8 +142,9 @@ class DisplayManager:
 	def drawRightJustifiedText(self, y, text):
 		try:
 			textSurface, rect = self.font.render(text, self.textColor)
-			x = self.screenWidth - rect.width - 1
-			self.font.render_to(self.screen, (x, y), text, self.textColor)
+			y2 = (self.mapImageRect.y - 35) + y
+			x = (self.mapImageRect.x + self.mapImageRect.width) - rect.width - 2
+			self.font.render_to(self.screen, (x, y2), text, self.textColor)
 			pygame.display.flip()
 			return True
 		except:
