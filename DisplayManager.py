@@ -266,13 +266,13 @@ class DisplayManager:
 
 	# Display Events drawn string
 	def displayNumberOfEvents(self, num):
-		eventPull = datetime.now()
+		currentRTC = datetime.now()
 		if self.time24h:
-			self.eventTimeStringLong = eventPull.strftime("%-H:%M %d/%m %Y")
-			self.eventTimeString = eventPull.strftime("%-H:%M")
+			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %Y")
+			self.eventTimeString = currentRTC.strftime("%-H:%M")
 		else:
-			self.eventTimeStringLong = eventPull.strftime("%-I:%M %P %m/%d %Y")
-			self.eventTimeString = eventPull.strftime("%-I:%M%P")
+			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d %Y")
+			self.eventTimeString = currentRTC.strftime("%-I:%M%P")
 
 		self.eventCount = num
 
@@ -307,8 +307,8 @@ class DisplayManager:
 
 	# Display title page
 	def displayTitlePage(self):
-		eventPull = datetime.now()
-		eventDayString = eventPull.strftime("%A %B %d week %U day %j") #https://strftime.org
+		currentRTC = datetime.now()
+		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
 		self.displayMap()
 		self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
@@ -317,7 +317,7 @@ class DisplayManager:
 		self.setTextSize(40)
 		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 		
-		if not self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events in database, last quake@" + self.eventTimeStringLong)
+		if not self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 		
 		if self.firstRun:
 			self.setTextSize(20)
