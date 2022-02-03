@@ -37,7 +37,7 @@ class DisplayManager:
 
 		try:
 			#set monitor to use
-			self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+			self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 			self.displayInfo = pygame.display.Info()
 			self.screenWidth  = self.displayInfo.current_w
 			self.screenHeight = self.displayInfo.current_h
@@ -45,13 +45,9 @@ class DisplayManager:
 		
 		except:
 			#command line settings for display to console display
-			#error with prior init for pygame
 			self.screenWidth = -1
 			self.screenHeight = -1
 			self.screen = (-1, -1)
-		
-		screenWidth = self.screenWidth
-		screenHeight = self.screenHeight
 
 		# Read the map into memory
 		self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
@@ -60,8 +56,8 @@ class DisplayManager:
 		self.mapImageRect = self.mapImage.get_rect()
 
 		# Center map 
-		self.mapImageRect.y = (self.screenHeight - self.mapImageRect.height) / 2
-		self.mapImageRect.x = (self.screenWidth - self.mapImageRect.width) / 2
+		self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+		self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 
 		# Set the uypper and lower text areas
 		self.topTextRow = self.mapImageRect.y - 35
@@ -115,6 +111,10 @@ class DisplayManager:
 		try:
 			self.clearScreen()
 			self.screen.blit(self.mapImage, self.mapImageRect)
+
+			# Center map 
+			self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+			self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 			pygame.display.flip()
 			return True
 		except:
@@ -217,10 +217,11 @@ class DisplayManager:
 					pygame.quit()
 					sys.exit()
 				if event.key == pygame.K_f:
-					#full screen
+					self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 					return timeNow
 				if event.key == pygame.K_w:
 					#window
+					self.screen = pygame.display.set_mode((800, 480))
 					return timeNow
 				if event.key == pygame.K_h:
 					# flip flop for time24h
