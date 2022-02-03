@@ -31,6 +31,7 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 * Raspberry Pi3 running raspOS-bullseye.Jan28.2022
 * https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
   * works nice with a offical raspberry pi4/usb-c power supply at 3A and pi3
+* osx12 native (need to add python tools like pip3 install pygames)
 
 ### Untested:
 * Raspberry Pi4,Pico
