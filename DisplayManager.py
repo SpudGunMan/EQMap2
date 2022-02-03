@@ -19,6 +19,8 @@ class DisplayManager:
 	# Class constructor
 	def __init__(self):
 		self.fontSize = 40
+		self.dist = "m" # or k miles/kilo
+		self.time24h = False
 		self.textColor = (255, 255, 255)
 		self.black  = (0, 0, 0)
 		self.white  = (255, 255, 255)
@@ -188,12 +190,19 @@ class DisplayManager:
 	# Display current time and input
 	def displayCurrentTime(self):
 		timeNow = datetime.now()
-		timeString = timeNow.strftime("%-I:%M %P")
+
+		if self.time24h:
+			timeString = timeNow.strftime("%-H:%M")
+		else:
+			timeString = timeNow.strftime("%-I:%M%P")
+
+		# Display time to GUI only
 		try:
 			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,35))
 			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
-		except:
+		except: 
 			return timeNow
+
 		# Handle Input
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -214,19 +223,44 @@ class DisplayManager:
 					#window
 					return timeNow
 				if event.key == pygame.K_h:
-					#24 hour
+					# flip flop for time24h
+					if self.time24h:
+						self.time24h = False
+						self.setTextSize(20)
+						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: 12h")
+						self.setTextSize(40)
+					else:
+						self.time24h = True
+						self.setTextSize(20)
+						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: time24h")
+						self.setTextSize(40)
 					return timeNow
 				if event.key == pygame.K_d:
-					#miles km
+					# flip flop for distance
+					if self.dist == "m":
+						self.dist = "k"
+						self.setTextSize(20)
+						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: km")
+						self.setTextSize(40)
+					else:
+						self.dist = "m"
+						self.setTextSize(20)
+						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: mi")
+						self.setTextSize(40)
 					return timeNow
 			elif event.type == pygame.KEYUP:
 				return timeNow
 
-	# Display Events string
+	# Display Events drawn string
 	def displayNumberOfEvents(self, num):
 		eventPull = datetime.now()
-		eventTimeStringLong = eventPull.strftime("%-I:%M %P %d/%m/%y")
-		self.eventTimeString = eventPull.strftime("%-I:%M%P %Z")
+		if self.time24h:
+			eventTimeStringLong = eventPull.strftime("%-H:%M %d/%m %Y")
+			self.eventTimeString = eventPull.strftime("%-H:%M%")
+		else:
+			eventTimeStringLong = eventPull.strftime("%-I:%M %P %m/%d %Y")
+			self.eventTimeString = eventPull.strftime("%-I:%M%P")
+
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
 		self.drawCenteredText(self.eventsTextRow, str(num) + " total events drawn at " + eventTimeStringLong)
@@ -238,11 +272,16 @@ class DisplayManager:
 	def displayEventLong(self, location, mag, depth):
 		self.setTextSize(40)
 		self.setTextColor(self.colorFromMag(mag))
-		# Convert kilometers to miles, otherwise change to just pront depth TODO add menu option
-		miles = depth / 1.609344
-		milesStr = "@{d:.2f}mi"
+		
+		miles = (depth / 1.609344)
+
+		if self.dist == "m":
+			milesStr =  str(miles)[:4] + "mi"
+		else:
+			milesStr = str(depth) + "km"
+		
 		location = location[:24] #truncate long names centering from pygame will just overlap badly
-		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + (milesStr.format(d = miles)))
+		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + milesStr)
 		return True
 	
 	# Display LastEQ/High Mag String
@@ -299,3 +338,4 @@ while True:
 
 	time.sleep(20)
 """
+

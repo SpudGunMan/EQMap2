@@ -8,8 +8,10 @@ This is a Earthquake Map Display for RaspberryPi Attached screen
 This fork adds additoional features
 - command line output
 - working clock
-- fullscreen mode, escape or q to exit
-- new display methods used for additional data on screen
+- fullscreen mode, 'escape' or 'q' to exit
+- new display data
+- switch from mi to km with 'd'
+- switch from 12h to 24h with 'h'
 
 # Installation
 ```shell
