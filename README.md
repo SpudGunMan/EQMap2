@@ -1,6 +1,4 @@
-![EarthQuakeMap](/maps/logo.jpg)
-
-![EarthQuakeMapDisplay](/maps/display.jpg)
+![EarthQuakeMap](/maps/logo.jpg)  ![EarthQuakeMapDisplay](/maps/display.jpg)
 
 # About
 This is a Earthquake Map Display for RaspberryPi Attached screen
@@ -40,7 +38,7 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 * https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
 
 ## EQMap Source 
-* http://craigandheather.net/celeearthquakemap.html
+* The upstream branch is a straight copy from http://craigandheather.net/celeearthquakemap.html
   * EQMap orginal project in doc/src directory by Craig A. Lindley 2021
 
 ## To-Do
