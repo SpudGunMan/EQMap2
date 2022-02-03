@@ -21,6 +21,7 @@ class DisplayManager:
 		self.fontSize = 40
 		self.dist = "m" # or k miles/kilo
 		self.time24h = False
+		self.firstRun = True
 		self.textColor = (255, 255, 255)
 		self.black  = (0, 0, 0)
 		self.white  = (255, 255, 255)
@@ -29,9 +30,11 @@ class DisplayManager:
 		self.green  = (0, 255, 0)
 		self.blue  = (0, 0, 255)
 		self.eventTimeString = "loading..."
+		self.eventTimeStringLong = self.eventTimeString
 		self.topTextRow = 0
 		self.eventsTextRow = 0
 		self.bottomTextRow = 0
+		self.eventCount = 0
 
 		pygame.init()
 
@@ -249,6 +252,15 @@ class DisplayManager:
 						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: mi")
 						self.setTextSize(40)
 					return timeNow
+				if event.key == pygame.K_m:
+					#change map
+					return timeNow
+				if event.key == pygame.K_b:
+					#dim brightness
+					return timeNow
+				if event.key == pygame.K_u:
+					#go UTC
+					return timeNow
 			elif event.type == pygame.KEYUP:
 				return timeNow
 
@@ -256,15 +268,17 @@ class DisplayManager:
 	def displayNumberOfEvents(self, num):
 		eventPull = datetime.now()
 		if self.time24h:
-			eventTimeStringLong = eventPull.strftime("%-H:%M %d/%m %Y")
+			self.eventTimeStringLong = eventPull.strftime("%-H:%M %d/%m %Y")
 			self.eventTimeString = eventPull.strftime("%-H:%M")
 		else:
-			eventTimeStringLong = eventPull.strftime("%-I:%M %P %m/%d %Y")
+			self.eventTimeStringLong = eventPull.strftime("%-I:%M %P %m/%d %Y")
 			self.eventTimeString = eventPull.strftime("%-I:%M%P")
+
+		self.eventCount = num
 
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
-		self.drawCenteredText(self.eventsTextRow, str(num) + " total events drawn at " + eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, str(num) + " total events drawn at " + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
@@ -295,17 +309,25 @@ class DisplayManager:
 	def displayTitlePage(self):
 		eventPull = datetime.now()
 		eventDayString = eventPull.strftime("%A %B %d week %U day %j") #https://strftime.org
+
 		self.displayMap()
 		self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
 		self.setTextSize(70)
 		self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 		self.setTextSize(40)
 		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
-		self.setTextSize(20)
-		self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "R2022-2-2")
-		self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
-		self.setTextSize(40)
+		
+		if not self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events in database, last quake@" + self.eventTimeStringLong)
+		
+		if self.firstRun:
+			self.setTextSize(20)
+			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "R2022-2-2")
+			self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
+			self.setTextSize(40)
+		
 		time.sleep(10)
+		self.firstRun = False
+		return True
 		
 # Create global instance
 displayManager = DisplayManager()
