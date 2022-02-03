@@ -83,7 +83,7 @@ def displayTitlePage():
 	global ftForTitlePageDisplay
 
 	# Display the title page
-	displayManager.displayTitlePage()
+	displayManager.displayWashPage()
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
