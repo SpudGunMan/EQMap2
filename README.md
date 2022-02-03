@@ -11,6 +11,8 @@ This fork adds additional features, while keeping the orginal functionality.
 - hi-res ability to extend to any monitor (early support)
 - ability to change settings for customization (early support)
 
+Feel free to pull issues/suggestions or forks to contribute!
+
 # Settings Keys
 
 | Command | Description |
@@ -35,8 +37,8 @@ python3 EQMap.py
 ```
 ## Hardware:
 to get 7" ribbon attached display you need to do a few things to bullseye
-1. when you flash the OS to SSD open the /boot/config.txt file and `touch ssh` to force enable SSH
-1. you need to then use `sudo raspi-config` to enable legacy GL drivers till [this bug is fully fixed](https://github.com/raspberrypi/linux/issues/4686)
+1. when you flash the OS to SSD open the FAT-partition on the SSD you just made and `touch ssh` to force enable SSH (or just make a empty file with the name of `ssh` nothing more no .txt)
+1. you need to then use `sudo raspi-config` to enable legacy GL drivers till [this bug is fully fixed](https://github.com/raspberrypi/linux/issues/4686) to adjust 50K rate of screen.
 1. Reboot to "hopefully" a working Pi Screen on bullseye
 
 

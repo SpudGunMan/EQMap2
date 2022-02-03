@@ -1,6 +1,5 @@
 """
-This code handles the Raspberry Pi LCD display by writing directly to the framebuffer
-The map image is in the images subdirectory and the font is in the fonts subdirectory.
+This code handles display by writing directly to the framebuffer in pygame
 Concept, Design and Implementation by: Craig A. Lindley
 """
 
@@ -79,18 +78,16 @@ class DisplayManager:
 		except:
 			return False
 
-	# Backlight control not tested yet
+	# Backlight control
 	def backlight(self, b):
 		if b:
 			# Turn backlight on
-			#os.system("sudo sh -c 'echo 0 > /sys/class/backlight/rpi_backlight/bl_power'")
 			return True
 		else:
 			# Turn backlight off
-			#os.system("sudo sh -c 'echo 1 > /sys/class/backlight/rpi_backlight/bl_power'")
 			return False
 
-	# Select color from magnitude
+	# Return color from magnitude
 	def colorFromMag(self, mag):
 		if mag < 1:
 			mag = 1.0
@@ -116,8 +113,8 @@ class DisplayManager:
 			self.screen.blit(self.mapImage, self.mapImageRect)
 
 			# Center map 
-			self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
-			self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
+			#self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+			#self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 			pygame.display.flip()
 			return True
 		except:
@@ -305,12 +302,14 @@ class DisplayManager:
 		self.drawRightJustifiedText(self.topTextRow, "LastEQ:" + self.eventTimeString + " High:" + largestmag)
 		return True
 
-	# Display title page
-	def displayTitlePage(self):
+	# Display Wash/Title page
+	def displayWashPage(self):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
+		# Refresh Display by redrawing the map to the screen
 		self.displayMap()
+
 		self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
 		self.setTextSize(70)
 		self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
@@ -320,9 +319,11 @@ class DisplayManager:
 		if not self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 		
 		if self.firstRun:
-			self.setTextSize(20)
-			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "R2022-2-2")
+			self.setTextSize(30)
+			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision: 2022-2-2")
 			self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
+			self.drawCenteredText((self.mapImageRect.y + 320), "loading please wait... ")
 			self.setTextSize(40)
 		
 		time.sleep(10)
@@ -332,33 +333,4 @@ class DisplayManager:
 # Create global instance
 displayManager = DisplayManager()
 
-"""
-# Test Code
-import time
-
-#displayManager.displayTitlePage()
-
-displayManager.displayMap()
-time.sleep(5)
-displayManager.backlight(False)
-time.sleep(5)
-displayManager.backlight(True)
-
-displayManager.drawText(0, 240, "This is some text")
-displayManager.drawRightJustifiedText( 240, "This is some text")
-
-displayManager.drawCenteredText(100, "This is some text to display")
-
-displayManager.drawCircle(400, 240, 40, (0,0,255))
-displayManager.mapEarthquake(0, 0, 2, (0,255,255))
-
-displayManager.displayCurrentTime()
-displayManager.displayMagnitude(3.6)
-displayManager.displayDepth(-3.6)
-displayManager.displayLocation("Tip of south Africa", 6.5)
-
-while True:
-
-	time.sleep(20)
-"""
 
