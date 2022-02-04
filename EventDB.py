@@ -15,8 +15,9 @@ class EventDB:
 		self.EQEventQueue = deque()
 		self.EQEventQueue.clear()
 
-	# Clear the database of events
+	# Clear the database of events /save a copy
 	def clear(self):
+		self.save()
 		self.EQEventQueue.clear()
 
 	# Add an earthquake event
@@ -57,6 +58,14 @@ class EventDB:
 					return True
 			# Data is not a duplicate
 			return False
+
+	# Save the database to local path
+	def save(self):
+		filenameString = "database.dat"
+		with open(filenameString, 'w') as f:
+			for item in self.EQEventQueue:
+				f.write("%s\n" % str(item))
+		return True
 
 # Create instance of database
 eventDB = EventDB()
@@ -100,4 +109,7 @@ print(eventDB.getLargestEvent())
 
 print(eventDB.checkDupLonLat(31, 32))
 
+eventDB.save()
+
+eventDB.clear()
 '''
