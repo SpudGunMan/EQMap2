@@ -1,7 +1,7 @@
 """
 This code gathers Earthquake events via an HTTP GET Request from BOTH USGS and EU
 The returned results are processed by a JSON parser and 6 pertinent data items are extracted and returned.
-Concept, Design and Implementation by: Craig A. Lindley adapted to USGS by SpudGunMan see github
+Concept, Design by: Craig A. Lindley adapted to USGS by SpudGunMan see github
 """
 import json
 from operator import truediv

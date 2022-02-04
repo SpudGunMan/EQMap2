@@ -1,6 +1,6 @@
 """
 This code handles display by writing directly to the framebuffer in pygame
-Concept, Design and Implementation by: Craig A. Lindley
+Concept, Design by: Craig A. Lindley
 """
 
 import os, time, sys

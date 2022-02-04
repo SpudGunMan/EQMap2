@@ -55,7 +55,7 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 * osx12 native (need to add python tools like pip3 install pygames)
 
 ### Untested:
-* Raspberry Pi4,Pico
+* Raspberry Pi4, nano
 * https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
 
 ## EQMap Source 

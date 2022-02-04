@@ -1,7 +1,7 @@
 """
 Earthquake Display Program
 For the Raspberry Pi Model 3B and the official 7" display
-Concept, Design and Implementation by: Craig A. Lindley
+Concept, Design by: Craig A. Lindley
 """
 
 import time
