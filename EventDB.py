@@ -52,7 +52,6 @@ class EventDB:
 	def checkDupLonLat(self, lon, lat):
 		if self.EQEventQueue:
 			last_event = self.EQEventQueue[0]
-			print(last_event, lon, lat)
 			if str(lon) in str(last_event[0]):
 				if str(lat) in str(last_event[1]):
 					return True

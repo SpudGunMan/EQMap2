@@ -179,13 +179,12 @@ class DisplayManager:
 		mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
 
 		# Determine circle radius from mag
-		if mag < 2:
-			mag = 2.0
 		radius = mag * 3
-
 		# Draw a circle at earthquake location
 		self.drawCircle(mapX, mapY, radius, color)
+
 		return mapX, mapY, radius, color
+
 
 	# Display current time and input
 	def displayCurrentTime(self):

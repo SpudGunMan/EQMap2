@@ -72,12 +72,14 @@ def repaintMap():
 
 	# Display all of the EQ events in the DB
 	count = eventDB.numberOfEvents()
-	for i in range(count):
-		lon, lat, mag, alert, tsunami = eventDB.getEvent(i)
+	if count > 0:
+		for i in range(count):
+			lon, lat, mag, alert, tsunami = eventDB.getEvent(i)
 
-		# Color depends upon magnitude
-		color = displayManager.colorFromMag(mag)
-		displayManager.mapEarthquake(lon, lat, mag, color)
+			# Color depends upon magnitude
+			color = displayManager.colorFromMag(mag)
+			displayManager.mapEarthquake(lon, lat, mag, color)
+	return True
 
 # Display title page and schedule next display event
 def displayTitlePage():
@@ -118,6 +120,7 @@ def main():
 	#exit loop handler
 	running = True
 
+	# Handler for getting and writing new EQ events USCG
 	def getUpdatesUSGS():
 		global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
 
@@ -126,10 +129,8 @@ def main():
 			# Check for new earthquake event
 			eqGathererUSGS.requestEQEvent()
 		except:
-			print('::internet connection error::')
 			pass
 			
-
 		# Determine if we have seen this event before If so ignore it
 		if cqIDUSGS != eqGathererUSGS.getEventID():
 
@@ -139,23 +140,22 @@ def main():
 			cqLat = eqGathererUSGS.getLat()
 			cqMag = eqGathererUSGS.getMag()
 			cqDepth = eqGathererUSGS.getDepth()
-			try:
-				cqTsunami = eqGathererUSGS.getTsunami()
-				cqAlert = eqGathererUSGS.getAlert()
-			except:
-				cqTsunami = 0
-				cqAlert = 0
+			cqTsunami = eqGathererUSGS.getTsunami()
+			cqAlert = eqGathererUSGS.getAlert()
 
-			# Add new event to DB
-			if not eventDB.checkDupLonLat(cqLon, cqLat):eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
+			# Add new event to DB if it isnt also from the other source
+			if not eventDB.checkDupLonLat(cqLon, cqLat):
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
 
-			# Update the current event ID
-			cqIDUSGS = eqGathererUSGS.getEventID()
+				# Update the current event ID
+				cqIDUSGS = eqGathererUSGS.getEventID()
 
-			# Display the new EQ data
-			repaintMap()
-			return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+				# Display the new EQ data
+				repaintMap()
+				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+		return False
 
+	# Handler for getting and writing new EQ events EU
 	def getUpdatesEU():
 		global cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
 
@@ -164,36 +164,30 @@ def main():
 			# Check for new earthquake event
 			eqGathererEU.requestEQEvent()
 		except:
-			print('::internet connection error::')
 			pass
 			
-
-		# Determine if we have seen this event before
-		# If so ignor it
+		# Determine if we have seen this event before If so ignore it
 		if cqID != eqGathererEU.getEventID():
-			#print("New Event")
 			# Extract the EQ data
 			cqLocation = eqGathererEU.getLocation()
 			cqLon = eqGathererEU.getLon()
 			cqLat = eqGathererEU.getLat()
 			cqMag = eqGathererEU.getMag()
 			cqDepth = eqGathererEU.getDepth()
-			try:
-				cqTsunami = eqGathererEU.getTsunami()
-				cqAlert = eqGathererEU.getAlert()
-			except:
-				cqTsunami = 0
-				cqAlert = 0
+			cqTsunami=0
+			cqAlert=0
 
-			# Add new event to DB
-			if not eventDB.checkDupLonLat(cqLon, cqLat):eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
+			# Add new event to DB if it isnt also from the other source
+			if not eventDB.checkDupLonLat(cqLon, cqLat):
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
 
-			# Update the current event ID
-			cqID = eqGathererEU.getEventID()
+				# Update the current event ID
+				cqID = eqGathererEU.getEventID()
 
-			# Display the new EQ data
-			repaintMap()
-			return cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+				# Display the new EQ data
+				repaintMap()
+				return cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+		return False
 
 	#loop
 	try:
@@ -255,8 +249,9 @@ def main():
 
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
-			# Is it time to blink ?
+			# Is it time to blink EQ circle?
 			if millis() > ftForBlink:
+
 				if blinkToggle:
 					color = displayManager.colorFromMag(cqMag)
 					displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)

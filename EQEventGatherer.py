@@ -29,7 +29,7 @@ class EQEventGathererUSGS:
 
     def getLocation(self):
         place = self.jsonData[0]['properties']['place']
-        # Since we are on a map rempve the "xx km H of " from the start of the string and use best location name
+        # Since we are on a map remove the "xx km H of " from the start of the string and use best location name
         place = place.split("of ") 
         return place[1]
         
