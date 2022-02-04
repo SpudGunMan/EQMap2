@@ -316,9 +316,9 @@ class DisplayManager:
 		self.setTextSize(40)
 		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 		
-		if not self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+		if self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 		
-		if self.firstRun:
+		if not self.firstRun:
 			self.setTextSize(30)
 			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision: 2022-2-2")
