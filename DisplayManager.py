@@ -310,25 +310,30 @@ class DisplayManager:
 		# Refresh Display by redrawing the map to the screen
 		self.displayMap()
 
-		self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
-		self.setTextSize(70)
-		self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
-		self.setTextSize(40)
+		# Data to always display
 		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 		
-		if self.firstRun: self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+		# Display different data throughout the day using the timput value
+		if self.firstRun == False:
+			self.setTextSize(70)
+			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
+			self.setTextSize(40)
+			self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+			time.sleep(15)
+			return True
 		
-		if not self.firstRun:
+		if self.firstRun:
+			self.firstRun = False
+			self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
+			self.setTextSize(70)
+			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 			self.setTextSize(30)
-			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision: 2022-2-2")
 			self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
 			self.drawCenteredText((self.mapImageRect.y + 320), "loading please wait... ")
 			self.setTextSize(40)
-		
-		time.sleep(10)
-		self.firstRun = False
-		return True
+			time.sleep(5)
+			return True
 		
 # Create global instance
 displayManager = DisplayManager()

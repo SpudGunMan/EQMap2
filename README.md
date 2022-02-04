@@ -57,6 +57,8 @@ to get 7" ribbon attached display you need to do a few things to bullseye
   * EQMap orginal project in doc/src directory by Craig A. Lindley 2021
 
 ## To-Do
-- add RSS/moon/sun/tide
+- add RSS or sun/moon/tide
 - use memory to lower any disk write
 - settings menu for UTC and sleep
+- save settings
+- save database for playback later
