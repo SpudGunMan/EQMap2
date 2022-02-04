@@ -86,8 +86,8 @@ def displayTitlePage():
 
 	global ftForTitlePageDisplay
 
-	# Display the title page
-	displayManager.displayWashPage()
+	# Display the title/ wash page
+	displayManager.displayWashPage(str(eventDB.getLargestEvent()))
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS

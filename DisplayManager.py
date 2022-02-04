@@ -3,14 +3,10 @@ This code handles display by writing directly to the framebuffer in pygame
 Concept, Design and Implementation by: Craig A. Lindley
 """
 
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
-import pygame
-import pygame.freetype
-import time
-import sys
+import os, time, sys
 from datetime import datetime
-
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
+import pygame, pygame.freetype
 from pygame.locals import *
 
 class DisplayManager:
@@ -111,10 +107,6 @@ class DisplayManager:
 		try:
 			self.clearScreen()
 			self.screen.blit(self.mapImage, self.mapImageRect)
-
-			# Center map 
-			#self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
-			#self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 			pygame.display.flip()
 			return True
 		except:
@@ -302,7 +294,7 @@ class DisplayManager:
 		return True
 
 	# Display Wash/Title page
-	def displayWashPage(self):
+	def displayWashPage(self, largestevent=0):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
@@ -314,6 +306,7 @@ class DisplayManager:
 		
 		# Display different data throughout the day using the timput value
 		if self.firstRun == False:
+			self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
 			self.setTextSize(70)
 			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 			self.setTextSize(40)
@@ -327,9 +320,9 @@ class DisplayManager:
 			self.setTextSize(70)
 			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 			self.setTextSize(30)
-			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision: 2022.2.3")
+			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision: 2022.2.4")
 			self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
-			self.drawCenteredText((self.mapImageRect.y + 320), "loading please wait... ")
+			self.drawCenteredText((self.mapImageRect.y + 320), "loading ...")
 			self.setTextSize(40)
 			time.sleep(5)
 			return True
