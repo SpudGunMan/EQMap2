@@ -4,6 +4,8 @@
 This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additional features, while keeping the orginal functionality.
+- added additional data souce earthquake.usgs.gov
+  - its a bit dodgy, alternating data sources 30 second intervals by default
 - command line output
 - working clock
 - fullscreen mode, native
@@ -35,6 +37,10 @@ git clone https://github.com/SpudGunMan/EQMap2
 cd EQMap2/
 python3 EQMap.py
 ```
+
+# Issues
+If you have issues make sure your running the newest code `git pull`, let me know if you see a problem!
+
 ## Hardware:
 to get 7" ribbon attached display you need to do a few things to bullseye
 1. when you flash the OS to SSD open the FAT-partition on the SSD you just made and `touch ssh` to force enable SSH (or just make a empty file with the name of `ssh` nothing more no .txt)
@@ -49,7 +55,7 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 * osx12 native (need to add python tools like pip3 install pygames)
 
 ### Untested:
-* Raspberry Pi4,Pico
+* Raspberry Pi4, nano
 * https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
 
 ## EQMap Source 
