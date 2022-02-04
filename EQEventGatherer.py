@@ -1,55 +1,111 @@
 """
-This code gathers Earthquake events via an HTTP GET Request
+This code gathers Earthquake events via an HTTP GET Request from BOTH USGS and EU
 The returned results are processed by a JSON parser and 6 pertinent data items are extracted and returned.
-
-Concept, Design and Implementation by: Craig A. Lindley
+Concept, Design and Implementation by: Craig A. Lindley adapted to USGS by SpudGunMan see github
 """
 import json
+from operator import truediv
 import requests
 
-class EQEventGatherer:
+class EQEventGathererUSGS:
 
-	def requestEQEvent(self):
-		while True:
-			r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
-			if r.status_code == 200:
-				break
-			sleep(2)
+    def requestEQEvent(self):
+        while True:
+            r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
+            if r.status_code == 200:
+                break
+            sleep(2)
 
-		self.jsonData = json.loads(r.text)
+        self.jsonData = json.loads(r.text)
+        # Extracting all the important key features.
+        self.jsonData = self.jsonData['features']
 
-	def getEventID(self):
-		return self.jsonData['features'][0]['id']
+    def getEventID(self):
+        return self.jsonData[0]['id']
 
-	def getLon(self):
-		return float(self.jsonData['features'][0]['properties']['lon'])
+    def getMag(self):
+        mag = float(self.jsonData[0]['properties']['mag'])
+        return float(("%.2f" % mag))
 
-	def getLat(self):
-		return float(self.jsonData['features'][0]['properties']['lat'])
+    def getLocation(self):
+        place = self.jsonData[0]['properties']['place']
+        # Since we are on a map rempve the "xx km H of " from the start of the string and use best location name
+        place = place.split("of ") 
+        return place[1]
+        
+    def getAlert(self):
+        return self.jsonData[0]['properties']['alert']
 
-	def getMag(self):
-		return float(self.jsonData['features'][0]['properties']['mag'])
+    def getTsunami(self):
+        return self.jsonData[0]['properties']['tsunami']
 
-	def getDepth(self):
-		return float(self.jsonData['features'][0]['properties']['depth'])
+    def getLon(self):
+        lon = float(self.jsonData[0]['geometry']['coordinates'][0])
+        return float(("%.2f" % lon))
 
-	def getLocation(self):
-		return self.jsonData['features'][0]['properties']['flynn_region']
+    def getLat(self):
+        lat = float(self.jsonData[0]['geometry']['coordinates'][1])
+        return float(("%.2f" % lat))
+
+    def getDepth(self):
+        return float(self.jsonData[0]['geometry']['coordinates'][2])
+
+class EQEventGathererEU:
+
+    def requestEQEvent(self):
+        while True:
+            r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
+            if r.status_code == 200:
+                break
+            sleep(2)
+
+        self.jsonData = json.loads(r.text)
+
+    def getEventID(self):
+        return self.jsonData['features'][0]['id']
+
+    def getLon(self):
+        lon = float(self.jsonData['features'][0]['properties']['lon'])
+        return float(("%.2f" % lon))
+
+    def getLat(self):
+        lat = float(self.jsonData['features'][0]['properties']['lat'])
+        return float(("%.2f" % lat))
+
+    def getMag(self):
+        return float(self.jsonData['features'][0]['properties']['mag'])
+
+    def getDepth(self):
+        return float(self.jsonData['features'][0]['properties']['depth'])
+
+    def getLocation(self):
+        return self.jsonData['features'][0]['properties']['flynn_region']
 
 # Return a class instance
-eqGatherer = EQEventGatherer()
+eqGathererEU = EQEventGathererEU()
+eqGathererUSGS = EQEventGathererUSGS()
 
-"""
+'''
 # Test Code
+eqGathererEU.requestEQEvent()
+print(eqGathererEU.getEventID())
+print(eqGathererEU.getLocation())
+print(eqGathererEU.getMag())
+print(eqGathererEU.getLon())
+print(eqGathererEU.getLat())
+print(eqGathererEU.getDepth())
 
-eqGatherer.requestEQEvent()
-print(eqGatherer.getEventID())
-print(eqGatherer.getLon())
-print(eqGatherer.getLat())
-print(eqGatherer.getMag())
-print(eqGatherer.getDepth())
-print(eqGatherer.getLocation())
-"""
+
+eqGathererUSGS.requestEQEvent()
+print(eqGathererUSGS.getEventID())
+print(eqGathererUSGS.getLocation())
+print(eqGathererUSGS.getMag())
+print(eqGathererUSGS.getLon())
+print(eqGathererUSGS.getLat())
+print(eqGathererUSGS.getDepth())
+print(eqGathererUSGS.getTsunami())
+print(eqGathererUSGS.getAlert())
+'''
 
 
 
