@@ -30,13 +30,13 @@ class EQEventGathererUSGS:
     def getLocation(self):
         place = self.jsonData[0]['properties']['place']
         # Since we are on a map remove the "xx km H of " from the start of the string and use best location name
-        place = place.split(" of ") 
-
-        try:
-            return place[1]
-        except:
-            print("Debug USGS Name Split Error: ",place)
-            return place
+        marker = " of "
+        if marker in place:
+            place = place.split(marker)
+            return str(place[1])
+        else:
+            #print("Debug USGS Name Split Error: ",place)  #DEBUG 
+            return str(place)
             
         
     def getAlert(self):
