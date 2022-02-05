@@ -22,11 +22,9 @@ Feel free to pull issues/suggestions or forks to contribute!
 | esc / q | end program, exit fuillscreen |
 | d | *D*istance calculations in mi/km |
 | h | *H*ours calculations in 12p/24h |
-| u | Hours to *U*TC (TODO) |
 | f | Set *f*ullscreen mode |
 | w | Set *w*indow mode (TODO) |
 | m | Cycle *m*aps (TODO) |
-| b | Set *b*rightness/Dim Display (TODO) |
 
 # Installation
 ```shell
