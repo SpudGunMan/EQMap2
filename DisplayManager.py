@@ -169,7 +169,9 @@ class DisplayManager:
 		# Calculate map X and Y
 		mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
 		mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
-
+		
+		if mag < 0.8: mag = 0.8 #too small to see blink
+		
 		# Determine circle radius from mag
 		radius = mag * 3
 		# Draw a circle at earthquake location
