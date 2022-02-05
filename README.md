@@ -38,6 +38,7 @@ python3 EQMap.py
 
 # Issues
 If you have issues make sure your running the newest code `git pull`, let me know if you see a problem!
+if you really get stuck you can start over or try a `git reset --hard`
 
 ## Hardware:
 to get 7" ribbon attached display you need to do a few things to bullseye
