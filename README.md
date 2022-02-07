@@ -62,6 +62,7 @@ to get 7" ribbon attached display you need to do a few things to bullseye
   * EQMap orginal project in doc/src directory by Craig A. Lindley 2021
 
 ## To-Do
+normally on a next branch if you see it try it out! `git pull origin next`
 - add RSS or sun/moon/tide
 - use memory to lower any disk write
 - settings menu for UTC and sleep

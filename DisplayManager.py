@@ -314,11 +314,12 @@ class DisplayManager:
 			self.displayMap()
 
 			# Data to always display
+			self.setTextSize(30)
 			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			self.setTextSize(40)
 			
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				self.setTextSize(40)
 				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
 				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region" + activeregion)
 				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
