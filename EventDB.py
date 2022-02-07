@@ -3,6 +3,7 @@ This code handles a simple database of earthquake events in a list
 Concept, Design and Implementation by: Craig A. Lindley
 """
 from collections import deque
+import pickle
 
 #MAX_EVENTS = 200
 
@@ -17,8 +18,8 @@ class EventDB:
 
 	# Clear the database of events /save a copy
 	def clear(self):
-		self.save()
 		self.EQEventQueue.clear()
+		return True
 
 	# Add an earthquake event
 	def addEvent(self, lon, lat, mag, alert=0, tsunami=0):
@@ -61,11 +62,18 @@ class EventDB:
 
 	# Save the database to local path
 	def save(self):
-		filenameString = "database.dat"
-		with open(filenameString, 'w') as f:
-			for item in self.EQEventQueue:
-				f.write("%s\n" % str(item))
+		dbFileName = "database.dat"
+		dbFile = open(dbFileName, "wb")
+		pickle.dump(self.EQEventQueue, dbFile)
+		dbFile.close()
 		return True
+
+	def load(self):
+		dbFileName = "database.dat"
+		dbFile = open(dbFileName, "rb")
+		self.EQEventQueue = pickle.load(dbFile)
+		dbFile.close()
+		return self.EQEventQueue
 
 # Create instance of database
 eventDB = EventDB()
@@ -101,15 +109,22 @@ eventDB.showEvents()
 print(eventDB.getEvent(3))
 
 lon, lat, mag, alert, tsunami = eventDB.getEvent(3)
-print("lon: ", lon, "lat: ", lat, "mag: ", mag, alert, tsunami)
+print("lon: ", lon, "lat: ", lat, "mag: ", mag, "alert: ", alert, "tsunami: ", tsunami)
 
-print(eventDB.numberOfEvents())
+print("number of events", eventDB.numberOfEvents())
 
-print(eventDB.getLargestEvent())
+print("largest event", eventDB.getLargestEvent())
 
-print(eventDB.checkDupLonLat(31, 32))
+print("dupe check", eventDB.checkDupLonLat(31, 32))
 
-eventDB.save()
 
-eventDB.clear()
+print("saved", eventDB.save())
+
+print("cleared", eventDB.clear())
+
+eventDB.load()
+
+print("number of events", eventDB.numberOfEvents())
+
+print("largest event", eventDB.getLargestEvent())
 '''

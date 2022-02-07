@@ -200,6 +200,7 @@ def main():
 			# Reset the DB at 0:00 so display show EQs per day TODO settings menu
 			# And we don't loose the EQ events
 			if now.hour == 0 and dbCleared == False:
+				eventDB.save()
 				eventDB.clear()
 				dbCleared = True
 
