@@ -43,8 +43,8 @@ cqLon = 0.0
 cqLat = 0.0
 cqMag = 0.0
 cqDepth = 0.0
-cqAlert = ""
-cqTsunami = None
+cqAlert = None
+cqTsunami = 0
 dataToggle = False
 blinkToggle = False
 
@@ -69,10 +69,11 @@ def repaintMap():
 	displayManager.displayNumberOfEvents(eventCount)
 
 	# Display EQ depth and last EQ timestamp upper right
+	highestMag = str(eventDB.getLargestEvent())
 	if (str(eventDB.getActiveRegion(preserve=True))) in cqLocation and eventCount > 4:
-		displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()), activeregion=True)
+		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
 	else:
-		displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()))
+		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
 	
 
 	# Display all of the EQ events in the DB as circles
@@ -95,13 +96,6 @@ def displayTitlePage():
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
-
-# Handler for getting and writing new EQ events USCG
-def getUpdatesUSGS():
-	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-	#return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-	return False
 
 # getUSGS Function
 def getUpdatesUSGS():
@@ -155,8 +149,8 @@ def getUpdatesEU():
 		cqLat = eqGathererEU.getLat()
 		cqMag = eqGathererEU.getMag()
 		cqDepth = eqGathererEU.getDepth()
-		cqTsunami=0
-		cqAlert=0
+		cqTsunami = 0
+		cqAlert = None
 
 		# Add new event to DB if it isnt also from the other source
 		if not eventDB.checkDupLonLat(cqLon, cqLat):
