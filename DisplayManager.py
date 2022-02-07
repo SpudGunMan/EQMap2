@@ -30,6 +30,7 @@ class DisplayManager:
 		self.eventsTextRow = 0
 		self.bottomTextRow = 0
 		self.eventCount = 0
+		self.alarm = ""
 
 		pygame.init()
 
@@ -57,8 +58,8 @@ class DisplayManager:
 			self.bottomTextRow = self.topTextRow + 430
 
 			# Setup inital font of initial size
-			#self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
-			self.font = pygame.font.SysFont('arial',self.fontSize)
+			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
+			#self.font = pygame.font.SysFont('arial',self.fontSize)
 			self.hasGUI = True
 		
 		except:
@@ -155,7 +156,8 @@ class DisplayManager:
 	# Set text size
 	def setTextSize(self, size):
 		self.fontSize = size
-		self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
+		self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
+		#self.font = pygame.font.SysFont('arial',self.fontSize)
 
 	# Set text color
 	def setTextColor(self, color):
@@ -307,9 +309,10 @@ class DisplayManager:
 		return True
 	
 	# Display LastEQ/High Mag String
-	def displayDBStats(self, mag, depth, largestmag):
+	def displayDBStats(self, mag, depth, largestmag, activeregion=False):
+		if activeregion: self.alarm = "ACT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, "LastEQ:" + self.eventTimeString + " High:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, self.alarm + " LastEQ:" + self.eventTimeString + " High:" + largestmag)
 		return True
 
 	# Display Wash/Title page
@@ -329,7 +332,7 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region" + activeregion)
+				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region:" + activeregion)
 				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 				time.sleep(20)
 				return True

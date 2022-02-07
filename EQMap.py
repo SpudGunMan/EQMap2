@@ -36,7 +36,7 @@ ftForBlink = 0
 ftForTitlePageDisplay = 0
 
 # Current quake data
-cqID  = ""
+cqIDUK  = ""
 cqIDUSGS = ""
 cqLocation = "loading..."
 cqLon = 0.0
@@ -58,24 +58,28 @@ def repaintMap():
 	# Display fresh map
 	displayManager.displayMap()
 
-	# Display current local time
+	# Display current local time upper left
 	displayManager.displayCurrentTime()
 
-	# Display EQ location
+	# Display EQ location in color under map
 	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
 
-	# Display number of EQ events
-	displayManager.displayNumberOfEvents(eventDB.numberOfEvents())
+	# Display map Draw data with event count and date
+	eventCount = eventDB.numberOfEvents()
+	displayManager.displayNumberOfEvents(eventCount)
 
-	# Display EQ depth
-	displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()))
+	# Display EQ depth and last EQ timestamp upper right
+	if (str(eventDB.getActiveRegion(preserve=True))) in cqLocation and eventCount > 4:
+		displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()), activeregion=True)
+	else:
+		displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()))
+	
 
-	# Display all of the EQ events in the DB
+	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
 	if count > 0:
 		for i in range(count):
 			lon, lat, mag, alert, tsunami = eventDB.getEvent(i)
-
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
@@ -92,12 +96,84 @@ def displayTitlePage():
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
 
+# Handler for getting and writing new EQ events USCG
+def getUpdatesUSGS():
+	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+
+	#return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	return False
+
+# getUSGS Function
+def getUpdatesUSGS():
+	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	# internet check test
+	try:
+		# Check for new earthquake event
+		eqGathererUSGS.requestEQEvent()
+	except:
+		pass
+		
+	# Determine if we have seen this event before If so ignore it
+	if cqIDUSGS != eqGathererUSGS.getEventID():
+
+		# Extract the EQ data
+		cqLocation = eqGathererUSGS.getLocation()
+		cqLon = eqGathererUSGS.getLon()
+		cqLat = eqGathererUSGS.getLat()
+		cqMag = eqGathererUSGS.getMag()
+		cqDepth = eqGathererUSGS.getDepth()
+		cqTsunami = eqGathererUSGS.getTsunami()
+		cqAlert = eqGathererUSGS.getAlert()
+
+		# Add new event to DB if it isnt also from the other source
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+			# Update the current event ID
+			cqIDUSGS = eqGathererUSGS.getEventID()
+
+			# Display the new EQ data
+			repaintMap()
+			return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	return False
+
+# getUSGS Function
+def getUpdatesEU():
+	global cqIDUK,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	# internet check test
+	try:
+		# Check for new earthquake event
+		eqGathererEU.requestEQEvent()
+	except:
+		pass
+		
+	# Determine if we have seen this event before If so ignore it
+	if cqIDUK != eqGathererEU.getEventID():
+		# Extract the EQ data
+		cqLocation = eqGathererEU.getLocation()
+		cqLon = eqGathererEU.getLon()
+		cqLat = eqGathererEU.getLat()
+		cqMag = eqGathererEU.getMag()
+		cqDepth = eqGathererEU.getDepth()
+		cqTsunami=0
+		cqAlert=0
+
+		# Add new event to DB if it isnt also from the other source
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+			# Update the current event ID
+			cqIDUK = eqGathererEU.getEventID()
+
+			# Display the new EQ data
+			repaintMap()
+
 # Code execution start
 def main():
 	# Setup for global variable access
 	global ftForAcquisition
 	global ftForBlink
-	global cqID
+	global cqIDUK
 	global cqIDUSGS
 	global cqLocation
 	global cqLon
@@ -169,64 +245,16 @@ def main():
 				if dataToggle:
 					dataToggle = False
 					if use_usgs:
-						# internet check test
-						try:
-							# Check for new earthquake event
-							eqGathererUSGS.requestEQEvent()
-						except:
-							pass
-							
-						# Determine if we have seen this event before If so ignore it
-						if cqIDUSGS != eqGathererUSGS.getEventID():
-
-							# Extract the EQ data
-							cqLocation = eqGathererUSGS.getLocation()
-							cqLon = eqGathererUSGS.getLon()
-							cqLat = eqGathererUSGS.getLat()
-							cqMag = eqGathererUSGS.getMag()
-							cqDepth = eqGathererUSGS.getDepth()
-							cqTsunami = eqGathererUSGS.getTsunami()
-							cqAlert = eqGathererUSGS.getAlert()
-
-							# Add new event to DB if it isnt also from the other source
-							if not eventDB.checkDupLonLat(cqLon, cqLat):
-								eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
-
-								# Update the current event ID
-								cqIDUSGS = eqGathererUSGS.getEventID()
-
-								# Display the new EQ data
-								repaintMap()
+						getUpdatesUSGS()
+					else:
+						getUpdatesEU()
+						
 				else:
 					dataToggle = True
 					if use_eu:
-						# internet check test
-						try:
-							# Check for new earthquake event
-							eqGathererEU.requestEQEvent()
-						except:
-							pass
-							
-						# Determine if we have seen this event before If so ignore it
-						if cqID != eqGathererEU.getEventID():
-							# Extract the EQ data
-							cqLocation = eqGathererEU.getLocation()
-							cqLon = eqGathererEU.getLon()
-							cqLat = eqGathererEU.getLat()
-							cqMag = eqGathererEU.getMag()
-							cqDepth = eqGathererEU.getDepth()
-							cqTsunami=0
-							cqAlert=0
-
-							# Add new event to DB if it isnt also from the other source
-							if not eventDB.checkDupLonLat(cqLon, cqLat):
-								eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
-
-								# Update the current event ID
-								cqID = eqGathererEU.getEventID()
-
-								# Display the new EQ data
-								repaintMap()
+						getUpdatesEU()
+					else:
+						getUpdatesUSGS()
 
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 

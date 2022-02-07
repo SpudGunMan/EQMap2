@@ -53,7 +53,7 @@ class EventDB:
 		return self.max_value
 
 	# Report the most active region since last poll
-	def getActiveRegion(self):
+	def getActiveRegion(self,preserve=False):
 		self.EQactive = []
 		self.region = ""
 		
@@ -62,7 +62,7 @@ class EventDB:
 			self.region_dict = Counter(self.EQactive)
 			self.region = next(iter(self.region_dict)) 
 
-		self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
 		return self.region #returns the first in list
 
 	# Guess if event is duplicated with lat,lon dups
@@ -71,7 +71,9 @@ class EventDB:
 			self.last_event = self.EQEventQueue[0]
 			if str(lon) in str(self.last_event[0]):
 				if str(lat) in str(self.last_event[1]):
+					#data is a dupe
 					return True
+
 			# Data is not a duplicate
 			return False
 
