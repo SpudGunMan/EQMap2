@@ -254,9 +254,16 @@ class DisplayManager:
 					return timeNow
 				if event.key == pygame.K_m:
 					#change map
-					return timeNow
-				if event.key == pygame.K_b:
-					#dim brightness
+					# Read the map into memory, center it and reset text boxes if sized changed
+					self.mapImage = pygame.image.load('maps/eqm800.bmp')
+
+					self.mapImageRect = self.mapImage.get_rect()
+					self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+					self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
+					self.topTextRow = self.mapImageRect.y - 25
+					self.eventsTextRow = self.topTextRow + 400
+					self.bottomTextRow = self.topTextRow + 430
+					self.screen.blit(self.mapImage, self.mapImageRect)
 					return timeNow
 				if event.key == pygame.K_u:
 					#go UTC

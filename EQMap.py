@@ -120,75 +120,6 @@ def main():
 	#exit loop handler
 	running = True
 
-	# Handler for getting and writing new EQ events USCG
-	def getUpdatesUSGS():
-		global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-		# internet check test
-		try:
-			# Check for new earthquake event
-			eqGathererUSGS.requestEQEvent()
-		except:
-			pass
-			
-		# Determine if we have seen this event before If so ignore it
-		if cqIDUSGS != eqGathererUSGS.getEventID():
-
-			# Extract the EQ data
-			cqLocation = eqGathererUSGS.getLocation()
-			cqLon = eqGathererUSGS.getLon()
-			cqLat = eqGathererUSGS.getLat()
-			cqMag = eqGathererUSGS.getMag()
-			cqDepth = eqGathererUSGS.getDepth()
-			cqTsunami = eqGathererUSGS.getTsunami()
-			cqAlert = eqGathererUSGS.getAlert()
-
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
-
-				# Update the current event ID
-				cqIDUSGS = eqGathererUSGS.getEventID()
-
-				# Display the new EQ data
-				repaintMap()
-				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-		return False
-
-	# Handler for getting and writing new EQ events EU
-	def getUpdatesEU():
-		global cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-		# internet check test
-		try:
-			# Check for new earthquake event
-			eqGathererEU.requestEQEvent()
-		except:
-			pass
-			
-		# Determine if we have seen this event before If so ignore it
-		if cqID != eqGathererEU.getEventID():
-			# Extract the EQ data
-			cqLocation = eqGathererEU.getLocation()
-			cqLon = eqGathererEU.getLon()
-			cqLat = eqGathererEU.getLat()
-			cqMag = eqGathererEU.getMag()
-			cqDepth = eqGathererEU.getDepth()
-			cqTsunami=0
-			cqAlert=0
-
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
-
-				# Update the current event ID
-				cqID = eqGathererEU.getEventID()
-
-				# Display the new EQ data
-				repaintMap()
-				return cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-		return False
-
 	#loop
 	try:
 
@@ -234,19 +165,68 @@ def main():
 
 			# Is it time to acquire new earthquake data ?
 			if millis() > ftForAcquisition:
-				# Silly way to balance the server requests from EU and USGS
+				# server requests from EU and USGS balanced and dupe checked in function
 				if dataToggle:
 					dataToggle = False
-					if use_eu:
-							getUpdatesEU()
-					else:
-							getUpdatesUSGS
+					if use_usgs:
+						# internet check test
+						try:
+							# Check for new earthquake event
+							eqGathererUSGS.requestEQEvent()
+						except:
+							pass
+							
+						# Determine if we have seen this event before If so ignore it
+						if cqIDUSGS != eqGathererUSGS.getEventID():
+
+							# Extract the EQ data
+							cqLocation = eqGathererUSGS.getLocation()
+							cqLon = eqGathererUSGS.getLon()
+							cqLat = eqGathererUSGS.getLat()
+							cqMag = eqGathererUSGS.getMag()
+							cqDepth = eqGathererUSGS.getDepth()
+							cqTsunami = eqGathererUSGS.getTsunami()
+							cqAlert = eqGathererUSGS.getAlert()
+
+							# Add new event to DB if it isnt also from the other source
+							if not eventDB.checkDupLonLat(cqLon, cqLat):
+								eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+								# Update the current event ID
+								cqIDUSGS = eqGathererUSGS.getEventID()
+
+								# Display the new EQ data
+								repaintMap()
 				else:
 					dataToggle = True
-					if use_usgs:
-							getUpdatesUSGS()
-					else:
-							getUpdatesEU()
+					if use_eu:
+						# internet check test
+						try:
+							# Check for new earthquake event
+							eqGathererEU.requestEQEvent()
+						except:
+							pass
+							
+						# Determine if we have seen this event before If so ignore it
+						if cqID != eqGathererEU.getEventID():
+							# Extract the EQ data
+							cqLocation = eqGathererEU.getLocation()
+							cqLon = eqGathererEU.getLon()
+							cqLat = eqGathererEU.getLat()
+							cqMag = eqGathererEU.getMag()
+							cqDepth = eqGathererEU.getDepth()
+							cqTsunami=0
+							cqAlert=0
+
+							# Add new event to DB if it isnt also from the other source
+							if not eventDB.checkDupLonLat(cqLon, cqLat):
+								eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+								# Update the current event ID
+								cqID = eqGathererEU.getEventID()
+
+								# Display the new EQ data
+								repaintMap()
 
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
