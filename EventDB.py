@@ -2,7 +2,8 @@
 This code handles a simple database of earthquake events in a list
 Concept, Design and Implementation by: Craig A. Lindley
 """
-from collections import deque
+from collections import deque, Counter
+from datetime import datetime
 import pickle
 
 #MAX_EVENTS = 200
@@ -14,6 +15,7 @@ class EventDB:
 		# Create empty queue
 		#self.EQEventQueue = deque(maxlen=MAX_EVENTS)
 		self.EQEventQueue = deque()
+		self.EQElocations = deque()
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -22,8 +24,9 @@ class EventDB:
 		return True
 
 	# Add an earthquake event
-	def addEvent(self, lon, lat, mag, alert, tsunami):
+	def addEvent(self, lon, lat, mag, alert, tsunami, location):
 		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
+		self.EQElocations.append(location)
 
 	# Return the number of entries
 	def numberOfEvents(self):
@@ -40,40 +43,54 @@ class EventDB:
 
 	# Retrieve largest event
 	def getLargestEvent(self):
-		EQlargest = [] #list for mag of events in EventQ
-		max_value = 0
-		max_index = 0
+		self.EQlargest = [] #list for mag of events in EventQ
+		self.max_value = 0
 		
 		for event in self.EQEventQueue:
-			EQlargest.append(event[2])
-			max_value = max(EQlargest)
+			self.EQlargest.append(event[2])
+			self.max_value = max(self.EQlargest)
 			
-		return max_value
+		return self.max_value
+
+	# Report the most active region since last poll
+	def getActiveRegion(self):
+		self.EQactive = []
+		self.region = ""
+		
+		for event in self.EQElocations: #from table in add
+			self.EQactive.append(event)
+			self.region_dict = Counter(self.EQactive)
+			self.region = next(iter(self.region_dict)) 
+
+		self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+		return self.region #returns the first in list
 
 	# Guess if event is duplicated with lat,lon dups
 	def checkDupLonLat(self, lon, lat):
 		if self.EQEventQueue:
-			last_event = self.EQEventQueue[0]
-			if str(lon) in str(last_event[0]):
-				if str(lat) in str(last_event[1]):
+			self.last_event = self.EQEventQueue[0]
+			if str(lon) in str(self.last_event[0]):
+				if str(lat) in str(self.last_event[1]):
 					return True
 			# Data is not a duplicate
 			return False
 
 	# Save the database to local path
 	def save(self):
-		dbFileName = "database.dat"
-		dbFile = open(dbFileName, "wb")
-		pickle.dump(self.EQEventQueue, dbFile)
-		dbFile.close()
+		self.currentRTC = datetime.now()
+		eventDayString = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+		self.dbFileName = "database.dat"
+		self.dbFile = open(self.dbFileName, "wb")
+		pickle.dump(self.EQEventQueue, self.dbFile)
+		self.dbFile.close()
 		return True
 
 	def load(self):
 		self.EQEventQueue.clear()
-		dbFileName = "database.dat"
-		dbFile = open(dbFileName, "rb")
-		self.EQEventQueue = pickle.load(dbFile)
-		dbFile.close()
+		self.dbFileName = "database.dat"
+		self.dbFile = open(self.dbFileName, "rb")
+		self.EQEventQueue = pickle.load(self.dbFile)
+		self.dbFile.close()
 		return self.EQEventQueue
 
 # Create instance of database
@@ -83,28 +100,28 @@ eventDB = EventDB()
 # Test Code
 eventDB.showEvents()
 
-eventDB.addEvent(1, 2, 3)
+eventDB.addEvent(1, 2, 3, 0, 0, "alaska")
 eventDB.showEvents()
 
-eventDB.addEvent(4, 5, 6)
+eventDB.addEvent(4, 5, 6, 0, 0, "london")
 eventDB.showEvents()
-eventDB.addEvent(7, 8, 9)
+eventDB.addEvent(7, 8, 9, 0, 0, "france")
 eventDB.showEvents()
-eventDB.addEvent(10, 11, 12)
+eventDB.addEvent(10, 11, 12, 0, 0, "seattle")
 eventDB.showEvents()
-eventDB.addEvent(13, 14, 15)
+eventDB.addEvent(13, 14, 15, 0, 0, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(16, 17, 18)
+eventDB.addEvent(16, 17, 18, 0, 0, "chicago")
 eventDB.showEvents()
-eventDB.addEvent(19, 20, 21)
+eventDB.addEvent(19, 20, 21, 0, 0, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(22, 23, 24)
+eventDB.addEvent(22, 23, 24, 0, 0, "france")
 eventDB.showEvents()
-eventDB.addEvent(25, 26, 27)
+eventDB.addEvent(25, 26, 27, 0, 0, "denver")
 eventDB.showEvents()
-eventDB.addEvent(28, 29, 30)
+eventDB.addEvent(28, 29, 30, 0, 0, "lodon")
 eventDB.showEvents()
-eventDB.addEvent(31, 32, 33)
+eventDB.addEvent(31, 32, 33, 0, 0, "spain")
 eventDB.showEvents()
 
 print("event 3 ", eventDB.getEvent(3))
@@ -128,4 +145,8 @@ eventDB.load()
 print("number of events", eventDB.numberOfEvents())
 
 print("largest event", eventDB.getLargestEvent())
+
+print("active region", eventDB.getActiveRegion())
 '''
+
+

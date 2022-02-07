@@ -66,4 +66,9 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 - use memory to lower any disk write
 - settings menu for UTC and sleep
 - save settings
-- save database for playback later
+- save database for playback later or just use replay from larger returns in USGS (poll more in UK)
+  - save to memdisk temp?
+  - save by day? add to replay
+- most active region
+  - bug limit length of return to map rect
+

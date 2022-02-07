@@ -305,7 +305,7 @@ class DisplayManager:
 		return True
 
 	# Display Wash/Title page
-	def displayWashPage(self, largestevent=0):
+	def displayWashPage(self, largestevent=0, activeregion=""):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
@@ -318,23 +318,22 @@ class DisplayManager:
 			
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-				self.setTextSize(70)
-				self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
 				self.setTextSize(40)
+				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
+				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region" + activeregion)
 				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 				time.sleep(15)
 				return True
 			
 			if self.firstRun:
 				self.firstRun = False
-				self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
+				self.drawCenteredText((self.mapImageRect.y + 90), "Loading")
+				self.drawCenteredText((self.mapImageRect.y + 140), "Realtime World")
 				self.setTextSize(70)
-				self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
+				self.drawCenteredText((self.mapImageRect.y + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision:22.5")
-				self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
-				self.drawCenteredText((self.mapImageRect.y + 320), "loading ...")
+				self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "   Revision:22.7")
+				self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
 				return True

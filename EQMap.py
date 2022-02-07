@@ -87,7 +87,7 @@ def displayTitlePage():
 	global ftForTitlePageDisplay
 
 	# Display the title/ wash page
-	displayManager.displayWashPage(str(eventDB.getLargestEvent()))
+	displayManager.displayWashPage(str(eventDB.getLargestEvent()), str(eventDB.getActiveRegion()))
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
@@ -145,7 +145,7 @@ def main():
 
 			# Add new event to DB if it isnt also from the other source
 			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
 
 				# Update the current event ID
 				cqIDUSGS = eqGathererUSGS.getEventID()
@@ -179,7 +179,7 @@ def main():
 
 			# Add new event to DB if it isnt also from the other source
 			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
 
 				# Update the current event ID
 				cqID = eqGathererEU.getEventID()
