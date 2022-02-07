@@ -5,7 +5,7 @@ Concept, Design by: Craig A. Lindley adapted to USGS by SpudGunMan see github
 """
 import json
 from operator import truediv
-import requests
+import requests, time
 
 class EQEventGathererUSGS:
 
@@ -14,7 +14,7 @@ class EQEventGathererUSGS:
             r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
             if r.status_code == 200:
                 break
-            sleep(2)
+            time.sleep(2)
 
         self.jsonData = json.loads(r.text)
         # Extracting all the important key features.
@@ -63,7 +63,7 @@ class EQEventGathererEU:
             r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
             if r.status_code == 200:
                 break
-            sleep(2)
+            time.sleep(2)
 
         self.jsonData = json.loads(r.text)
 
