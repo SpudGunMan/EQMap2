@@ -22,7 +22,7 @@ class EventDB:
 		return True
 
 	# Add an earthquake event
-	def addEvent(self, lon, lat, mag, alert=0, tsunami=0):
+	def addEvent(self, lon, lat, mag, alert, tsunami):
 		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
 
 	# Return the number of entries
@@ -69,6 +69,7 @@ class EventDB:
 		return True
 
 	def load(self):
+		self.EQEventQueue.clear()
 		dbFileName = "database.dat"
 		dbFile = open(dbFileName, "rb")
 		self.EQEventQueue = pickle.load(dbFile)
@@ -106,7 +107,7 @@ eventDB.showEvents()
 eventDB.addEvent(31, 32, 33)
 eventDB.showEvents()
 
-print(eventDB.getEvent(3))
+print("event 3 ", eventDB.getEvent(3))
 
 lon, lat, mag, alert, tsunami = eventDB.getEvent(3)
 print("lon: ", lon, "lat: ", lat, "mag: ", mag, "alert: ", alert, "tsunami: ", tsunami)
