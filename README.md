@@ -4,14 +4,14 @@
 This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additional features, while keeping the orginal functionality.
-- added additional data souce earthquake.usgs.gov
-  - its a bit dodgy, alternating data sources 30 second intervals by default
+- added parallel data souce earthquake.usgs.gov
 - command line output
 - working clock
 - fullscreen mode, native
-- new display data
-- hi-res ability to extend to any monitor (early support)
-- ability to change settings for customization (early support)
+- new display data and reporting
+- RamDisk use to lower any disk write on Pi SD-Card
+- hi-res ability to extend to any monitor
+- ability to change basic settings in runtime
 
 Feel free to pull issues/suggestions or forks to contribute!
 
@@ -66,7 +66,6 @@ normally on a next branch if you see it try it out! `git pull origin next`
 - add RSS or sun/moon/tide
   - tide icon?
   - volcano icon?
-- use memory to lower any disk write
 - settings menu for UTC and sleep
 - save settings
 - save database for playback later or just use replay from larger returns in USGS (poll more in UK)
@@ -74,4 +73,5 @@ normally on a next branch if you see it try it out! `git pull origin next`
   - save by day? add to replay
 - most active region
   - bug limit length of return to map rect?
+- Daily event tranding?
 

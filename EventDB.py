@@ -80,17 +80,31 @@ class EventDB:
 	# Save the database to local path
 	def save(self):
 		self.currentRTC = datetime.now()
-		eventDayString = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
-		self.dbFileName = "database.dat"
-		self.dbFile = open(self.dbFileName, "wb")
+		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+
+		try:
+			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
+			self.dbFile = open(self.dbFileName, "wb")
+		except:
+			self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
+			self.dbFile = open(self.dbFileName, "wb")
+
 		pickle.dump(self.EQEventQueue, self.dbFile)
 		self.dbFile.close()
 		return True
 
 	def load(self):
 		self.EQEventQueue.clear()
-		self.dbFileName = "database.dat"
-		self.dbFile = open(self.dbFileName, "rb")
+		self.currentRTC = datetime.now()
+		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+
+		try:
+			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
+			self.dbFile = open(self.dbFileName, "rb")
+		except:
+			self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
+			self.dbFile = open(self.dbFileName, "rb")
+
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
 		return self.EQEventQueue
@@ -149,6 +163,6 @@ print("number of events", eventDB.numberOfEvents())
 print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
-'''
 
+'''
 
