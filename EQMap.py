@@ -70,7 +70,8 @@ def repaintMap():
 
 	# Display EQ depth and last EQ timestamp upper right
 	highestMag = str(eventDB.getLargestEvent())
-	if (str(eventDB.getActiveRegion(preserve=True))) in cqLocation and eventCount > 4:
+	isActive = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
+	if isActive and eventCount > 4:
 		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
 	else:
 		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
