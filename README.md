@@ -65,7 +65,6 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 normally on a next branch if you see it try it out! `git pull origin next`
 - add RSS or sun/moon/tide
   - tide icon?
-  - alert icon?
   - volcano icon?
 - use memory to lower any disk write
 - settings menu for UTC and sleep
@@ -74,6 +73,5 @@ normally on a next branch if you see it try it out! `git pull origin next`
   - save to memdisk temp?
   - save by day? add to replay
 - most active region
-  - bug limit length of return to map rect
-  - alert icon for active
+  - bug limit length of return to map rect?
 
