@@ -21,8 +21,8 @@ WHITE  = (255, 255, 255)
 RED    = (255, 0, 0)
 YELLOW = (255, 255, 0)
 
-# Acquire new EQ data every 15 seconds
-ACQUISITION_TIME_MS = 15000
+# Acquire new EQ data every 30 seconds
+ACQUISITION_TIME_MS = 30000
 
 # Blink every .5 seconds
 BLINK_TIME_MS = 500

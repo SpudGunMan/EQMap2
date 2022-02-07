@@ -52,12 +52,13 @@ class DisplayManager:
 			self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 
 			# Set the uypper and lower text areas
-			self.topTextRow = self.mapImageRect.y - 35
-			self.eventsTextRow = self.topTextRow + 415
-			self.bottomTextRow = self.topTextRow + 455
+			self.topTextRow = self.mapImageRect.y - 25
+			self.eventsTextRow = self.topTextRow + 400
+			self.bottomTextRow = self.topTextRow + 430
 
 			# Setup inital font of initial size
-			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
+			#self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
+			self.font = pygame.font.SysFont('arial',self.fontSize)
 			self.hasGUI = True
 		
 		except:
@@ -200,7 +201,7 @@ class DisplayManager:
 
 		# Display time to GUI only
 		try:
-			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,35))
+			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,25))
 			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
 		except: 
 			return timeNow
@@ -305,7 +306,7 @@ class DisplayManager:
 		return True
 
 	# Display Wash/Title page
-	def displayWashPage(self, largestevent=0, activeregion=""):
+	def displayWashPage(self, largestevent, activeregion):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
@@ -323,7 +324,7 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
 				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region" + activeregion)
 				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-				time.sleep(15)
+				time.sleep(20)
 				return True
 			
 			if self.firstRun:
