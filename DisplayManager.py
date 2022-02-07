@@ -40,30 +40,35 @@ class DisplayManager:
 			self.screenWidth  = self.displayInfo.current_w
 			self.screenHeight = self.displayInfo.current_h
 			pygame.mouse.set_visible(0)
+
+			# Read the map into memory
+			self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
+
+			# Get its bounding box
+			self.mapImageRect = self.mapImage.get_rect()
+
+			# Center map 
+			self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+			self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
+
+			# Set the uypper and lower text areas
+			self.topTextRow = self.mapImageRect.y - 35
+			self.eventsTextRow = self.topTextRow + 415
+			self.bottomTextRow = self.topTextRow + 455
+
+			# Setup inital font of initial size
+			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
+			self.hasGUI = True
 		
 		except:
 			#command line settings for display to console display
 			self.screenWidth = -1
 			self.screenHeight = -1
 			self.screen = (-1, -1)
+			self.mapImageRect = (-1, -1, -1, -1)
+			self.hasGUI = False
+			
 
-		# Read the map into memory
-		self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
-
-		# Get its bounding box
-		self.mapImageRect = self.mapImage.get_rect()
-
-		# Center map 
-		self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
-		self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
-
-		# Set the uypper and lower text areas
-		self.topTextRow = self.mapImageRect.y - 35
-		self.eventsTextRow = self.topTextRow + 415
-		self.bottomTextRow = self.topTextRow + 455
-
-		# Setup inital font of initial size
-		self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize)
 
     # Clear the screen
 	def clearScreen(self):
@@ -166,18 +171,22 @@ class DisplayManager:
 
 	# Draw a circle with size based on mag at lon, lat position on map
 	def mapEarthquake(self, lon, lat, mag, color):
-		# Calculate map X and Y
-		mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
-		mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
-		
-		if mag < 0.8: mag = 0.8 #too small to see blink
-		
-		# Determine circle radius from mag
-		radius = mag * 3
-		# Draw a circle at earthquake location
-		self.drawCircle(mapX, mapY, radius, color)
+		if self.hasGUI:
+			# Calculate map X and Y
+			mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
+			mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
+			
+			if mag < 0.8: mag = 0.8 #too small to see blink
+			
+			# Determine circle radius from mag
+			radius = mag * 3
+			# Draw a circle at earthquake location
+			self.drawCircle(mapX, mapY, radius, color)
 
-		return mapX, mapY, radius, color
+			return mapX, mapY, radius, color
+		else:
+			#CLI 
+			return False
 
 
 	# Display current time and input
@@ -300,36 +309,39 @@ class DisplayManager:
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
-		# Refresh Display by redrawing the map to the screen
-		self.displayMap()
+		if self.hasGUI:
+			# Refresh Display by redrawing the map to the screen
+			self.displayMap()
 
-		# Data to always display
-		self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
-		
-		# Display different data throughout the day using the timput value
-		if self.firstRun == False:
-			self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-			self.setTextSize(70)
-			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
-			self.setTextSize(40)
-			self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-			time.sleep(15)
-			return True
-		
-		if self.firstRun:
-			self.firstRun = False
-			self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
-			self.setTextSize(70)
-			self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
-			self.setTextSize(30)
-			self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision:22.5")
-			self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
-			self.drawCenteredText((self.mapImageRect.y + 320), "loading ...")
-			self.setTextSize(40)
-			time.sleep(5)
+			# Data to always display
+			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			
+			# Display different data throughout the day using the timput value
+			if self.firstRun == False:
+				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
+				self.setTextSize(70)
+				self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
+				self.setTextSize(40)
+				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+				time.sleep(15)
+				return True
+			
+			if self.firstRun:
+				self.firstRun = False
+				self.drawCenteredText((self.mapImageRect.y + 90), "Realtime")
+				self.setTextSize(70)
+				self.drawCenteredText((self.mapImageRect.y + 160), "World Earthquake Map")
+				self.setTextSize(30)
+				self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "Revision:22.5")
+				self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley")
+				self.drawCenteredText((self.mapImageRect.y + 320), "loading ...")
+				self.setTextSize(40)
+				time.sleep(5)
+				return True
+		else:
+			#Cli output
 			return True
 		
 # Create global instance
 displayManager = DisplayManager()
-
 
