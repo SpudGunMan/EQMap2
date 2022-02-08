@@ -41,21 +41,34 @@ class EventDB:
 	def getEvent(self, index):
 		return self.EQEventQueue[index]
 
-	# Retrieve largest event
-	def getLargestEvent(self):
-		self.EQlargest = [] #list for mag of events in EventQ
-		self.max_value = 0
-		
+	# Retrieve largest event related data
+	def getLargestEvent(self, dump = False):
+		EQlargest = []
+		max_value = 0
+		eventTrend = ' '
 		for event in self.EQEventQueue:
-			self.EQlargest.append(event[2])
-			self.max_value = max(self.EQlargest)
-			
-		return self.max_value
+			EQlargest.append(event[2])
+			max_value = max(EQlargest)
+
+		#trending
+		try:
+			if EQlargest[1]:
+				if EQlargest[0] > EQlargest[1]:
+					eventTrend = "+"
+				elif EQlargest[0] < EQlargest[1]:
+					eventTrend = "-"
+				else:
+					eventTrend = ''		
+		except:
+				eventTrend = ' '
+
+		if dump: EQlargest = [] #list for mag of events in EventQ
+		return (max_value, eventTrend)
 
 	# Report the most active region since last poll
 	def getActiveRegion(self,preserve=False):
 		self.EQactive = []
-		self.region = ""
+		self.region = ''
 		
 		for event in self.EQElocations: #from table in add
 			self.EQactive.append(event)
@@ -116,28 +129,28 @@ eventDB = EventDB()
 # Test Code
 eventDB.showEvents()
 
-eventDB.addEvent(1, 2, 3, 0, 0, "alaska")
+eventDB.addEvent(1, 2, 3, 1, 0, "alaska")
 eventDB.showEvents()
 
-eventDB.addEvent(4, 5, 6, 0, 0, "london")
+eventDB.addEvent(4, 5, 6, 2, 0, "london")
 eventDB.showEvents()
-eventDB.addEvent(7, 8, 9, 0, 0, "france")
+eventDB.addEvent(7, 8, 9, 3, 0, "france")
 eventDB.showEvents()
-eventDB.addEvent(10, 11, 12, 0, 0, "seattle")
+eventDB.addEvent(10, 11, 12, 4, 0, "seattle")
 eventDB.showEvents()
-eventDB.addEvent(13, 14, 15, 0, 0, "alaska")
+eventDB.addEvent(13, 14, 15, 5, 0, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(16, 17, 18, 0, 0, "chicago")
+eventDB.addEvent(16, 17, 18, 6, 0, "chicago")
 eventDB.showEvents()
-eventDB.addEvent(19, 20, 21, 0, 0, "alaska")
+eventDB.addEvent(19, 20, 21, 7, 1, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(22, 23, 24, 0, 0, "france")
+eventDB.addEvent(22, 23, 24, 8, 0, "france")
 eventDB.showEvents()
-eventDB.addEvent(25, 26, 27, 0, 0, "denver")
+eventDB.addEvent(25, 26, 27, 2, 0, "denver")
 eventDB.showEvents()
-eventDB.addEvent(28, 29, 30, 0, 0, "lodon")
+eventDB.addEvent(28, 29, 31, 3, 0, "lodon")
 eventDB.showEvents()
-eventDB.addEvent(31, 32, 33, 0, 0, "spain")
+eventDB.addEvent(31, 32, 32, 3, 0, "spain")
 eventDB.showEvents()
 
 print("event 3 ", eventDB.getEvent(3))
@@ -163,6 +176,6 @@ print("number of events", eventDB.numberOfEvents())
 print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
-
 '''
+
 
