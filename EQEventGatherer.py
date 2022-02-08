@@ -24,34 +24,36 @@ class EQEventGathererUSGS:
         return self.jsonData[0]['id']
 
     def getMag(self):
-        mag = float(self.jsonData[0]['properties']['mag'])
-        return float(("%.2f" % mag))
+        self.mag = float(self.jsonData[0]['properties']['mag'])
+        return float(("%.2f" % self.mag))
 
     def getLocation(self):
-        place = self.jsonData[0]['properties']['place']
+        self.place = self.jsonData[0]['properties']['place']
         # Since we are on a map remove the "xx km H of " from the start of the string and use best location name
-        marker = " of "
-        if marker in place:
-            place = place.split(marker)
-            return str(place[1])
+        self.marker = " of "
+        if self.marker in self.place:
+            self.place = self.place.split(self.marker)
+            return str(self.place[1])
         else:
             #print("Debug USGS Name Split Error: ",place)  #DEBUG 
-            return str(place)
+            return str(self.place)
             
         
     def getAlert(self):
-        return self.jsonData[0]['properties']['alert']
+        self.alert = self.jsonData[0]['properties']['alert']
+        return self.alert
 
     def getTsunami(self):
-        return self.jsonData[0]['properties']['tsunami']
+        self.tsunami = self.jsonData[0]['properties']['tsunami']
+        return self.tsunami
 
     def getLon(self):
-        lon = float(self.jsonData[0]['geometry']['coordinates'][0])
-        return float(("%.2f" % lon))
+        self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
+        return float(("%.2f" % self.lon))
 
     def getLat(self):
-        lat = float(self.jsonData[0]['geometry']['coordinates'][1])
-        return float(("%.2f" % lat))
+        self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
+        return float(("%.2f" % self.lat))
 
     def getDepth(self):
         return float(self.jsonData[0]['geometry']['coordinates'][2])
@@ -60,19 +62,19 @@ class EQEventGathererEU:
 
     def requestEQEvent(self):
         while True:
-            r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
-            if r.status_code == 200:
+            self.r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
+            if self.r.status_code == 200:
                 break
             time.sleep(2)
 
-        self.jsonData = json.loads(r.text)
+        self.jsonData = json.loads(self.r.text)
 
     def getEventID(self):
         return self.jsonData['features'][0]['id']
 
     def getLon(self):
-        lon = float(self.jsonData['features'][0]['properties']['lon'])
-        return float(("%.2f" % lon))
+        self.lon = float(self.jsonData['features'][0]['properties']['lon'])
+        return float(("%.2f" % self.lon))
 
     def getLat(self):
         lat = float(self.jsonData['features'][0]['properties']['lat'])

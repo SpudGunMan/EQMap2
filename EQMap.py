@@ -21,8 +21,8 @@ WHITE  = (255, 255, 255)
 RED    = (255, 0, 0)
 YELLOW = (255, 255, 0)
 
-# Acquire new EQ data every 15 seconds
-ACQUISITION_TIME_MS = 15000
+# Acquire new EQ data every 30 seconds
+ACQUISITION_TIME_MS = 30000
 
 # Blink every .5 seconds
 BLINK_TIME_MS = 500
@@ -36,15 +36,15 @@ ftForBlink = 0
 ftForTitlePageDisplay = 0
 
 # Current quake data
-cqID  = ""
+cqIDUK  = ""
 cqIDUSGS = ""
 cqLocation = "loading..."
 cqLon = 0.0
 cqLat = 0.0
 cqMag = 0.0
 cqDepth = 0.0
-cqAlert = ""
-cqTsunami = None
+cqAlert = None
+cqTsunami = 0
 dataToggle = False
 blinkToggle = False
 
@@ -58,24 +58,33 @@ def repaintMap():
 	# Display fresh map
 	displayManager.displayMap()
 
-	# Display current local time
+	# Display current local time upper left
 	displayManager.displayCurrentTime()
 
-	# Display EQ location
+	# Display EQ location in color under map
 	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
 
-	# Display number of EQ events
-	displayManager.displayNumberOfEvents(eventDB.numberOfEvents())
+	# Display map Draw data with event count and date
+	eventCount = eventDB.numberOfEvents()
+	displayManager.displayNumberOfEvents(eventCount)
 
-	# Display EQ depth
-	displayManager.displayDBStats(cqMag, cqDepth, str(eventDB.getLargestEvent()))
+	# Display EQ depth and last EQ timestamp upper right
+	isActive = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
+	
+	highestMag, trending = eventDB.getLargestEvent()
+	highestMag = str(highestMag)
 
-	# Display all of the EQ events in the DB
+	if isActive and eventCount > 4:
+		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
+	else:
+		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
+	
+
+	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
 	if count > 0:
 		for i in range(count):
 			lon, lat, mag, alert, tsunami = eventDB.getEvent(i)
-
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
@@ -87,17 +96,84 @@ def displayTitlePage():
 	global ftForTitlePageDisplay
 
 	# Display the title/ wash page
-	displayManager.displayWashPage(str(eventDB.getLargestEvent()))
+	highestMag, trending = eventDB.getLargestEvent()
+	highestMag = str(highestMag)
+	displayManager.displayWashPage(highestMag + trending, str(eventDB.getActiveRegion()))
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
+
+# getUSGS Function
+def getUpdatesUSGS():
+	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	# internet check test
+	try:
+		# Check for new earthquake event
+		eqGathererUSGS.requestEQEvent()
+	except:
+		pass
+		
+	# Determine if we have seen this event before If so ignore it
+	if cqIDUSGS != eqGathererUSGS.getEventID():
+
+		# Extract the EQ data
+		cqLocation = eqGathererUSGS.getLocation()
+		cqLon = eqGathererUSGS.getLon()
+		cqLat = eqGathererUSGS.getLat()
+		cqMag = eqGathererUSGS.getMag()
+		cqDepth = eqGathererUSGS.getDepth()
+		cqTsunami = eqGathererUSGS.getTsunami()
+		cqAlert = eqGathererUSGS.getAlert()
+
+		# Add new event to DB if it isnt also from the other source
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+			# Update the current event ID
+			cqIDUSGS = eqGathererUSGS.getEventID()
+
+			# Display the new EQ data
+			repaintMap()
+			return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	return False
+
+# getUSGS Function
+def getUpdatesEU():
+	global cqIDUK,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	# internet check test
+	try:
+		# Check for new earthquake event
+		eqGathererEU.requestEQEvent()
+	except:
+		pass
+		
+	# Determine if we have seen this event before If so ignore it
+	if cqIDUK != eqGathererEU.getEventID():
+		# Extract the EQ data
+		cqLocation = eqGathererEU.getLocation()
+		cqLon = eqGathererEU.getLon()
+		cqLat = eqGathererEU.getLat()
+		cqMag = eqGathererEU.getMag()
+		cqDepth = eqGathererEU.getDepth()
+		cqTsunami = 0
+		cqAlert = None
+
+		# Add new event to DB if it isnt also from the other source
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+			# Update the current event ID
+			cqIDUK = eqGathererEU.getEventID()
+
+			# Display the new EQ data
+			repaintMap()
 
 # Code execution start
 def main():
 	# Setup for global variable access
 	global ftForAcquisition
 	global ftForBlink
-	global cqID
+	global cqIDUK
 	global cqIDUSGS
 	global cqLocation
 	global cqLon
@@ -119,75 +195,6 @@ def main():
 
 	#exit loop handler
 	running = True
-
-	# Handler for getting and writing new EQ events USCG
-	def getUpdatesUSGS():
-		global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-		# internet check test
-		try:
-			# Check for new earthquake event
-			eqGathererUSGS.requestEQEvent()
-		except:
-			pass
-			
-		# Determine if we have seen this event before If so ignore it
-		if cqIDUSGS != eqGathererUSGS.getEventID():
-
-			# Extract the EQ data
-			cqLocation = eqGathererUSGS.getLocation()
-			cqLon = eqGathererUSGS.getLon()
-			cqLat = eqGathererUSGS.getLat()
-			cqMag = eqGathererUSGS.getMag()
-			cqDepth = eqGathererUSGS.getDepth()
-			cqTsunami = eqGathererUSGS.getTsunami()
-			cqAlert = eqGathererUSGS.getAlert()
-
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
-
-				# Update the current event ID
-				cqIDUSGS = eqGathererUSGS.getEventID()
-
-				# Display the new EQ data
-				repaintMap()
-				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-		return False
-
-	# Handler for getting and writing new EQ events EU
-	def getUpdatesEU():
-		global cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-		# internet check test
-		try:
-			# Check for new earthquake event
-			eqGathererEU.requestEQEvent()
-		except:
-			pass
-			
-		# Determine if we have seen this event before If so ignore it
-		if cqID != eqGathererEU.getEventID():
-			# Extract the EQ data
-			cqLocation = eqGathererEU.getLocation()
-			cqLon = eqGathererEU.getLon()
-			cqLat = eqGathererEU.getLat()
-			cqMag = eqGathererEU.getMag()
-			cqDepth = eqGathererEU.getDepth()
-			cqTsunami=0
-			cqAlert=0
-
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert)
-
-				# Update the current event ID
-				cqID = eqGathererEU.getEventID()
-
-				# Display the new EQ data
-				repaintMap()
-				return cqID,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-		return False
 
 	#loop
 	try:
@@ -231,22 +238,24 @@ def main():
 
 				# Force a redisplay of all quake data
 				repaintMap()
+				#eventDB.save() #Save Database #DEBUG
 
 			# Is it time to acquire new earthquake data ?
 			if millis() > ftForAcquisition:
-				# Silly way to balance the server requests from EU and USGS
+				# server requests from EU and USGS balanced and dupe checked in function
 				if dataToggle:
 					dataToggle = False
-					if use_eu:
-							getUpdatesEU()
+					if use_usgs:
+						getUpdatesUSGS()
 					else:
-							getUpdatesUSGS
+						getUpdatesEU()
+						
 				else:
 					dataToggle = True
-					if use_usgs:
-							getUpdatesUSGS()
+					if use_eu:
+						getUpdatesEU()
 					else:
-							getUpdatesEU()
+						getUpdatesUSGS()
 
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 

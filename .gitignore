@@ -1,4 +1,4 @@
 
 *.pyc
+*.dat
 .DS_Store
-database.dat
