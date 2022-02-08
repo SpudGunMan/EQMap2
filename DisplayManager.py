@@ -325,7 +325,7 @@ class DisplayManager:
 		if tsunami != 0: self.currentAlarm = "TSUNAMI"
 		if alert is not None: self.currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, self.currentAlarm + "  LastEQ:" + self.eventTimeString + " High:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, self.currentAlarm + "  LastEQ:" + self.eventTimeString + "|HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
