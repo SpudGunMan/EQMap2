@@ -310,7 +310,7 @@ class DisplayManager:
 	
 	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, activeregion=False):
-		if activeregion: self.currentAlarm = "ACTIVE"
+		if activeregion: self.currentAlarm = "CLSTR"
 		if mag > 7: self.currentAlarm = "MAJOR"
 		if tsunami != 0: self.currentAlarm = "TSUNAMI"
 		if alert is not None: self.currentAlarm = "ALERT"
@@ -335,7 +335,7 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region:" + activeregion)
+				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region: " + activeregion)
 				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 				time.sleep(20)
 				return True
