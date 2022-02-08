@@ -69,8 +69,11 @@ def repaintMap():
 	displayManager.displayNumberOfEvents(eventCount)
 
 	# Display EQ depth and last EQ timestamp upper right
-	highestMag = str(eventDB.getLargestEvent())
 	isActive = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
+	
+	highestMag, trending = eventDB.getLargestEvent()
+	highestMag = str(highestMag)
+
 	if isActive and eventCount > 4:
 		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
 	else:
@@ -93,7 +96,9 @@ def displayTitlePage():
 	global ftForTitlePageDisplay
 
 	# Display the title/ wash page
-	displayManager.displayWashPage(str(eventDB.getLargestEvent()), str(eventDB.getActiveRegion()))
+	highestMag, trending = eventDB.getLargestEvent()
+	highestMag = str(highestMag)
+	displayManager.displayWashPage(highestMag + trending, str(eventDB.getActiveRegion()))
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
@@ -233,6 +238,9 @@ def main():
 
 				# Force a redisplay of all quake data
 				repaintMap()
+
+				#Save Database #DEBUG
+				eventDB.save()
 
 			# Is it time to acquire new earthquake data ?
 			if millis() > ftForAcquisition:
