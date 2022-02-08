@@ -12,6 +12,7 @@ This fork adds additional features, while keeping the orginal functionality.
 - RamDisk use to lower any disk write on Pi SD-Card
 - hi-res ability to extend to any monitor
 - ability to change basic settings in runtime
+- Daily event tranding
 
 Feel free to pull issues/suggestions or forks to contribute!
 
@@ -63,15 +64,13 @@ to get 7" ribbon attached display you need to do a few things to bullseye
 
 ## To-Do
 normally on a next branch if you see it try it out! `git pull origin next`
-- add RSS or sun/moon/tide
-  - tide icon?
-  - volcano icon?
-- settings menu for UTC and sleep
+- add other types of data (tide)
+  - volcano plotting
 - save settings
+  - UTC
 - save database for playback later or just use replay from larger returns in USGS (poll more in UK)
-  - save to memdisk temp?
-  - save by day? add to replay
+  - save by day-add to replay
 - most active region
   - bug limit length of return to map rect?
-- Daily event tranding?
+
 
