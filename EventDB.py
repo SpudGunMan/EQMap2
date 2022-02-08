@@ -42,10 +42,10 @@ class EventDB:
 		return self.EQEventQueue[index]
 
 	# Retrieve largest event related data
-	def getLargestEvent(self, dump = False):
-		EQlargest = []
+	def getLargestEvent(self):
+		EQlargest = deque()
 		max_value = 0
-		eventTrend = ' '
+		eventTrend = ''
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
 			max_value = max(EQlargest)
@@ -60,20 +60,22 @@ class EventDB:
 				else:
 					eventTrend = ''		
 		except:
-				eventTrend = ' '
+				eventTrend = ''
 
-		if dump: EQlargest = [] #list for mag of events in EventQ
 		return (max_value, eventTrend)
 
 	# Report the most active region since last poll
 	def getActiveRegion(self,preserve=False):
-		self.EQactive = []
 		self.region = ''
-		
-		for event in self.EQElocations: #from table in add
-			self.EQactive.append(event)
-			self.region_dict = Counter(self.EQactive)
-			self.region = next(iter(self.region_dict)) 
+
+		self.region_dict = Counter(self.EQElocations)
+		self.region = self.region_dict.most_common(1)
+
+		if self.region:
+			self.region = self.region[(0)]
+			self.region = self.region[0]
+		else:
+			return False
 
 		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
 		return self.region #returns the first in list
@@ -129,7 +131,7 @@ eventDB = EventDB()
 # Test Code
 eventDB.showEvents()
 
-eventDB.addEvent(1, 2, 3, 1, 0, "alaska")
+eventDB.addEvent(1, 2, 3, 1, 0, "frst")
 eventDB.showEvents()
 
 eventDB.addEvent(4, 5, 6, 2, 0, "london")
@@ -144,13 +146,13 @@ eventDB.addEvent(16, 17, 18, 6, 0, "chicago")
 eventDB.showEvents()
 eventDB.addEvent(19, 20, 21, 7, 1, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(22, 23, 24, 8, 0, "france")
+eventDB.addEvent(22, 23, 99, 8, 0, "alaska")
 eventDB.showEvents()
 eventDB.addEvent(25, 26, 27, 2, 0, "denver")
 eventDB.showEvents()
-eventDB.addEvent(28, 29, 31, 3, 0, "lodon")
+eventDB.addEvent(28, 29, 33, 3, 0, "lodon")
 eventDB.showEvents()
-eventDB.addEvent(31, 32, 32, 3, 0, "spain")
+eventDB.addEvent(31, 32, 34, 3, 0, "last")
 eventDB.showEvents()
 
 print("event 3 ", eventDB.getEvent(3))
@@ -162,7 +164,7 @@ print("number of events", eventDB.numberOfEvents())
 
 print("largest event", eventDB.getLargestEvent())
 
-print("dupe check", eventDB.checkDupLonLat(31, 32))
+print("dupe check", eventDB.checkDupLonLat(32, 32))
 
 
 print("saved", eventDB.save())
@@ -177,5 +179,4 @@ print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
 '''
-
 
