@@ -3,6 +3,7 @@ This code handles display by writing directly to the framebuffer in pygame
 Concept, Design by: Craig A. Lindley
 """
 
+from cProfile import run
 import os, time, sys
 from datetime import datetime
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
@@ -191,7 +192,16 @@ class DisplayManager:
 			#CLI 
 			return False
 
-
+	#pygames hold and wait for key press
+	def displayWaitKeyPress():
+		print('hello')
+		for event in pygame.event.get():
+			if event.type == KEYDOWN and event.key == K_q:
+				pygame.quit()
+				return True
+			else:
+				return False
+	
 	# Display current time and input
 	def displayCurrentTime(self):
 		timeNow = datetime.now()

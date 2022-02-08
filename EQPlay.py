@@ -1,25 +1,49 @@
 from DisplayManager import displayManager
 from EQMap import BLACK
 from EventDB import eventDB
+from time import sleep
 
 #load DB
 EQEventQueue = eventDB.load()
-displayManager.displayMap()
 
-# Repaint the map from the events in the DB
-def repaintMap():
+def displayDatabase():
+    # Repaint the map from the events in the DB
+    displayManager.displayMap()
 
-	# Display fresh map
-	displayManager.displayMap()
+    #print event queue to map
+    for event in EQEventQueue:
+        cqLon = event[0]
+        cqLat = event[1]
+        cqMag = event[2]
+        cqTsunami = event[3]
+        cqAlert = event[4]
+        color = displayManager.colorFromMag(cqMag)
+        displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
 
-#print event queue to map
-for event in EQEventQueue:
-    cqLon = event[0]
-    cqLat = event[1]
-    cqMag = event[2]
-    cqTsunami = event[3]
-    cqAlert = event[4]
-    color = displayManager.colorFromMag(cqMag)
-    displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
+def main():
+    try:
+        displayDatabase()
+        while True:
+            sleep(10)
+            displayManager.displayWaitKeyPress
+            
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
