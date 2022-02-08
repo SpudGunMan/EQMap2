@@ -192,44 +192,8 @@ class DisplayManager:
 			#CLI 
 			return False
 
-	#pygames hold and wait for key press
-	def displayWaitKeyPress(self):
-		# Handle Input
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.display.quit()
-				pygame.quit()
-				sys.exit()
-			if event.type == pygame.KEYDOWN:
-				#press escape to exit
-				if event.key == pygame.K_ESCAPE:
-					pygame.display.quit()
-					pygame.quit()
-					sys.exit()
-				if event.key == pygame.K_q:
-					pygame.display.quit()
-					pygame.quit()
-					sys.exit()
-			else:
-				return False
-	
-	# Display current time and input
-	def displayCurrentTime(self):
-		timeNow = datetime.now()
-
-		if self.time24h:
-			timeString = timeNow.strftime("%-H:%M")
-		else:
-			timeString = timeNow.strftime("%-I:%M%P")
-
-		# Display time to GUI only
-		try:
-			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,25))
-			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
-		except: 
-			return timeNow
-
-		# Handle Input
+	# pygames key press
+	def handleKeyPress(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.display.quit()
@@ -247,11 +211,11 @@ class DisplayManager:
 					sys.exit()
 				if event.key == pygame.K_f:
 					self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-					return timeNow
+					return True
 				if event.key == pygame.K_w:
 					#window
 					self.screen = pygame.display.set_mode((800, 480))
-					return timeNow
+					return True
 				if event.key == pygame.K_h:
 					# flip flop for time24h
 					if self.time24h:
@@ -264,7 +228,7 @@ class DisplayManager:
 						self.setTextSize(20)
 						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: time24h")
 						self.setTextSize(40)
-					return timeNow
+					return True
 				if event.key == pygame.K_d:
 					# flip flop for distance
 					if self.dist == "m":
@@ -277,7 +241,7 @@ class DisplayManager:
 						self.setTextSize(20)
 						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: mi")
 						self.setTextSize(40)
-					return timeNow
+					return True
 				if event.key == pygame.K_m:
 					#change map
 					# Read the map into memory, center it and reset text boxes if sized changed
@@ -290,14 +254,36 @@ class DisplayManager:
 					self.eventsTextRow = self.topTextRow + 400
 					self.bottomTextRow = self.topTextRow + 430
 					self.screen.blit(self.mapImage, self.mapImageRect)
-					return timeNow
+					return True
 				if event.key == pygame.K_u:
 					#go UTC
-					return timeNow
+					return True
 			elif event.type == pygame.KEYUP:
-				return timeNow
+				return True
 
-	# Display Events drawn string
+			else:
+				return False
+	
+	# Display current time and input
+	def displayCurrentTime(self):
+		timeNow = datetime.now()
+
+		if self.time24h:
+			timeString = timeNow.strftime("%-H:%M")
+		else:
+			timeString = timeNow.strftime("%-I:%M%P")
+
+		self.handleKeyPress()
+		
+		# Display time to GUI only
+		try:
+			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,25))
+			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
+		except: 
+			return timeNow
+
+
+	# Display 'Events drawn' string
 	def displayNumberOfEvents(self, num):
 		currentRTC = datetime.now()
 		if self.time24h:

@@ -24,8 +24,10 @@ def main():
     try:
         while True:
             displayDatabase()
-            sleep(2)
-            displayManager.displayWaitKeyPress()
+           
+            displayManager.handleKeyPress()
+
+            sleep(5)
 
     except KeyboardInterrupt:
         pass
