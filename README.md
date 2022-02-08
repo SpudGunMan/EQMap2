@@ -9,11 +9,11 @@ This fork adds additional features, while keeping the orginal functionality.
 - working clock
 - fullscreen mode, native
 - new display data and reporting
-- RamDisk use to lower any disk write on Pi SD-Card
 - hi-res ability to extend to any monitor
 - ability to change basic settings in runtime
-- Daily event tranding
+- Daily event Trending
 - Daily database for playback later
+  - RamDisk use to lower any disk write on Pi SD-Card
 
 Feel free to pull issues/suggestions or forks to contribute!
 
