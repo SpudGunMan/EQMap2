@@ -238,9 +238,7 @@ def main():
 
 				# Force a redisplay of all quake data
 				repaintMap()
-
-				#Save Database #DEBUG
-				eventDB.save()
+				#eventDB.save() #Save Database #DEBUG
 
 			# Is it time to acquire new earthquake data ?
 			if millis() > ftForAcquisition:

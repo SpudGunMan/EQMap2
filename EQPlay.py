@@ -22,11 +22,11 @@ def displayDatabase():
 
 def main():
     try:
-        displayDatabase()
         while True:
-            sleep(10)
-            displayManager.displayWaitKeyPress
-            
+            displayDatabase()
+            sleep(2)
+            displayManager.displayWaitKeyPress()
+
     except KeyboardInterrupt:
         pass
 

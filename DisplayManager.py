@@ -193,12 +193,23 @@ class DisplayManager:
 			return False
 
 	#pygames hold and wait for key press
-	def displayWaitKeyPress():
-		print('hello')
+	def displayWaitKeyPress(self):
+		# Handle Input
 		for event in pygame.event.get():
-			if event.type == KEYDOWN and event.key == K_q:
+			if event.type == pygame.QUIT:
+				pygame.display.quit()
 				pygame.quit()
-				return True
+				sys.exit()
+			if event.type == pygame.KEYDOWN:
+				#press escape to exit
+				if event.key == pygame.K_ESCAPE:
+					pygame.display.quit()
+					pygame.quit()
+					sys.exit()
+				if event.key == pygame.K_q:
+					pygame.display.quit()
+					pygame.quit()
+					sys.exit()
 			else:
 				return False
 	
@@ -221,14 +232,17 @@ class DisplayManager:
 		# Handle Input
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
+				pygame.display.quit()
 				pygame.quit()
 				sys.exit()
 			if event.type == pygame.KEYDOWN:
 				#press escape to exit
 				if event.key == pygame.K_ESCAPE:
+					pygame.display.quit()
 					pygame.quit()
 					sys.exit()
 				if event.key == pygame.K_q:
+					pygame.display.quit()
 					pygame.quit()
 					sys.exit()
 				if event.key == pygame.K_f:

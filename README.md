@@ -13,6 +13,7 @@ This fork adds additional features, while keeping the orginal functionality.
 - hi-res ability to extend to any monitor
 - ability to change basic settings in runtime
 - Daily event tranding
+- Daily database for playback later
 
 Feel free to pull issues/suggestions or forks to contribute!
 
@@ -68,7 +69,7 @@ normally on a next branch if you see it try it out! `git pull origin next`
   - volcano plotting
 - save settings
   - UTC
-- save database for playback later or just use replay from larger returns in USGS (poll more in UK)
+- replay from larger returns in USGS (poll more in UK)
   - save by day-add to replay
 - most active region
   - bug limit length of return to map rect?
