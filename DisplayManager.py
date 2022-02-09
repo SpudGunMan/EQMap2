@@ -276,7 +276,7 @@ class DisplayManager:
 		
 		# Display time to GUI only
 		try:
-			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,25))
+			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,220,25))
 			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
 		except: 
 			return timeNow
