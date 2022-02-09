@@ -318,9 +318,9 @@ class DisplayManager:
 		return True
 	
 	# Display LastEQ/High Mag String
-	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, activeregion=False):
+	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, cluster=False):
 		currentAlarm = ""
-		if activeregion: currentAlarm = "CLSTR"
+		if cluster: currentAlarm = "CLSTR"
 		if mag > 7: currentAlarm = "MAJOR"
 		if tsunami != 0: currentAlarm = "TSUNAMI"
 		if alert is not None: currentAlarm = "ALERT"
