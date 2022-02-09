@@ -75,7 +75,7 @@ def repaintMap():
 	highestMag = str(highestMag)
 
 	if isActive and eventCount > 4:
-		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
+		displayManager.q(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, activeregion=True)
 	else:
 		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
 	
