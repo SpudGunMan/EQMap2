@@ -31,7 +31,6 @@ class DisplayManager:
 		self.eventsTextRow = 0
 		self.bottomTextRow = 0
 		self.eventCount = 0
-		self.currentAlarm = ""
 
 		pygame.init()
 
@@ -320,12 +319,13 @@ class DisplayManager:
 	
 	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, activeregion=False):
-		if activeregion: self.currentAlarm = "CLSTR"
-		if mag > 7: self.currentAlarm = "MAJOR"
-		if tsunami != 0: self.currentAlarm = "TSUNAMI"
-		if alert is not None: self.currentAlarm = "ALERT"
+		currentAlarm = ""
+		if activeregion: currentAlarm = "CLSTR"
+		if mag > 7: currentAlarm = "MAJOR"
+		if tsunami != 0: currentAlarm = "TSUNAMI"
+		if alert is not None: currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, self.currentAlarm + "  LastEQ:" + self.eventTimeString + " :HiMag:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + "  LastEQ:" + self.eventTimeString + "|HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
