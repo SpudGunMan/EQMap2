@@ -12,8 +12,9 @@ This fork adds additional features, while keeping the orginal functionality.
 - hi-res ability to extend to any monitor
 - ability to change basic settings in runtime
 - Daily event Trending
-- Daily database for playback later
+- Daily database for playback later `python3 EQPlay.py`
   - RamDisk use to lower any disk write on Pi SD-Card
+  - multi day player 
 
 Feel free to pull issues/suggestions or forks to contribute!
 
@@ -70,7 +71,6 @@ normally on a next branch if you see it try it out! `git pull origin next`
 - save settings
   - UTC
 - replay from larger returns in USGS (poll more in UK)
-  - save by day-add/multi file to replay
 - most active region
   - bug limit length of return to map rect?
 - generate some new maps
