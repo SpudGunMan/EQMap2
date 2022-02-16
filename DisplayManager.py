@@ -74,7 +74,7 @@ class DisplayManager:
 
     # Clear the screen
 	def clearScreen(self):
-		try:	
+		try:
 			self.screen.fill(self.black)
 			pygame.display.flip()
 			return True
