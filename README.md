@@ -1,4 +1,5 @@
-![EarthQuakeMap](/maps/logo.jpg)  ![EarthQuakeMapDisplay](/maps/display.jpg)
+ ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
+
 
 # About Revision:22.8
 This is a Earthquake Map Display for RaspberryPi Attached screen
