@@ -110,23 +110,30 @@ class EventDB:
 		self.dbFile.close()
 		return True
 
-	def load(self):
+	def load(self, file=0):
+		# Load file from database dump file
 		self.EQEventQueue.clear()
+		filenames = []
 
+		# Try is for raspberryOS ramdisk use
+		# then look for files, and load the filename list aka file per day
+		# file variable will load a different day in the list
 		try:
 			path = "/run/shm/EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			filename = (filenames[0]) # return first hit
+			if file > len(filenames): file = (len(filenames) -1)
+			filename = (filenames[file])
 			self.dbFile = open(filename, "rb")
 		except:
 			path = "EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			filename = (filenames[0]) # return first
+			if file > len(filenames): file = (len(filenames) -1)
+			filename = (filenames[file])
 			self.dbFile = open(filename, "rb")
 
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
-		return self.EQEventQueue
+		return self.EQEventQueue, len(filenames)
 
 # Create instance of database
 eventDB = EventDB()

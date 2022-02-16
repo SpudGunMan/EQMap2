@@ -3,12 +3,13 @@ from EQMap import BLACK
 from EventDB import eventDB
 from time import sleep
 
-#load DB
-EQEventQueue = eventDB.load()
 
 def displayDatabase():
     # Repaint the map from the events in the DB
     displayManager.displayMap()
+
+    #load DB
+    EQEventQueue, filecount = eventDB.load()
 
     #print event queue to map
     for event in EQEventQueue:
@@ -19,6 +20,7 @@ def displayDatabase():
         cqAlert = event[4]
         color = displayManager.colorFromMag(cqMag)
         displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
+        displayManager.drawCenteredText(400, "db: " + str(filecount))
 
 def main():
     try:
