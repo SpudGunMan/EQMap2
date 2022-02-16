@@ -5,6 +5,7 @@ Concept, Design and Implementation by: Craig A. Lindley
 from collections import deque, Counter
 from datetime import datetime
 import pickle
+import glob
 
 #MAX_EVENTS = 200
 
@@ -95,8 +96,8 @@ class EventDB:
 
 	# Save the database to local path
 	def save(self):
-		self.currentRTC = datetime.now()
-		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+		currentRTC = datetime.now()
+		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
 
 		try:
 			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
@@ -111,15 +112,17 @@ class EventDB:
 
 	def load(self):
 		self.EQEventQueue.clear()
-		self.currentRTC = datetime.now()
-		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
 
 		try:
-			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "rb")
+			path = "/run/shm/EQMdatabase*.dat"
+			filenames = glob.glob(path)
+			filename = (filenames[0]) # return first hit
+			self.dbFile = open(filename, "rb")
 		except:
-			self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "rb")
+			path = "EQMdatabase*.dat"
+			filenames = glob.glob(path)
+			filename = (filenames[0]) # return first
+			self.dbFile = open(filename, "rb")
 
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
