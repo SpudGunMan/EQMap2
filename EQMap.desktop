@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=EarthQuakeMap
+Comment=Earth Quake Map
+Icon=Map-icon.png
+Exec=/home/pi/EQMap/eqmap.sh
+Terminal=false
+Categories=Science;
