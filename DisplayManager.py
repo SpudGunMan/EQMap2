@@ -44,7 +44,8 @@ class DisplayManager:
 
 			# Read the map into memory
 			self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
-			#self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
+			if self.screenWidth > 1000:
+				self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
 
 			# Get its bounding box
 			self.mapImageRect = self.mapImage.get_rect()
