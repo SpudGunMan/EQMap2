@@ -31,7 +31,6 @@ class DisplayManager:
 		self.eventsTextRow = 0
 		self.bottomTextRow = 0
 		self.eventCount = 0
-		self.currentAlarm = ""
 
 		pygame.init()
 
@@ -45,6 +44,8 @@ class DisplayManager:
 
 			# Read the map into memory
 			self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
+			if self.screenWidth > 1000:
+				self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
 
 			# Get its bounding box
 			self.mapImageRect = self.mapImage.get_rect()
@@ -55,8 +56,8 @@ class DisplayManager:
 
 			# Set the uypper and lower text areas
 			self.topTextRow = self.mapImageRect.y - 25
-			self.eventsTextRow = self.topTextRow + 400
-			self.bottomTextRow = self.topTextRow + 430
+			self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height) + 5
+			self.eventsTextRow = self.bottomTextRow - 30
 
 			# Setup inital font of initial size
 			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
@@ -75,7 +76,7 @@ class DisplayManager:
 
     # Clear the screen
 	def clearScreen(self):
-		try:	
+		try:
 			self.screen.fill(self.black)
 			pygame.display.flip()
 			return True
@@ -192,44 +193,8 @@ class DisplayManager:
 			#CLI 
 			return False
 
-	#pygames hold and wait for key press
-	def displayWaitKeyPress(self):
-		# Handle Input
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.display.quit()
-				pygame.quit()
-				sys.exit()
-			if event.type == pygame.KEYDOWN:
-				#press escape to exit
-				if event.key == pygame.K_ESCAPE:
-					pygame.display.quit()
-					pygame.quit()
-					sys.exit()
-				if event.key == pygame.K_q:
-					pygame.display.quit()
-					pygame.quit()
-					sys.exit()
-			else:
-				return False
-	
-	# Display current time and input
-	def displayCurrentTime(self):
-		timeNow = datetime.now()
-
-		if self.time24h:
-			timeString = timeNow.strftime("%-H:%M")
-		else:
-			timeString = timeNow.strftime("%-I:%M%P")
-
-		# Display time to GUI only
-		try:
-			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,260,25))
-			self.drawText(self.mapImageRect.x, self.topTextRow, "Time: " + timeString)
-		except: 
-			return timeNow
-
-		# Handle Input
+	# pygames key press
+	def handleKeyPress(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.display.quit()
@@ -247,11 +212,11 @@ class DisplayManager:
 					sys.exit()
 				if event.key == pygame.K_f:
 					self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-					return timeNow
+					return True
 				if event.key == pygame.K_w:
 					#window
 					self.screen = pygame.display.set_mode((800, 480))
-					return timeNow
+					return True
 				if event.key == pygame.K_h:
 					# flip flop for time24h
 					if self.time24h:
@@ -264,7 +229,7 @@ class DisplayManager:
 						self.setTextSize(20)
 						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: time24h")
 						self.setTextSize(40)
-					return timeNow
+					return True
 				if event.key == pygame.K_d:
 					# flip flop for distance
 					if self.dist == "m":
@@ -277,7 +242,7 @@ class DisplayManager:
 						self.setTextSize(20)
 						self.drawRightJustifiedText((self.mapImageRect.y + 300), "settings: mi")
 						self.setTextSize(40)
-					return timeNow
+					return True
 				if event.key == pygame.K_m:
 					#change map
 					# Read the map into memory, center it and reset text boxes if sized changed
@@ -290,14 +255,36 @@ class DisplayManager:
 					self.eventsTextRow = self.topTextRow + 400
 					self.bottomTextRow = self.topTextRow + 430
 					self.screen.blit(self.mapImage, self.mapImageRect)
-					return timeNow
+					return True
 				if event.key == pygame.K_u:
 					#go UTC
-					return timeNow
+					return True
 			elif event.type == pygame.KEYUP:
-				return timeNow
+				return True
 
-	# Display Events drawn string
+			else:
+				return False
+	
+	# Display current time and input
+	def displayCurrentTime(self):
+		timeNow = datetime.now()
+
+		if self.time24h:
+			timeString = timeNow.strftime("%-H:%M")
+		else:
+			timeString = timeNow.strftime("%-I:%M%P")
+
+		self.handleKeyPress()
+		
+		# Display time to GUI only
+		try:
+			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,130,25))
+			self.drawText(self.mapImageRect.x, self.topTextRow, timeString)
+		except: 
+			return timeNow
+
+
+	# Display 'Events drawn' string
 	def displayNumberOfEvents(self, num):
 		currentRTC = datetime.now()
 		if self.time24h:
@@ -333,13 +320,14 @@ class DisplayManager:
 		return True
 	
 	# Display LastEQ/High Mag String
-	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, activeregion=False):
-		if activeregion: self.currentAlarm = "CLSTR"
-		if mag > 7: self.currentAlarm = "MAJOR"
-		if tsunami != 0: self.currentAlarm = "TSUNAMI"
-		if alert is not None: self.currentAlarm = "ALERT"
+	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, cluster=False):
+		currentAlarm = ""
+		if cluster: currentAlarm = "CLSTR"
+		if mag > 7: currentAlarm = "MAJOR"
+		if tsunami != 0: currentAlarm = "TSUNAMI"
+		if alert is not None: currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, self.currentAlarm + "  LastEQ:" + self.eventTimeString + " High:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + "  LastEQ:" + self.eventTimeString + "|HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
@@ -353,23 +341,33 @@ class DisplayManager:
 
 			# Data to always display
 			self.setTextSize(30)
-			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			if self.screenWidth > 1000:
+				self.drawCenteredText((self.mapImageRect.y + 320), eventDayString)
+			else:
+				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			
 			self.setTextSize(40)
 			
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region: " + activeregion)
-				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-				time.sleep(20)
+				if self.screenWidth > 1000:
+					self.drawCenteredText((self.topTextRow + 120), "Largest seen Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
+					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					time.sleep(20)
+				else:
+					self.drawCenteredText((self.topTextRow + 90), "Largest seen Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
+					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					time.sleep(20)
 				return True
 			
 			if self.firstRun:
 				self.firstRun = False
-				self.drawCenteredText((self.mapImageRect.y + 90), "Loading")
-				self.drawCenteredText((self.mapImageRect.y + 140), "Realtime World")
+				self.drawCenteredText((self.topTextRow + 90), "Loading")
+				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
 				self.setTextSize(70)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Earthquake Map")
+				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
 				self.setTextSize(30)
 				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.9")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")

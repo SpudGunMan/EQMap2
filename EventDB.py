@@ -5,6 +5,7 @@ Concept, Design and Implementation by: Craig A. Lindley
 from collections import deque, Counter
 from datetime import datetime
 import pickle
+import glob
 
 #MAX_EVENTS = 200
 
@@ -16,6 +17,7 @@ class EventDB:
 		#self.EQEventQueue = deque(maxlen=MAX_EVENTS)
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
+		self.mySettings = []
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -42,10 +44,10 @@ class EventDB:
 		return self.EQEventQueue[index]
 
 	# Retrieve largest event related data
-	def getLargestEvent(self, dump = False):
-		EQlargest = []
+	def getLargestEvent(self):
+		EQlargest = deque()
 		max_value = 0
-		eventTrend = ' '
+		eventTrend = ''
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
 			max_value = max(EQlargest)
@@ -54,28 +56,31 @@ class EventDB:
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
-					eventTrend = "+"
+					eventTrend = " freq. increasing"
 				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = "-"
+					eventTrend = " freq. decreasing"
 				else:
 					eventTrend = ''		
 		except:
-				eventTrend = ' '
+				eventTrend = ''
 
-		if dump: EQlargest = [] #list for mag of events in EventQ
 		return (max_value, eventTrend)
 
 	# Report the most active region since last poll
 	def getActiveRegion(self,preserve=False):
-		self.EQactive = []
 		self.region = ''
-		
-		for event in self.EQElocations: #from table in add
-			self.EQactive.append(event)
-			self.region_dict = Counter(self.EQactive)
-			self.region = next(iter(self.region_dict)) 
+
+		self.region_dict = Counter(self.EQElocations)
+		self.region = self.region_dict.most_common(1)
 
 		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+
+		if self.region:
+			self.region = self.region[(0)]
+			self.region = self.region[0]
+		else:
+			pass
+
 		return self.region #returns the first in list
 
 	# Guess if event is duplicated with lat,lon dups
@@ -90,10 +95,27 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 
+	# Save the settings local path
+	def saveSettings(self):
+		self.dbFileName = "EQMsettings.dat"
+		self.dbFile = open(self.dbFileName, "wb")
+		pickle.dump(self.mySettings, self.dbFile)
+		self.dbFile.close()
+		return self.mySettings
+
+	# Load the settings local path
+	def loadSettings(self):
+		self.dbFileName = "EQMsettings.dat"
+		self.dbFile = open(self.dbFileName, "wb")
+		self.mySettings = pickle.load(self.dbFile)
+		self.dbFile.close()
+		return self.mySettings
+
+
 	# Save the database to local path
 	def save(self):
-		self.currentRTC = datetime.now()
-		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+		currentRTC = datetime.now()
+		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
 
 		try:
 			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
@@ -106,21 +128,30 @@ class EventDB:
 		self.dbFile.close()
 		return True
 
-	def load(self):
+	def load(self, file=0):
+		# Load file from database dump file
 		self.EQEventQueue.clear()
-		self.currentRTC = datetime.now()
-		eventLogTime = self.currentRTC.strftime("%Y%m%d") #https://strftime.org
+		filenames = []
 
+		# Try is for raspberryOS ramdisk use
+		# then look for files, and load the filename list aka file per day
+		# file variable will load a different day in the list
 		try:
-			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "rb")
+			path = "/run/shm/EQMdatabase*.dat"
+			filenames = glob.glob(path)
+			if file > len(filenames): file = (len(filenames) -1)
+			filename = (filenames[file])
+			self.dbFile = open(filename, "rb")
 		except:
-			self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "rb")
+			path = "EQMdatabase*.dat"
+			filenames = glob.glob(path)
+			if file > len(filenames): file = (len(filenames) -1)
+			filename = (filenames[file])
+			self.dbFile = open(filename, "rb")
 
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
-		return self.EQEventQueue
+		return self.EQEventQueue, len(filenames)
 
 # Create instance of database
 eventDB = EventDB()
@@ -129,7 +160,7 @@ eventDB = EventDB()
 # Test Code
 eventDB.showEvents()
 
-eventDB.addEvent(1, 2, 3, 1, 0, "alaska")
+eventDB.addEvent(1, 2, 3, 1, 0, "frst")
 eventDB.showEvents()
 
 eventDB.addEvent(4, 5, 6, 2, 0, "london")
@@ -144,13 +175,13 @@ eventDB.addEvent(16, 17, 18, 6, 0, "chicago")
 eventDB.showEvents()
 eventDB.addEvent(19, 20, 21, 7, 1, "alaska")
 eventDB.showEvents()
-eventDB.addEvent(22, 23, 24, 8, 0, "france")
+eventDB.addEvent(22, 23, 99, 8, 0, "alaska")
 eventDB.showEvents()
 eventDB.addEvent(25, 26, 27, 2, 0, "denver")
 eventDB.showEvents()
-eventDB.addEvent(28, 29, 31, 3, 0, "lodon")
+eventDB.addEvent(28, 29, 33, 3, 0, "lodon")
 eventDB.showEvents()
-eventDB.addEvent(31, 32, 32, 3, 0, "spain")
+eventDB.addEvent(31, 32, 34, 3, 0, "last")
 eventDB.showEvents()
 
 print("event 3 ", eventDB.getEvent(3))
@@ -162,7 +193,7 @@ print("number of events", eventDB.numberOfEvents())
 
 print("largest event", eventDB.getLargestEvent())
 
-print("dupe check", eventDB.checkDupLonLat(31, 32))
+print("dupe check", eventDB.checkDupLonLat(32, 32))
 
 
 print("saved", eventDB.save())
@@ -177,5 +208,4 @@ print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
 '''
-
 

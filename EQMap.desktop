@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=EarthQuakeMap
+Comment=Earth Quake Map
+Icon=/home/pi/EQMap2/maps/Map-icon.png
+Exec=/home/pi/EQMap2/eqmap.sh
+Terminal=false
+Categories=Science;
+Name[en_US]=Earth Quake Map2
+Path=/home/pi/EQMap2/
+GenericName=Realtime EarthQuake Map for Pi
+
