@@ -56,7 +56,7 @@ class DisplayManager:
 
 			# Set the uypper and lower text areas
 			self.topTextRow = self.mapImageRect.y - 25
-			self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height)
+			self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height) + 5
 			self.eventsTextRow = self.bottomTextRow - 30
 
 			# Setup inital font of initial size
@@ -341,15 +341,25 @@ class DisplayManager:
 
 			# Data to always display
 			self.setTextSize(30)
-			self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			if self.screenWidth > 1000:
+				self.drawCenteredText((self.mapImageRect.y + 320), eventDayString)
+			else:
+				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+			
 			self.setTextSize(40)
 			
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				self.drawCenteredText((self.topTextRow + 90), "Largest Earthquake Mag:" + largestevent)
-				self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
-				self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-				time.sleep(20)
+				if self.screenWidth > 1000:
+					self.drawCenteredText((self.topTextRow + 120), "Largest Earthquake Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
+					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					time.sleep(20)
+				else:
+					self.drawCenteredText((self.topTextRow + 90), "Largest Earthquake Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
+					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					time.sleep(20)
 				return True
 			
 			if self.firstRun:
