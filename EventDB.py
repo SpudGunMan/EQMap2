@@ -17,6 +17,7 @@ class EventDB:
 		#self.EQEventQueue = deque(maxlen=MAX_EVENTS)
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
+		self.mySettings = []
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -55,9 +56,9 @@ class EventDB:
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
-					eventTrend = "+"
+					eventTrend = " inc."
 				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = "-"
+					eventTrend = " dec."
 				else:
 					eventTrend = ''		
 		except:
@@ -93,6 +94,23 @@ class EventDB:
 
 			# Data is not a duplicate
 			return False
+
+	# Save the settings local path
+	def saveSettings(self):
+		self.dbFileName = "EQMsettings.dat"
+		self.dbFile = open(self.dbFileName, "wb")
+		pickle.dump(self.mySettings, self.dbFile)
+		self.dbFile.close()
+		return self.mySettings
+
+	# Load the settings local path
+	def loadSettings(self):
+		self.dbFileName = "EQMsettings.dat"
+		self.dbFile = open(self.dbFileName, "wb")
+		self.mySettings = pickle.load(self.dbFile)
+		self.dbFile.close()
+		return self.mySettings
+
 
 	# Save the database to local path
 	def save(self):
