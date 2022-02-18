@@ -371,8 +371,8 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.mapImageRect.y + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "   Revision:22.7")
-				self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley   ")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.9")
+				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
 				return True

@@ -6,12 +6,27 @@ Concept, Design by: Craig A. Lindley adapted to USGS by SpudGunMan see github
 import json
 from operator import truediv
 import requests, time
+from datetime import datetime, timedelta
 
 class EQEventGathererUSGS:
 
-    def requestEQEvent(self):
+    def requestEQEvent(self, days=0):
         while True:
-            r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
+            # API https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+
+            if days == 30:
+                r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson')          
+
+            if days == 7:
+                r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson')
+
+            if days == 1:
+                r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson') 
+
+            if days == 0:
+                # past hour 2.5+ only https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.geojson
+                r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
+            
             if r.status_code == 200:
                 break
             time.sleep(2)
@@ -19,6 +34,7 @@ class EQEventGathererUSGS:
         self.jsonData = json.loads(r.text)
         # Extracting all the important key features.
         self.jsonData = self.jsonData['features']
+        return days
 
     def getEventID(self):
         return self.jsonData[0]['id']
@@ -38,7 +54,6 @@ class EQEventGathererUSGS:
             #print("Debug USGS Name Split Error: ",place)  #DEBUG 
             return str(self.place)
             
-        
     def getAlert(self):
         self.alert = self.jsonData[0]['properties']['alert']
         return self.alert
@@ -60,14 +75,40 @@ class EQEventGathererUSGS:
 
 class EQEventGathererEU:
 
-    def requestEQEvent(self):
+    def requestEQEvent(self, limit=1, days=0):
+        currentRTC = datetime.now()
+
+        if days > 1:
+            startAdjusted = datetime.today() - timedelta(days=days)
+            startQuery = startAdjusted.strftime("%Y-%m-%dT00:00:00") #https://strftime.org
+            endQuery = currentRTC.strftime("%Y-%m-%dT23:59:59")
+            start=startQuery
+            end=endQuery
+            requestTime = '&start=' + start + '&end=' + end
+            print(requestTime)
+        
+        if days == 1:
+            startQuery = currentRTC.strftime("%Y-%m-%dT00:00:00") #https://strftime.org
+            endQuery = currentRTC.strftime("%Y-%m-%dT23:59:59")
+            start=startQuery
+            end=endQuery
+            requestTime = '&start=' + start + '&end=' + end
+
+        if days == 0:
+            start=''
+            end=''
+            requestTime = ''
+
         while True:
-            self.r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=1&format=json')
+            # Details at https://www.seismicportal.eu/fdsn-wsevent.html
+            # over 2.5 mag only, add to request html:    &minmagnitude=2.5
+            self.r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=' + str(limit) + requestTime +'&format=json')
             if self.r.status_code == 200:
                 break
             time.sleep(2)
 
         self.jsonData = json.loads(self.r.text)
+        return days
 
     def getEventID(self):
         return self.jsonData['features'][0]['id']
@@ -93,7 +134,7 @@ class EQEventGathererEU:
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
 
-'''
+
 # Test Code
 eqGathererEU.requestEQEvent()
 print(eqGathererEU.getEventID())
@@ -113,7 +154,7 @@ print(eqGathererUSGS.getLat())
 print(eqGathererUSGS.getDepth())
 print(eqGathererUSGS.getTsunami())
 print(eqGathererUSGS.getAlert())
-'''
+
 
 
 
