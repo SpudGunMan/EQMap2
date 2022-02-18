@@ -44,6 +44,7 @@ class DisplayManager:
 
 			# Read the map into memory
 			self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
+			#self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
 
 			# Get its bounding box
 			self.mapImageRect = self.mapImage.get_rect()
@@ -54,8 +55,8 @@ class DisplayManager:
 
 			# Set the uypper and lower text areas
 			self.topTextRow = self.mapImageRect.y - 25
-			self.eventsTextRow = self.topTextRow + 400
-			self.bottomTextRow = self.topTextRow + 430
+			self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height)
+			self.eventsTextRow = self.bottomTextRow - 30
 
 			# Setup inital font of initial size
 			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
@@ -344,21 +345,21 @@ class DisplayManager:
 			
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				self.drawCenteredText((self.mapImageRect.y + 90), "Largest Earthquake Mag:" + largestevent)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Active Region: " + activeregion)
-				self.drawCenteredText((self.mapImageRect.y + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+				self.drawCenteredText((self.topTextRow + 90), "Largest Earthquake Mag:" + largestevent)
+				self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
+				self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 				time.sleep(20)
 				return True
 			
 			if self.firstRun:
 				self.firstRun = False
-				self.drawCenteredText((self.mapImageRect.y + 90), "Loading")
-				self.drawCenteredText((self.mapImageRect.y + 140), "Realtime World")
+				self.drawCenteredText((self.topTextRow + 90), "Loading")
+				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
 				self.setTextSize(70)
-				self.drawCenteredText((self.mapImageRect.y + 160), "Earthquake Map")
+				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.mapImageRect.y + 300), "   Revision:22.8")
-				self.drawRightJustifiedText((self.mapImageRect.y + 300), "C.Lindley   ")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.8")
+				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
 				return True
