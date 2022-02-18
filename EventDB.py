@@ -56,9 +56,9 @@ class EventDB:
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
-					eventTrend = " freq. +"
+					eventTrend = " freq. increasing"
 				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = " freq. -"
+					eventTrend = " freq. decreasing"
 				else:
 					eventTrend = ''		
 		except:
