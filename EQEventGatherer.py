@@ -37,7 +37,11 @@ class EQEventGathererUSGS:
         return days
 
     def getEventID(self):
-        return self.jsonData[0]['id']
+        try:
+            return self.jsonData[0]['id']
+        except IndexError:
+            return "20220000_000000X"
+        
 
     def getMag(self):
         self.mag = float(self.jsonData[0]['properties']['mag'])
@@ -134,7 +138,7 @@ class EQEventGathererEU:
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
 
-
+'''
 # Test Code
 eqGathererEU.requestEQEvent()
 print(eqGathererEU.getEventID())
@@ -154,7 +158,4 @@ print(eqGathererUSGS.getLat())
 print(eqGathererUSGS.getDepth())
 print(eqGathererUSGS.getTsunami())
 print(eqGathererUSGS.getAlert())
-
-
-
-
+'''
