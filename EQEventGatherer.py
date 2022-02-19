@@ -137,7 +137,6 @@ class EQEventGathererEU:
 # Return a class instance
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
-
 '''
 # Test Code
 eqGathererEU.requestEQEvent()
@@ -159,3 +158,4 @@ print(eqGathererUSGS.getDepth())
 print(eqGathererUSGS.getTsunami())
 print(eqGathererUSGS.getAlert())
 '''
+
