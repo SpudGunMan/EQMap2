@@ -45,6 +45,7 @@ class EQEventGathererUSGS:
 
     def getMag(self):
         self.mag = float(self.jsonData[0]['properties']['mag'])
+        if self.mag is None: self.mag = 0
         return float(("%.2f" % self.mag))
 
     def getLocation(self):
