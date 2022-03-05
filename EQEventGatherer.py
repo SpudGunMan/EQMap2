@@ -40,8 +40,7 @@ class EQEventGathererUSGS:
         try:
             return self.jsonData[0]['id']
         except IndexError:
-            return "20220000_000000X"
-        
+            return "000000X"
 
     def getMag(self):
         self.mag = float(self.jsonData[0]['properties']['mag'])
