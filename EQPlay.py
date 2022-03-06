@@ -24,7 +24,7 @@ def displayDatabase(day=0):
         cqAlert = event[4]
         color = displayManager.colorFromMag(cqMag)
         displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
-    
+
     return filecount
 
 def main():
@@ -34,7 +34,7 @@ def main():
         while updateMap:
             for day in range(filecount):
                 displayManager.displayMap()
-                displayDatabase(day)
+                displayDatabase(filecount)
                 displayManager.drawRightJustifiedText(500, "db: " + str(filecount))
                 displayManager.handleKeyPress()
                 sleep(5)
