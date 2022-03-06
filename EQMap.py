@@ -112,29 +112,34 @@ def getUpdatesUSGS():
 		eqGathererUSGS.requestEQEvent()
 	except:
 		pass
-		
+
 	# Determine if we have seen this event before If so ignore it
 	if cqIDUSGS != eqGathererUSGS.getEventID():
 
-		# Extract the EQ data
-		cqLocation = eqGathererUSGS.getLocation()
-		cqLon = eqGathererUSGS.getLon()
-		cqLat = eqGathererUSGS.getLat()
-		cqMag = eqGathererUSGS.getMag()
-		cqDepth = eqGathererUSGS.getDepth()
-		cqTsunami = eqGathererUSGS.getTsunami()
-		cqAlert = eqGathererUSGS.getAlert()
+		#if data has no ID dont use it
+		if eqGathererUSGS.getEventID  == "000000X":
+			return False
+		else:
+			# Extract the EQ data
+			cqLocation = eqGathererUSGS.getLocation()
+			cqLon = eqGathererUSGS.getLon()
+			cqLat = eqGathererUSGS.getLat()
+			cqMag = eqGathererUSGS.getMag()
+			cqDepth = eqGathererUSGS.getDepth()
+			cqTsunami = eqGathererUSGS.getTsunami()
+			cqAlert = eqGathererUSGS.getAlert()
 
-		# Add new event to DB if it isnt also from the other source
-		if not eventDB.checkDupLonLat(cqLon, cqLat):
-			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+			# Add new event to DB if it isnt also from the other source
+			if not eventDB.checkDupLonLat(cqLon, cqLat):
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
 
-			# Update the current event ID
-			cqIDUSGS = eqGathererUSGS.getEventID()
+				# Update the current event ID
+				cqIDUSGS = eqGathererUSGS.getEventID()
 
-			# Display the new EQ data
-			repaintMap()
-			return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+				# Display the new EQ data
+				repaintMap()
+				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+
 	return False
 
 # getUSGS Function
