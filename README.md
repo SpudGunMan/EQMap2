@@ -1,6 +1,6 @@
  ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
 
-# About Revision:22.10beta
+# About Revision:22.10
 This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additional features, while keeping the orginal functionality.
