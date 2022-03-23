@@ -18,6 +18,7 @@ class EventDB:
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
 		self.mySettings = []
+		self.dayTrend = [0]
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -95,6 +96,9 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 
+	def getTrend(self):
+		return self.getTrend 
+
 	# Save the settings local path
 	def saveSettings(self):
 		self.dbFileName = "EQMsettings.dat"
@@ -111,9 +115,11 @@ class EventDB:
 		self.dbFile.close()
 		return self.mySettings
 
-
-	# Save the database to local path
+	# Save the database to local path by default at 0:00
 	def save(self):
+		#this only works with default save of once a day - daily event trending
+		self.dayTrend.append(self.numberOfEvents)
+		# save
 		currentRTC = datetime.now()
 		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
 
@@ -132,29 +138,29 @@ class EventDB:
 		# Load file from database dump file
 		self.EQEventQueue.clear()
 		filenames = []
+
 		# Try is for raspberryOS ramdisk use
 		# then look for files, and load the filename list aka file per day
 		# file variable will load a different day in the list
 		try:
 			path = "/run/shm/EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			if file > len(filenames) and file != 0: file = file -1
+			if file > len(filenames): file = (len(filenames) -1)
 			filename = (filenames[file])
 			self.dbFile = open(filename, "rb")
 		except:
 			path = "EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			if file > len(filenames) and file != 0: file = file -1
+			if file > len(filenames): file = (len(filenames) -1)
 			filename = (filenames[file])
 			self.dbFile = open(filename, "rb")
-		#print(self.dbFile) #debug show file name
+
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
 		return self.EQEventQueue, len(filenames)
 
 # Create instance of database
 eventDB = EventDB()
-
 '''
 # Test Code
 eventDB.showEvents()
