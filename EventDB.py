@@ -18,6 +18,7 @@ class EventDB:
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
 		self.mySettings = []
+		self.dayTrend = [0]
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -95,6 +96,9 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 
+	def getTrend(self):
+		return self.getTrend 
+
 	# Save the settings local path
 	def saveSettings(self):
 		self.dbFileName = "EQMsettings.dat"
@@ -111,9 +115,11 @@ class EventDB:
 		self.dbFile.close()
 		return self.mySettings
 
-
-	# Save the database to local path
+	# Save the database to local path by default at 0:00
 	def save(self):
+		#this only works with default save of once a day - daily event trending
+		self.dayTrend.append(self.numberOfEvents)
+		# save
 		currentRTC = datetime.now()
 		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
 
@@ -155,7 +161,6 @@ class EventDB:
 
 # Create instance of database
 eventDB = EventDB()
-
 '''
 # Test Code
 eventDB.showEvents()
