@@ -32,6 +32,11 @@ class EQEventGathererUSGS:
             time.sleep(2)
 
         self.jsonData = json.loads(r.text)
+
+        if self.jsonData is None or []:
+            self.jsonData = []
+            return False
+
         # Extracting all the important key features.
         self.jsonData = self.jsonData['features']
         return days
@@ -40,7 +45,6 @@ class EQEventGathererUSGS:
         try:
             return self.jsonData[0]['id']
         except IndexError:
-            print("Debug:", self.jsonData)
             return "000000X"
 
     def getMag(self):
@@ -53,7 +57,6 @@ class EQEventGathererUSGS:
             self.place = self.jsonData[0]['properties']['place']
         except:
             self.place = ""
-            print("Debug:", self.jsonData[0])
         # Since we are on a map remove the "xx km H of " from the start of the string and use best location name
         self.marker = " of "
         if self.marker in self.place:
