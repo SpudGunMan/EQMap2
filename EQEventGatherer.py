@@ -67,23 +67,38 @@ class EQEventGathererUSGS:
             return str(self.place)
             
     def getAlert(self):
-        self.alert = self.jsonData[0]['properties']['alert']
-        return self.alert
+        try:
+            self.alert = self.jsonData[0]['properties']['alert']
+            return self.alert
+        except IndexError:
+            return ""
 
     def getTsunami(self):
-        self.tsunami = self.jsonData[0]['properties']['tsunami']
-        return self.tsunami
+        try:
+            self.tsunami = self.jsonData[0]['properties']['tsunami']
+            return self.tsunami
+        except IndexError:
+            return ""
 
     def getLon(self):
-        self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
-        return float(("%.2f" % self.lon))
+        try:
+            self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
+            return float(("%.2f" % self.lon))
+        except IndexError:
+            return ""
 
     def getLat(self):
-        self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
-        return float(("%.2f" % self.lat))
+        try:
+            self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
+            return float(("%.2f" % self.lat))
+        except IndexError:
+            return ""
 
     def getDepth(self):
-        return float(self.jsonData[0]['geometry']['coordinates'][2])
+        try:
+            return float(self.jsonData[0]['geometry']['coordinates'][2])
+        except IndexError:
+            return ""
 
 class EQEventGathererEU:
 
