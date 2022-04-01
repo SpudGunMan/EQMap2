@@ -11,153 +11,153 @@ import glob
 
 class EventDB:
 
-	# Class Constructor
-	def __init__(self):
-		# Create empty queue
-		#self.EQEventQueue = deque(maxlen=MAX_EVENTS)
-		self.EQEventQueue = deque()
-		self.EQElocations = deque()
-		self.mySettings = []
-		self.dayTrend = [0]
-		self.EQEventQueue.clear()
+    # Class Constructor
+    def __init__(self):
+        # Create empty queue
+        #self.EQEventQueue = deque(maxlen=MAX_EVENTS)
+        self.EQEventQueue = deque()
+        self.EQElocations = deque()
+        self.mySettings = []
+        self.dayTrend = [0]
+        self.EQEventQueue.clear()
 
-	# Clear the database of events /save a copy
-	def clear(self):
-		self.EQEventQueue.clear()
-		return True
+    # Clear the database of events /save a copy
+    def clear(self):
+        self.EQEventQueue.clear()
+        return True
 
-	# Add an earthquake event
-	def addEvent(self, lon, lat, mag, alert, tsunami, location):
-		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
-		self.EQElocations.append(location)
+    # Add an earthquake event
+    def addEvent(self, lon, lat, mag, alert, tsunami, location):
+        self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
+        self.EQElocations.append(location)
 
-	# Return the number of entries
-	def numberOfEvents(self):
-		return len(self.EQEventQueue)
+    # Return the number of entries
+    def numberOfEvents(self):
+        return len(self.EQEventQueue)
 
-	def showEvents(self):
-		print("Number of entries: ", len(self.EQEventQueue))
-		print(self.EQEventQueue)
-		print("\n")
+    def showEvents(self):
+        print("Number of entries: ", len(self.EQEventQueue))
+        print(self.EQEventQueue)
+        print("\n")
 
-	# Retrieve an event by index
-	def getEvent(self, index):
-		return self.EQEventQueue[index]
+    # Retrieve an event by index
+    def getEvent(self, index):
+        return self.EQEventQueue[index]
 
-	# Retrieve largest event related data
-	def getLargestEvent(self):
-		EQlargest = deque()
-		max_value = 0
-		eventTrend = ''
-		for event in self.EQEventQueue:
-			EQlargest.append(event[2])
-			max_value = max(EQlargest)
+    # Retrieve largest event related data
+    def getLargestEvent(self):
+        EQlargest = deque()
+        max_value = 0
+        eventTrend = ''
+        for event in self.EQEventQueue:
+            EQlargest.append(event[2])
+            max_value = max(EQlargest)
 
-		#trending
-		try:
-			if EQlargest[1]:
-				if EQlargest[0] > EQlargest[1]:
-					eventTrend = " freq. increasing"
-				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = " freq. decreasing"
-				else:
-					eventTrend = ''		
-		except:
-				eventTrend = ''
+        #trending
+        try:
+            if EQlargest[1]:
+                if EQlargest[0] > EQlargest[1]:
+                    eventTrend = " freq. increasing"
+                elif EQlargest[0] < EQlargest[1]:
+                    eventTrend = " freq. decreasing"
+                else:
+                    eventTrend = ''		
+        except:
+                eventTrend = ''
 
-		return (max_value, eventTrend)
+        return (max_value, eventTrend)
 
-	# Report the most active region since last poll
-	def getActiveRegion(self,preserve=False):
-		self.region = ''
+    # Report the most active region since last poll
+    def getActiveRegion(self,preserve=False):
+        self.region = ''
 
-		self.region_dict = Counter(self.EQElocations)
-		self.region = self.region_dict.most_common(1)
+        self.region_dict = Counter(self.EQElocations)
+        self.region = self.region_dict.most_common(1)
 
-		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+        if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
 
-		if self.region:
-			self.region = self.region[(0)]
-			self.region = self.region[0]
-		else:
-			pass
+        if self.region:
+            self.region = self.region[(0)]
+            self.region = self.region[0]
+        else:
+            pass
 
-		return self.region #returns the first in list
+        return self.region #returns the first in list
 
-	# Guess if event is duplicated with lat,lon dups
-	def checkDupLonLat(self, lon, lat):
-		if self.EQEventQueue:
-			self.last_event = self.EQEventQueue[0]
-			if str(lon) in str(self.last_event[0]):
-				if str(lat) in str(self.last_event[1]):
-					#data is a dupe
-					return True
+    # Guess if event is duplicated with lat,lon dups
+    def checkDupLonLat(self, lon, lat):
+        if self.EQEventQueue:
+            self.last_event = self.EQEventQueue[0]
+            if str(lon) in str(self.last_event[0]):
+                if str(lat) in str(self.last_event[1]):
+                    #data is a dupe
+                    return True
 
-			# Data is not a duplicate
-			return False
+            # Data is not a duplicate
+            return False
 
-	def getTrend(self):
-		return self.getTrend 
+    def getTrend(self):
+        return self.getTrend 
 
-	# Save the settings local path
-	def saveSettings(self):
-		self.dbFileName = "EQMsettings.dat"
-		self.dbFile = open(self.dbFileName, "wb")
-		pickle.dump(self.mySettings, self.dbFile)
-		self.dbFile.close()
-		return self.mySettings
+    # Save the settings local path
+    def saveSettings(self):
+        self.dbFileName = "EQMsettings.dat"
+        self.dbFile = open(self.dbFileName, "wb")
+        pickle.dump(self.mySettings, self.dbFile)
+        self.dbFile.close()
+        return self.mySettings
 
-	# Load the settings local path
-	def loadSettings(self):
-		self.dbFileName = "EQMsettings.dat"
-		self.dbFile = open(self.dbFileName, "wb")
-		self.mySettings = pickle.load(self.dbFile)
-		self.dbFile.close()
-		return self.mySettings
+    # Load the settings local path
+    def loadSettings(self):
+        self.dbFileName = "EQMsettings.dat"
+        self.dbFile = open(self.dbFileName, "wb")
+        self.mySettings = pickle.load(self.dbFile)
+        self.dbFile.close()
+        return self.mySettings
 
-	# Save the database to local path by default at 0:00
-	def save(self):
-		#this only works with default save of once a day - daily event trending
-		self.dayTrend.append(self.numberOfEvents)
-		# save
-		currentRTC = datetime.now()
-		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
+    # Save the database to local path by default at 0:00
+    def save(self):
+        #this only works with default save of once a day - daily event trending
+        self.dayTrend.append(self.numberOfEvents)
+        # save
+        currentRTC = datetime.now()
+        eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
 
-		try:
-			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "wb")
-		except:
-			self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
-			self.dbFile = open(self.dbFileName, "wb")
+        try:
+            self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
+            self.dbFile = open(self.dbFileName, "wb")
+        except:
+            self.dbFileName = "EQMdatabase" + eventLogTime + ".dat"
+            self.dbFile = open(self.dbFileName, "wb")
 
-		pickle.dump(self.EQEventQueue, self.dbFile)
-		self.dbFile.close()
-		return True
+        pickle.dump(self.EQEventQueue, self.dbFile)
+        self.dbFile.close()
+        return True
 
-	def load(self, file=0):
-		# Load file from database dump file
-		self.EQEventQueue.clear()
-		filenames = []
+    def load(self, file=0):
+        # Load file from database dump file
+        self.EQEventQueue.clear()
+        filenames = []
 
-		# Try is for raspberryOS ramdisk use
-		# then look for files, and load the filename list aka file per day
-		# file variable will load a different day in the list
-		try:
-			path = "/run/shm/EQMdatabase*.dat"
-			filenames = glob.glob(path)
-			if file > len(filenames): file = (len(filenames) -1)
-			filename = (filenames[file])
-			self.dbFile = open(filename, "rb")
-		except:
-			path = "EQMdatabase*.dat"
-			filenames = glob.glob(path)
-			if file > len(filenames): file = (len(filenames) -1)
-			filename = (filenames[file])
-			self.dbFile = open(filename, "rb")
+        # Try is for raspberryOS ramdisk use
+        # then look for files, and load the filename list aka file per day
+        # file variable will load a different day in the list
+        try:
+            path = "/run/shm/EQMdatabase*.dat"
+            filenames = glob.glob(path)
+            if file > len(filenames): file = (len(filenames) -1)
+            filename = (filenames[file])
+            self.dbFile = open(filename, "rb")
+        except:
+            path = "EQMdatabase*.dat"
+            filenames = glob.glob(path)
+            if file > len(filenames): file = (len(filenames) -1)
+            filename = (filenames[file])
+            self.dbFile = open(filename, "rb")
 
-		self.EQEventQueue = pickle.load(self.dbFile)
-		self.dbFile.close()
-		return self.EQEventQueue, len(filenames)
+        self.EQEventQueue = pickle.load(self.dbFile)
+        self.dbFile.close()
+        return self.EQEventQueue, len(filenames)
 
 # Create instance of database
 eventDB = EventDB()

@@ -74,7 +74,7 @@ class DisplayManager:
 			
 
 
-    # Clear the screen
+	# Clear the screen
 	def clearScreen(self):
 		try:
 			self.screen.fill(self.black)
