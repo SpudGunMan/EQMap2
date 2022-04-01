@@ -141,7 +141,7 @@ class EQEventGathererEU:
         try:
             return self.jsonData['features'][0]['id']
         except IndexError:
-            return ""
+            return "000000X"
 
     def getLon(self):
         try:
