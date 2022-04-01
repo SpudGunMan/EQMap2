@@ -138,25 +138,43 @@ class EQEventGathererEU:
         return days
 
     def getEventID(self):
-        return self.jsonData['features'][0]['id']
+        try:
+            return self.jsonData['features'][0]['id']
+        except IndexError:
+            return ""
 
     def getLon(self):
-        self.lon = float(self.jsonData['features'][0]['properties']['lon'])
-        return float(("%.2f" % self.lon))
+        try:
+            self.lon = float(self.jsonData['features'][0]['properties']['lon'])
+            return float(("%.2f" % self.lon))
+        except IndexError:
+            return ""
 
     def getLat(self):
-        lat = float(self.jsonData['features'][0]['properties']['lat'])
-        return float(("%.2f" % lat))
+        try:
+            lat = float(self.jsonData['features'][0]['properties']['lat'])
+            return float(("%.2f" % lat))
+        except IndexError:
+            return ""
 
     def getMag(self):
-        return float(self.jsonData['features'][0]['properties']['mag'])
+        try:
+            return float(self.jsonData['features'][0]['properties']['mag'])
+        except IndexError:
+            return ""
 
     def getDepth(self):
-        return float(self.jsonData['features'][0]['properties']['depth'])
+        try:
+            return float(self.jsonData['features'][0]['properties']['depth'])
+        except IndexError:
+            return ""
 
     def getLocation(self):
-        return self.jsonData['features'][0]['properties']['flynn_region']
-
+        try:
+            return self.jsonData['features'][0]['properties']['flynn_region']
+        except IndexError:
+                return ""
+                
 # Return a class instance
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
