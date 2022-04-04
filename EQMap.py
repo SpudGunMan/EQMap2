@@ -117,7 +117,7 @@ def getUpdatesUSGS():
     if cqIDUSGS != eqGathererUSGS.getEventID():
 
         #if data has no ID dont use it
-        if eqGathererUSGS.getEventID  == "000000X":
+        if eqGathererUSGS.getEventID  is None:
             return False
         else:
             # Extract the EQ data

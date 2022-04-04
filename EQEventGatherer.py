@@ -45,7 +45,7 @@ class EQEventGathererUSGS:
         try:
             return self.jsonData[0]['id']
         except IndexError:
-            return "000000X"
+            return None
 
     def getMag(self):
         self.mag = float(self.jsonData[0]['properties']['mag'])
@@ -141,7 +141,7 @@ class EQEventGathererEU:
         try:
             return self.jsonData['features'][0]['id']
         except IndexError:
-            return "000000X"
+            return None
 
     def getLon(self):
         try:
