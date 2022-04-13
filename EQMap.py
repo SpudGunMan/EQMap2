@@ -120,14 +120,18 @@ def getUpdatesUSGS():
         if eqGathererUSGS.getEventID  is None:
             return False
         else:
+
             # Extract the EQ data
-            cqLocation = eqGathererUSGS.getLocation()
-            cqLon = eqGathererUSGS.getLon()
-            cqLat = eqGathererUSGS.getLat()
-            cqMag = eqGathererUSGS.getMag()
-            cqDepth = eqGathererUSGS.getDepth()
-            cqTsunami = eqGathererUSGS.getTsunami()
-            cqAlert = eqGathererUSGS.getAlert()
+            try:
+                cqLocation = eqGathererUSGS.getLocation()
+                cqLon = eqGathererUSGS.getLon()
+                cqLat = eqGathererUSGS.getLat()
+                cqMag = eqGathererUSGS.getMag()
+                cqDepth = eqGathererUSGS.getDepth()
+                cqTsunami = eqGathererUSGS.getTsunami()
+                cqAlert = eqGathererUSGS.getAlert()
+            except Exception:
+                return False
 
             # Add new event to DB if it isnt also from the other source
             if not eventDB.checkDupLonLat(cqLon, cqLat):
@@ -142,7 +146,7 @@ def getUpdatesUSGS():
 
     return False
 
-# getUSGS Function
+# getEU Function
 def getUpdatesEU():
     global cqIDUK,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
     # internet check test
