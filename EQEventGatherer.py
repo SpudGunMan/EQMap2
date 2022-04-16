@@ -32,6 +32,11 @@ class EQEventGathererUSGS:
             time.sleep(2)
 
         self.jsonData = json.loads(r.text)
+
+        if self.jsonData is None or []:
+            self.jsonData = []
+            return False
+
         # Extracting all the important key features.
         self.jsonData = self.jsonData['features']
         return days
@@ -40,7 +45,7 @@ class EQEventGathererUSGS:
         try:
             return self.jsonData[0]['id']
         except IndexError:
-            return "000000X"
+            return None
 
     def getMag(self):
         self.mag = float(self.jsonData[0]['properties']['mag'])
@@ -48,7 +53,10 @@ class EQEventGathererUSGS:
         return float(("%.2f" % self.mag))
 
     def getLocation(self):
-        self.place = self.jsonData[0]['properties']['place']
+        try:
+            self.place = self.jsonData[0]['properties']['place']
+        except:
+            self.place = ""
         # Since we are on a map remove the "xx km H of " from the start of the string and use best location name
         self.marker = " of "
         if self.marker in self.place:
@@ -59,23 +67,38 @@ class EQEventGathererUSGS:
             return str(self.place)
             
     def getAlert(self):
-        self.alert = self.jsonData[0]['properties']['alert']
-        return self.alert
+        try:
+            self.alert = self.jsonData[0]['properties']['alert']
+            return self.alert
+        except IndexError:
+            return ""
 
     def getTsunami(self):
-        self.tsunami = self.jsonData[0]['properties']['tsunami']
-        return self.tsunami
+        try:
+            self.tsunami = self.jsonData[0]['properties']['tsunami']
+            return self.tsunami
+        except IndexError:
+            return ""
 
     def getLon(self):
-        self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
-        return float(("%.2f" % self.lon))
+        try:
+            self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
+            return float(("%.2f" % self.lon))
+        except IndexError:
+            return ""
 
     def getLat(self):
-        self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
-        return float(("%.2f" % self.lat))
+        try:
+            self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
+            return float(("%.2f" % self.lat))
+        except IndexError:
+            return ""
 
     def getDepth(self):
-        return float(self.jsonData[0]['geometry']['coordinates'][2])
+        try:
+            return float(self.jsonData[0]['geometry']['coordinates'][2])
+        except IndexError:
+            return ""
 
 class EQEventGathererEU:
 
@@ -115,25 +138,43 @@ class EQEventGathererEU:
         return days
 
     def getEventID(self):
-        return self.jsonData['features'][0]['id']
+        try:
+            return self.jsonData['features'][0]['id']
+        except IndexError:
+            return None
 
     def getLon(self):
-        self.lon = float(self.jsonData['features'][0]['properties']['lon'])
-        return float(("%.2f" % self.lon))
+        try:
+            self.lon = float(self.jsonData['features'][0]['properties']['lon'])
+            return float(("%.2f" % self.lon))
+        except IndexError:
+            return ""
 
     def getLat(self):
-        lat = float(self.jsonData['features'][0]['properties']['lat'])
-        return float(("%.2f" % lat))
+        try:
+            lat = float(self.jsonData['features'][0]['properties']['lat'])
+            return float(("%.2f" % lat))
+        except IndexError:
+            return ""
 
     def getMag(self):
-        return float(self.jsonData['features'][0]['properties']['mag'])
+        try:
+            return float(self.jsonData['features'][0]['properties']['mag'])
+        except IndexError:
+            return ""
 
     def getDepth(self):
-        return float(self.jsonData['features'][0]['properties']['depth'])
+        try:
+            return float(self.jsonData['features'][0]['properties']['depth'])
+        except IndexError:
+            return ""
 
     def getLocation(self):
-        return self.jsonData['features'][0]['properties']['flynn_region']
-
+        try:
+            return self.jsonData['features'][0]['properties']['flynn_region']
+        except IndexError:
+                return ""
+                
 # Return a class instance
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
