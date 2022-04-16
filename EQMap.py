@@ -98,7 +98,8 @@ def displayTitlePage():
 	# Display the title/ wash page
 	highestMag, trending = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
-	displayManager.displayWashPage(highestMag + trending, str(eventDB.getActiveRegion()))
+	dayTrend = str(eventDB.getDayTrend())
+	displayManager.displayWashPage(highestMag + trending, str(eventDB.getActiveRegion()), dayTrend)
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS

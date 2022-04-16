@@ -18,7 +18,7 @@ class EventDB:
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
 		self.mySettings = []
-		self.dayTrend = [0]
+		self.dayTrend = ["0"]
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -43,6 +43,10 @@ class EventDB:
 	# Retrieve an event by index
 	def getEvent(self, index):
 		return self.EQEventQueue[index]
+
+	# Retreve the last day event count
+	def getDayTrend(self):
+		return self.dayTrend[0]
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
@@ -212,5 +216,8 @@ print("number of events", eventDB.numberOfEvents())
 print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
+
+print(str(eventDB.getDayTrend()))
 '''
+
 

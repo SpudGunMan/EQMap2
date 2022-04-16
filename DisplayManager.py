@@ -74,7 +74,7 @@ class DisplayManager:
 			
 
 
-    # Clear the screen
+	# Clear the screen
 	def clearScreen(self):
 		try:
 			self.screen.fill(self.black)
@@ -331,7 +331,7 @@ class DisplayManager:
 		return True
 
 	# Display Wash/Title page
-	def displayWashPage(self, largestevent, activeregion):
+	def displayWashPage(self, largestevent, activeregion, dayTrend):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
@@ -354,11 +354,13 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 120), "Largest seen Mag:" + largestevent)
 					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 450), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				else:
 					self.drawCenteredText((self.topTextRow + 90), "Largest seen Mag:" + largestevent)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				return True
 			
@@ -369,7 +371,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.9")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.11")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
