@@ -12,65 +12,65 @@ from pygame.locals import *
 
 class DisplayManager:
 
-    # Class constructor
-    def __init__(self):
-        self.fontSize = 40
-        self.dist = "m" # or k miles/kilo
-        self.time24h = False
-        self.firstRun = True
-        self.textColor = (255, 255, 255)
-        self.black  = (0, 0, 0)
-        self.white  = (255, 255, 255)
-        self.red    = (255, 0, 0)
-        self.yellow = (255, 255, 0)
-        self.green  = (0, 255, 0)
-        self.blue  = (0, 0, 255)
-        self.eventTimeString = "loading..."
-        self.eventTimeStringLong = self.eventTimeString
-        self.topTextRow = 0
-        self.eventsTextRow = 0
-        self.bottomTextRow = 0
-        self.eventCount = 0
+	# Class constructor
+	def __init__(self):
+		self.fontSize = 40
+		self.dist = "m" # or k miles/kilo
+		self.time24h = False
+		self.firstRun = True
+		self.textColor = (255, 255, 255)
+		self.black  = (0, 0, 0)
+		self.white  = (255, 255, 255)
+		self.red    = (255, 0, 0)
+		self.yellow = (255, 255, 0)
+		self.green  = (0, 255, 0)
+		self.blue  = (0, 0, 255)
+		self.eventTimeString = "loading..."
+		self.eventTimeStringLong = self.eventTimeString
+		self.topTextRow = 0
+		self.eventsTextRow = 0
+		self.bottomTextRow = 0
+		self.eventCount = 0
 
-        pygame.init()
+		pygame.init()
 
-        try:
-            #set monitor to use
-            self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-            self.displayInfo = pygame.display.Info()
-            self.screenWidth  = self.displayInfo.current_w
-            self.screenHeight = self.displayInfo.current_h
-            pygame.mouse.set_visible(0)
+		try:
+			#set monitor to use
+			self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+			self.displayInfo = pygame.display.Info()
+			self.screenWidth  = self.displayInfo.current_w
+			self.screenHeight = self.displayInfo.current_h
+			pygame.mouse.set_visible(0)
 
-            # Read the map into memory
-            self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
-            if self.screenWidth > 1000:
-                self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
+			# Read the map into memory
+			self.mapImage = pygame.image.load('maps/eqm800_shaded.bmp')
+			if self.screenWidth > 1000:
+				self.mapImage = pygame.transform.scale(self.mapImage, (1024, 516))
 
-            # Get its bounding box
-            self.mapImageRect = self.mapImage.get_rect()
+			# Get its bounding box
+			self.mapImageRect = self.mapImage.get_rect()
 
-            # Center map 
-            self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
-            self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
+			# Center map 
+			self.mapImageRect.y = (pygame.display.get_surface().get_height() - self.mapImageRect.height) / 2
+			self.mapImageRect.x = (pygame.display.get_surface().get_width() - self.mapImageRect.width) / 2
 
-            # Set the uypper and lower text areas
-            self.topTextRow = self.mapImageRect.y - 25
-            self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height) + 5
-            self.eventsTextRow = self.bottomTextRow - 30
+			# Set the uypper and lower text areas
+			self.topTextRow = self.mapImageRect.y - 25
+			self.bottomTextRow = (self.mapImageRect.y + self.mapImageRect.height) + 5
+			self.eventsTextRow = self.bottomTextRow - 30
 
-            # Setup inital font of initial size
-            self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
-            #self.font = pygame.font.SysFont('arial',self.fontSize)
-            self.hasGUI = True
-        
-        except:
-            #command line settings for display to console display
-            self.screenWidth = -1
-            self.screenHeight = -1
-            self.screen = (-1, -1)
-            self.mapImageRect = (-1, -1, -1, -1)
-            self.hasGUI = False
+			# Setup inital font of initial size
+			self.font = pygame.freetype.Font('fonts/Sony.ttf', self.fontSize) #legacy pygame > v2.0
+			#self.font = pygame.font.SysFont('arial',self.fontSize)
+			self.hasGUI = True
+		
+		except:
+			#command line settings for display to console display
+			self.screenWidth = -1
+			self.screenHeight = -1
+			self.screen = (-1, -1)
+			self.mapImageRect = (-1, -1, -1, -1)
+			self.hasGUI = False
 
 	# Clear the screen
 	def clearScreen(self):
