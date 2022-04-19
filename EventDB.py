@@ -147,13 +147,13 @@ class EventDB:
 		# file variable will load a different day in the list
 		try:
 			path = "/run/shm/EQMdatabase*.dat"
-			filenames = glob.glob(path)
+			filenames = sorted(glob.glob(path))
 			filename = (filenames[file])
 			print("DB:", file, filename)
 			self.dbFile = open(filename, "rb")
 		except:
 			path = "EQMdatabase*.dat"
-			filenames = glob.glob(path)
+			filenames = sorted(glob.glob(path))
 			filename = (filenames[file])
 			print("DB:", file, filename)
 			self.dbFile = open(filename, "rb")

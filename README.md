@@ -73,8 +73,6 @@ normally on a next branch if you see it try it out! `git pull origin next`
 - save settings
   - UTC
 - replay from larger returns in USGS (poll more in UK)
-- most active region
-  - bug limit length of return to map rect?
 - generate some new maps
   - fault lines
 

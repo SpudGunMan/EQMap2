@@ -43,13 +43,9 @@ def main():
 				if events > lastevents: trend = "up"
 				if events < lastevents: trend = "down"
 				lastevents = events
-				displayManager.drawRightJustifiedText(100, "db: " + str(filecount) + " Events:" + str(events) + " Trending " + trend)
+				displayManager.drawRightJustifiedText(100, "db: " + str(day) + " Events:" + str(events) + " Trending " + trend)
 				displayManager.handleKeyPress()
 				sleep(5)
-				filecount = filecount - 1
-				if filecount  == 0:
-					EQEventQueue, filecount = eventDB.load()
-					sleep(1)
 
 	except KeyboardInterrupt:
 		pass
