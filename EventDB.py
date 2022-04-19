@@ -142,21 +142,20 @@ class EventDB:
 		# Load file from database dump file
 		self.EQEventQueue.clear()
 		filenames = []
-
 		# Try is for raspberryOS ramdisk use
 		# then look for files, and load the filename list aka file per day
 		# file variable will load a different day in the list
 		try:
 			path = "/run/shm/EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			if file > len(filenames): file = (len(filenames) -1)
 			filename = (filenames[file])
+			print("DB:", file, filename)
 			self.dbFile = open(filename, "rb")
 		except:
 			path = "EQMdatabase*.dat"
 			filenames = glob.glob(path)
-			if file > len(filenames): file = (len(filenames) -1)
 			filename = (filenames[file])
+			print("DB:", file, filename)
 			self.dbFile = open(filename, "rb")
 
 		self.EQEventQueue = pickle.load(self.dbFile)
