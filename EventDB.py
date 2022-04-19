@@ -17,8 +17,8 @@ class EventDB:
 		#self.EQEventQueue = deque(maxlen=MAX_EVENTS)
 		self.EQEventQueue = deque()
 		self.EQElocations = deque()
+		self.dailyevents = []
 		self.mySettings = []
-		self.dayTrend = ["0"]
 		self.EQEventQueue.clear()
 
 	# Clear the database of events /save a copy
@@ -46,7 +46,7 @@ class EventDB:
 
 	# Retreve the last day event count
 	def getDayTrend(self):
-		return self.dayTrend[-1]
+		print("debug 49: ", self.dailyevents)
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
@@ -122,7 +122,12 @@ class EventDB:
 	# Save the database to local path by default at 0:00
 	def save(self):
 		#this only works with default save of once a day - daily event trending
-		self.dayTrend.append(self.numberOfEvents)
+		try:
+			if len(self.numberOfEvents) > 0:
+				self.dailyevents.append(self.numberOfEvents)
+		except:
+			self.dailyevents.append(0)
+
 		# save
 		currentRTC = datetime.now()
 		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
@@ -216,7 +221,7 @@ print("largest event", eventDB.getLargestEvent())
 
 print("active region", eventDB.getActiveRegion())
 
-print(str(eventDB.getDayTrend()))
+print("trend ", eventDB.getDayTrend())
 '''
 
 
