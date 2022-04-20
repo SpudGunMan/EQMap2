@@ -126,8 +126,8 @@ class EventDB:
 	def save(self):
 		#this only works with default save of once a day - daily event trending
 		try:
-			if len(self.numberOfEvents) > 0:
-				self.dailyevents.append(self.numberOfEvents)
+			if len(self.EQEventQueue) > 0:
+				self.dailyevents.append(len(self.EQEventQueue))
 		except:
 			self.dailyevents.append(0)
 
