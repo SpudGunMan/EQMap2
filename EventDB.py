@@ -46,7 +46,7 @@ class EventDB:
 
 	# Retreve the last day event count
 	def getDayTrend(self):
-		print("debug 49: ", self.dailyevents)
+		return self.dailyevents
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
