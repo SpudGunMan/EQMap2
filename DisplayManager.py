@@ -174,10 +174,11 @@ class DisplayManager:
 
 	# Draw a circle with size based on mag at lon, lat position on map
 	def mapEarthquake(self, lon, lat, mag, color):
+		
 		if self.hasGUI:
 			# Calculate map X and Y
-			mapX = ((lon + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
-			mapY = ((((-1 * lat) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
+			mapX = ((float(lon) + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
+			mapY = ((((-1 * float(lat)) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
 			
 			if mag < 0.8: mag = 0.8 #too small to see blink
 			
