@@ -59,14 +59,13 @@ class EventDB:
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
 			max_value = max(EQlargest)
-
 		#trending
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
-					eventTrend = " freq. increasing"
+					eventTrend = " mag. increasing"
 				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = " freq. decreasing"
+					eventTrend = " mag. decreasing"
 				else:
 					eventTrend = ''		
 		except:
@@ -103,6 +102,7 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 
+	# for the future use of day to day trending graph?
 	def getTrend(self):
 		return self.getTrend 
 
@@ -226,5 +226,4 @@ print("active region", eventDB.getActiveRegion())
 
 print("trend ", eventDB.getDayTrend())
 '''
-
 

@@ -284,7 +284,7 @@ class DisplayManager:
 
 
 	# Display 'Events drawn' string
-	def displayNumberOfEvents(self, num):
+	def displayNumberOfEvents(self, num, largestLOC):
 		currentRTC = datetime.now()
 		if self.time24h:
 			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %Y")
@@ -297,7 +297,7 @@ class DisplayManager:
 
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
-		self.drawCenteredText(self.eventsTextRow, str(num) + " total events drawn at " + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "Largest EQ loc: " + largestLOC +str(num) + " total, last event at " + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
@@ -319,14 +319,14 @@ class DisplayManager:
 		return True
 	
 	# Display LastEQ/High Mag String
-	def displayDBStats(self, mag, depth, largestmag, tsunami, alert, cluster=False):
+	def displayDBStats(self, mag, count, largestmag, tsunami, alert, cluster=False):
 		currentAlarm = ""
 		if cluster: currentAlarm = "CLSTR"
 		if mag > 7: currentAlarm = "MAJOR"
 		if tsunami != 0: currentAlarm = "TSUNAMI"
 		if alert is not None: currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, currentAlarm + "  LastEQ:" + self.eventTimeString + "|HiMag:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " EQ#: " + str(count) + " | HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
@@ -370,7 +370,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.11")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.12")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)

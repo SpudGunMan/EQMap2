@@ -47,6 +47,7 @@ cqAlert = None
 cqTsunami = 0
 dataToggle = False
 blinkToggle = False
+largestLOC = 'no data yet '
 
 # Return system millisecond count
 def millis():
@@ -66,18 +67,19 @@ def repaintMap():
 
 	# Display map Draw data with event count and date
 	eventCount = eventDB.numberOfEvents()
-	displayManager.displayNumberOfEvents(eventCount)
+	displayManager.displayNumberOfEvents(eventCount, largestLOC)
 
 	# Display EQ depth and last EQ timestamp upper right
 	isCluster = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
 	
 	highestMag, trending = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
+	count = eventDB.numberOfEvents()
 
 	if isCluster and eventCount > 4:
-		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, cluster=True)
+		displayManager.displayDBStats(cqMag, count, highestMag, cqTsunami, cqAlert, cluster=True)
 	else:
-		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
+		displayManager.displayDBStats(cqMag, count, highestMag, cqTsunami, cqAlert)
 	
 
 	# Display all of the EQ events in the DB as circles
@@ -134,6 +136,11 @@ def getUpdatesUSGS():
 			except Exception:
 				return False
 
+			#is this the largest Event today?
+			highestMag, trending = eventDB.getLargestEvent()
+			if cqMag > highestMag:
+				largestLOC = cqLocation
+
 			# Add new event to DB if it isnt also from the other source
 			if not eventDB.checkDupLonLat(cqLon, cqLat):
 				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
@@ -167,6 +174,11 @@ def getUpdatesEU():
 		cqDepth = eqGathererEU.getDepth()
 		cqTsunami = 0
 		cqAlert = None
+
+		#is this the largest Event today?
+		highestMag, trending = eventDB.getLargestEvent()
+		if cqMag > highestMag:
+			largestLOC = cqLocation
 
 		# Add new event to DB if it isnt also from the other source
 		if not eventDB.checkDupLonLat(cqLon, cqLat):
