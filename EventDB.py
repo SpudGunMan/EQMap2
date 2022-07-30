@@ -57,10 +57,17 @@ class EventDB:
 		max_value = 0
 		max_location = ''
 		eventTrend = ''
+		#spin off a table of the events and find the max
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
-			max_location = event[5]
 			max_value = max(EQlargest)
+
+		#find max item name
+		for event in self.EQEventQueue:
+			if event[2] >= max_value:
+				max_location = event[5]
+
+
 		#trending - this is dumb not sure its usefull?
 		try:
 			if EQlargest[1]:
