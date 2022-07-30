@@ -283,7 +283,7 @@ class DisplayManager:
 			return timeNow
 
 
-	# Display 'Events drawn' string
+	# Display Bottom Data Bar string
 	def displayBottomDataFeed(self, max_location):
 		currentRTC = datetime.now()
 		if self.time24h:
@@ -296,7 +296,7 @@ class DisplayManager:
 
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
-		self.drawCenteredText(self.eventsTextRow, "Largest EQ @ " + max_location + "  Last EQ @" + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "Largest EQ in:" + max_location + "  Last EQ @" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
@@ -314,7 +314,7 @@ class DisplayManager:
 			milesStr = str(depth) + "km"
 		
 		location = location[:24] #truncate long names centering from pygame will just overlap badly
-		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + "@" + milesStr)
+		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + " @" + milesStr)
 		return True
 	
 	# Display LastEQ/High Mag String
@@ -325,11 +325,11 @@ class DisplayManager:
 		if tsunami != 0: currentAlarm = "TSUNAMI"
 		if alert is not None: currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, currentAlarm + "| EQTotal: " + str(count) + "| HiMag:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + "| HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
-	def displayWashPage(self, largestevent, activeregion, dayTrend):
+	def displayWashPage(self, largestevent, activeregion, dayTrend, max_location):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 
@@ -349,13 +349,13 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				if self.screenWidth > 1000:
-					self.drawCenteredText((self.topTextRow + 120), "Largest seen Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 120), "Largest seen Mag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 450), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				else:
-					self.drawCenteredText((self.topTextRow + 90), "Largest seen Mag:" + largestevent)
+					self.drawCenteredText((self.topTextRow + 90), "Largest seen Mag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend)
@@ -369,7 +369,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.12")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.13")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
