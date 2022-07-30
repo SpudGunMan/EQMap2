@@ -296,7 +296,7 @@ class DisplayManager:
 
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
-		self.drawCenteredText(self.eventsTextRow, "Largest EQ loc: " + max_location + "  map drawn@" + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "Largest EQ @ " + max_location + "  Last EQ @" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
@@ -325,7 +325,7 @@ class DisplayManager:
 		if tsunami != 0: currentAlarm = "TSUNAMI"
 		if alert is not None: currentAlarm = "ALERT"
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " EQ#: " + str(count) + " | HiMag:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + "| EQTotal: " + str(count) + "| HiMag:" + largestmag)
 		return True
 
 	# Display Wash/Title page
