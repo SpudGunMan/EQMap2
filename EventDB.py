@@ -28,7 +28,7 @@ class EventDB:
 
 	# Add an earthquake event
 	def addEvent(self, lon, lat, mag, alert, tsunami, location):
-		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
+		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami, location))
 		self.EQElocations.append(location)
 
 	# Return the number of entries
@@ -55,11 +55,13 @@ class EventDB:
 	def getLargestEvent(self):
 		EQlargest = deque()
 		max_value = 0
+		max_location = ''
 		eventTrend = ''
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
+			max_location = event[5]
 			max_value = max(EQlargest)
-		#trending
+		#trending - this is dumb not sure its usefull?
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
@@ -71,7 +73,7 @@ class EventDB:
 		except:
 				eventTrend = ''
 
-		return (max_value, eventTrend)
+		return (max_value, eventTrend, max_location)
 
 	# Report the most active region since last poll
 	def getActiveRegion(self,preserve=False):

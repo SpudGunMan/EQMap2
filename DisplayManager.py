@@ -284,7 +284,7 @@ class DisplayManager:
 
 
 	# Display 'Events drawn' string
-	def displayNumberOfEvents(self, num, largestLOC):
+	def displayBottomDataFeed(self, max_location):
 		currentRTC = datetime.now()
 		if self.time24h:
 			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %Y")
@@ -293,11 +293,10 @@ class DisplayManager:
 			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d %Y")
 			self.eventTimeString = currentRTC.strftime("%-I:%M%P")
 
-		self.eventCount = num
 
 		self.setTextColor(self.blue)
 		self.setTextSize(20)
-		self.drawCenteredText(self.eventsTextRow, "Largest EQ loc: " + largestLOC +str(num) + " total, last event at " + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "Largest EQ loc: " + max_location + "  map drawn@" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
