@@ -296,7 +296,7 @@ class DisplayManager:
 
 		self.setTextColor(self.black)
 		self.setTextSize(25)
-		self.drawCenteredText(self.eventsTextRow, "HiMag in:" + max_location + "  Last EQ @" + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "HiMag in:" + max_location + " LastEQ @" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
