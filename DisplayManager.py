@@ -294,8 +294,8 @@ class DisplayManager:
 			self.eventTimeString = currentRTC.strftime("%-I:%M%P")
 
 
-		self.setTextColor(self.blue)
-		self.setTextSize(20)
+		self.setTextColor(self.black)
+		self.setTextSize(30)
 		self.drawCenteredText(self.eventsTextRow, "Largest EQ in:" + max_location + "  Last EQ @" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
