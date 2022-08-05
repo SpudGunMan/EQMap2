@@ -349,7 +349,7 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				if self.screenWidth > 1000:
-					self.drawCenteredText((self.topTextRow + 120), "Largest Mag:" + largestevent + " in " + max_location)
+					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 450), "Yesterdays event count " + dayTrend)
