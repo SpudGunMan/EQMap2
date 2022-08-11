@@ -289,10 +289,10 @@ class DisplayManager:
 	def displayBottomDataFeed(self, max_location, eventCount):
 		currentRTC = datetime.now()
 		if self.time24h:
-			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %y")
+			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m/%y")
 			self.eventTimeString = currentRTC.strftime("%-H:%M")
 		else:
-			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d %y")
+			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d/%y")
 			self.eventTimeString = currentRTC.strftime("%-I:%M%P")
 
 		self.eventCount = eventCount
