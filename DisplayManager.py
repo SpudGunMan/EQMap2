@@ -286,15 +286,16 @@ class DisplayManager:
 
 
 	# Display Bottom Data Bar string
-	def displayBottomDataFeed(self, max_location):
+	def displayBottomDataFeed(self, max_location, eventCount):
 		currentRTC = datetime.now()
 		if self.time24h:
-			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %Y")
+			self.eventTimeStringLong = currentRTC.strftime("%-H:%M %d/%m %y")
 			self.eventTimeString = currentRTC.strftime("%-H:%M")
 		else:
-			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d %Y")
+			self.eventTimeStringLong = currentRTC.strftime("%-I:%M %P %m/%d %y")
 			self.eventTimeString = currentRTC.strftime("%-I:%M%P")
 
+		self.eventCount = eventCount
 
 		self.setTextColor(self.black)
 		self.setTextSize(25)
@@ -353,15 +354,15 @@ class DisplayManager:
 				if self.screenWidth > 1000:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
-					self.drawCenteredText((self.topTextRow + 370), str(EventDB.numberOfEvents) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 400), "Yesterdays event count " + dayTrend)
+					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent + " in " + max_location)
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
-					self.drawCenteredText((self.topTextRow + 300), str(EventDB.numberOfEvents) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				return True
@@ -371,7 +372,7 @@ class DisplayManager:
 				self.drawCenteredText((self.topTextRow + 90), "Loading")
 				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
 				self.setTextSize(70)
-				self.drawCenteredText((self.topTextRow + 160), "Earthquake Map")
+				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
 				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:22.13")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
