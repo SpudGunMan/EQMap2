@@ -6,6 +6,8 @@ Concept, Design by: Craig A. Lindley
 from cProfile import run
 import os, time, sys
 from datetime import datetime
+
+from EventDB import EventDB
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
@@ -296,7 +298,7 @@ class DisplayManager:
 
 		self.setTextColor(self.black)
 		self.setTextSize(25)
-		self.drawCenteredText(self.eventsTextRow, "HiMag: " + max_location + " LastQuake@ " + self.eventTimeStringLong)
+		self.drawCenteredText(self.eventsTextRow, "HiMag: " + max_location + ". updated:" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
@@ -350,16 +352,16 @@ class DisplayManager:
 			if self.firstRun == False:
 				if self.screenWidth > 1000:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
-					self.drawCenteredText((self.topTextRow + 260), "Active Region: " + activeregion)
-					self.drawCenteredText((self.topTextRow + 400), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 450), "Yesterdays event count " + dayTrend)
+					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
+					self.drawCenteredText((self.topTextRow + 370), str(EventDB.numberOfEvents) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 400), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent + " in " + max_location)
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
-					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+					self.drawCenteredText((self.topTextRow + 300), str(EventDB.numberOfEvents) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend)
 					time.sleep(20)
 				return True
