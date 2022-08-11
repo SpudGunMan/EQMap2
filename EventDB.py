@@ -28,7 +28,7 @@ class EventDB:
 
 	# Add an earthquake event
 	def addEvent(self, lon, lat, mag, alert, tsunami, location):
-		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami))
+		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami, location))
 		self.EQElocations.append(location)
 
 	# Return the number of entries
@@ -55,24 +55,32 @@ class EventDB:
 	def getLargestEvent(self):
 		EQlargest = deque()
 		max_value = 0
+		max_location = ''
 		eventTrend = ''
+		#spin off a table of the events and find the max
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
 			max_value = max(EQlargest)
 
-		#trending
+		#find max item name
+		for event in self.EQEventQueue:
+			if event[2] >= max_value:
+				max_location = event[5]
+
+
+		#trending - this is dumb not sure its usefull?
 		try:
 			if EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
-					eventTrend = " freq. increasing"
+					eventTrend = " mag. increasing"
 				elif EQlargest[0] < EQlargest[1]:
-					eventTrend = " freq. decreasing"
+					eventTrend = " mag. decreasing"
 				else:
 					eventTrend = ''		
 		except:
 				eventTrend = ''
 
-		return (max_value, eventTrend)
+		return (max_value, eventTrend, max_location)
 
 	# Report the most active region since last poll
 	def getActiveRegion(self,preserve=False):
@@ -103,6 +111,7 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 
+	# for the future use of day to day trending graph?
 	def getTrend(self):
 		return self.getTrend 
 
@@ -226,5 +235,4 @@ print("active region", eventDB.getActiveRegion())
 
 print("trend ", eventDB.getDayTrend())
 '''
-
 

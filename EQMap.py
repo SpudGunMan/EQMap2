@@ -55,6 +55,10 @@ def millis():
 # Repaint the map from the events in the DB
 def repaintMap():
 
+	highestMag, trending, max_location = eventDB.getLargestEvent()
+	highestMag = str(highestMag)
+	eventCount = eventDB.numberOfEvents()
+
 	# Display fresh map
 	displayManager.displayMap()
 
@@ -65,26 +69,22 @@ def repaintMap():
 	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
 
 	# Display map Draw data with event count and date
-	eventCount = eventDB.numberOfEvents()
-	displayManager.displayNumberOfEvents(eventCount)
+	displayManager.displayBottomDataFeed(max_location,eventCount)
 
 	# Display EQ depth and last EQ timestamp upper right
 	isCluster = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
-	
-	highestMag, trending = eventDB.getLargestEvent()
-	highestMag = str(highestMag)
 
 	if isCluster and eventCount > 4:
-		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert, cluster=True)
+		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert, cluster=True)
 	else:
-		displayManager.displayDBStats(cqMag, cqDepth, highestMag, cqTsunami, cqAlert)
+		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
 	
 
 	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
 	if count > 0:
 		for i in range(count):
-			lon, lat, mag, alert, tsunami = eventDB.getEvent(i)
+			lon, lat, mag, alert, tsunami, location = eventDB.getEvent(i)
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
@@ -96,10 +96,10 @@ def displayTitlePage():
 	global ftForTitlePageDisplay
 
 	# Display the title/ wash page
-	highestMag, trending = eventDB.getLargestEvent()
+	highestMag, trending, max_location = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
 	dayTrend = str(eventDB.getDayTrend())
-	displayManager.displayWashPage(highestMag + trending, str(eventDB.getActiveRegion()), dayTrend)
+	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), dayTrend, max_location)
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
@@ -194,6 +194,7 @@ def main():
 	global cqAlert
 	global blinkToggle
 	global dataToggle
+	global largestLOC
 
 	ftForAcquisition = 0
 	ftForBlink = 0
