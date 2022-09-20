@@ -169,11 +169,18 @@ class EventDB:
 			print("DB:", file, filename)
 			self.dbFile = open(filename, "rb")
 		except:
-			path = "EQMdatabase*.dat"
-			filenames = sorted(glob.glob(path))
-			filename = (filenames[file])
-			print("DB:", file, filename)
-			self.dbFile = open(filename, "rb")
+			try:
+				path = "EQMdatabase*.dat"
+				filenames = sorted(glob.glob(path))
+				filename = (filenames[file])
+				print("DB:", file, filename)
+				self.dbFile = open(filename, "rb")
+			except:
+				path = "eqmap-demo-dat.demo"
+				filenames = sorted(glob.glob(path))
+				filename = (filenames[file])
+				print("DB:", file, filename)
+				self.dbFile = open(filename, "rb")
 
 		self.EQEventQueue = pickle.load(self.dbFile)
 		self.dbFile.close()
