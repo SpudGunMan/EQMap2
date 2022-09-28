@@ -134,7 +134,10 @@ class EQEventGathererEU:
 				break
 			time.sleep(2)
 
-		self.jsonData = json.loads(self.r.text)
+		try:
+			self.jsonData = json.loads(self.r.text)
+		except:
+			self.jsonData = None
 		return days
 
 	def getEventID(self):
