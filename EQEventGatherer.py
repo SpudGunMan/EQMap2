@@ -31,7 +31,10 @@ class EQEventGathererUSGS:
 				break
 			time.sleep(2)
 
-		self.jsonData = json.loads(r.text)
+		try:
+			self.jsonData = json.loads(r.text)
+		except ValueError:
+			self.jsonData = None
 
 		if self.jsonData is None or []:
 			self.jsonData = []
@@ -138,7 +141,13 @@ class EQEventGathererEU:
 			self.jsonData = json.loads(self.r.text)
 		except:
 			self.jsonData = None
+
+		if self.jsonData is None or []:
+			self.jsonData = []
+			return False
+		
 		return days
+
 
 	def getEventID(self):
 		try:
