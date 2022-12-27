@@ -37,7 +37,8 @@ class EventDB:
 
 	def showEvents(self):
 		print("Number of entries: ", len(self.EQEventQueue))
-		print(self.EQEventQueue)
+		for event in self.EQEventQueue:
+			print(event)
 		print("\n")
 
 	# Retrieve an event by index
@@ -70,15 +71,15 @@ class EventDB:
 
 		#trending - this is dumb not sure its usefull?
 		try:
-			if EQlargest[1]:
+			if EQlargest[0] != EQlargest[1]:
 				if EQlargest[0] > EQlargest[1]:
 					eventTrend = " mag. increasing"
 				elif EQlargest[0] < EQlargest[1]:
 					eventTrend = " mag. decreasing"
 				else:
-					eventTrend = ''		
+					eventTrend = 'Unknown'		
 		except:
-				eventTrend = ''
+				eventTrend = 'Unknown'
 
 		return (max_value, eventTrend, max_location)
 
