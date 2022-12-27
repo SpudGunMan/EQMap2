@@ -109,8 +109,8 @@ class EventDB:
 					#data is a dupe
 					return True
 
-			# Data is not a duplicate
-			return False
+		# Data is not a duplicate
+		return False
 
 	# for the future use of day to day trending graph?
 	def getTrend(self):
