@@ -89,7 +89,7 @@ class EventDB:
 		self.region_dict = Counter(self.EQElocations)
 		self.region = self.region_dict.most_common(1)
 
-		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+		if preserve == False: self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
 
 		if self.region:
 			self.region = self.region[(0)]
