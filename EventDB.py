@@ -40,16 +40,21 @@ class EventDB:
 		print(self.EQEventQueue)
 		print("\n")
 
+
 	# Retrieve an event by index
 	def getEvent(self, index):
 		return self.EQEventQueue[index]
 
 	# Retreve the last day event count
 	def getDayTrend(self):
-		try:
-			return self.dailyevents[-1]
-		except:
-			return "no data"
+		#check if the last two days have the same number of events
+		if self.dailyevents[-1] == self.dailyevents[-2]:
+			return "No trend"
+		#check if the last two days have different event numbers
+		elif self.dailyevents[-1] > self.dailyevents[-2]:
+			return "downword"
+		else:
+			return "upword"
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
@@ -83,13 +88,14 @@ class EventDB:
 		return (max_value, eventTrend, max_location)
 
 	# Report the most active region since last poll
-	def getActiveRegion(self,preserve=False):
+	def getActiveRegion(self, preserve=False):
 		self.region = ''
 
 		self.region_dict = Counter(self.EQElocations)
 		self.region = self.region_dict.most_common(1)
 
-		if preserve == False:self.EQElocations = [] # clear this table so its not out of control, USGS recall can get it by the hour
+		if preserve == False:
+			self.EQElocations = []  # clear this table so its not out of control, USGS recall can get it by the hour
 
 		if self.region:
 			self.region = self.region[(0)]
@@ -108,8 +114,8 @@ class EventDB:
 					#data is a dupe
 					return True
 
-			# Data is not a duplicate
-			return False
+		# Data is not a duplicate
+		return False
 
 	# for the future use of day to day trending graph?
 	def getTrend(self):
