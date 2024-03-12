@@ -38,8 +38,7 @@ python3 EQMap.py
 if you are not running a raspberry you may need to install pre-req they are included on raspberry by default so no need to continue here for Pi use...
 
 ```shell
-sudo apt-get install python3-pip python3-dev
-sudo pip3 install pygame
+sudo apt-get install python3-pip python3-dev python3-pygame
 ```
 # Issues
 If you have issues make sure your running the newest code `git pull`, let me know if you see a problem!
