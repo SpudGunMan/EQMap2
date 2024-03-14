@@ -94,6 +94,13 @@ class DisplayManager:
 
 	# Return color from magnitude
 	def colorFromMag(self, mag):
+		# check mag for numerical or string
+		try:
+			mag = float(mag)
+		except:
+			# if not a number, return value as red for now
+			return self.red
+		
 		if mag < 1:
 			mag = 1.0
 
