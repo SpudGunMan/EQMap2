@@ -94,29 +94,30 @@ class DisplayManager:
 
 	# Return color from magnitude
 	def colorFromMag(self, mag):
-		# check mag for numerical or string
+		# input is a float, convert to color
 		try:
-			mag = float(mag)
+			imag = int(mag + 0.5)
+
+			if imag < 1:
+				imag = 1.0
+
+			case = {
+				1: self.green,
+				2: self.green,
+				3: self.green,
+				4: self.yellow,
+				5: self.yellow,
+				6: self.yellow,
+				7: self.red,
+				8: self.red,
+				9: self.red
+			}
 		except:
 			# if not a number, return value as red for now
-			mag = 3.0
-			return self.red
+			imag = 3.0
+			return self.red(imag)
 		
-		if mag < 1:
-			mag = 1.0
 
-		imag = int(mag + 0.5)
-		case = {
-			1: self.green,
-			2: self.green,
-			3: self.green,
-			4: self.yellow,
-			5: self.yellow,
-			6: self.yellow,
-			7: self.red,
-			8: self.red,
-			9: self.red
-		}
 		return case.get(imag)
 
 	# Display the map
