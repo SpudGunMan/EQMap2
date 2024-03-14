@@ -99,6 +99,7 @@ class DisplayManager:
 			mag = float(mag)
 		except:
 			# if not a number, return value as red for now
+			mag = 3.0
 			return self.red
 		
 		if mag < 1:
