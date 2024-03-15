@@ -100,23 +100,21 @@ class DisplayManager:
 
 			if imag < 1:
 				imag = 1.0
-
-			case = {
-				1: self.green,
-				2: self.green,
-				3: self.green,
-				4: self.yellow,
-				5: self.yellow,
-				6: self.yellow,
-				7: self.red,
-				8: self.red,
-				9: self.red
-			}
 		except:
 			# if not a number, return value as red for now
-			imag = 3.0
-			return self.red(imag)
+			imag = 1.0
 		
+		case = {
+		1: self.green,
+		2: self.green,
+		3: self.green,
+		4: self.yellow,
+		5: self.yellow,
+		6: self.yellow,
+		7: self.red,
+		8: self.red,
+		9: self.red
+		}
 
 		return case.get(imag)
 
