@@ -316,7 +316,10 @@ class DisplayManager:
 		self.setTextSize(40)
 		self.setTextColor(self.colorFromMag(mag))
 		
-		miles = (depth / 1.609344)
+		try:
+			miles = (depth / 1.609344)
+		except:
+			miles = 0
 
 		if self.dist == "m":
 			milesStr =  str(miles)[:4] + "mi"
