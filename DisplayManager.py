@@ -103,6 +103,7 @@ class DisplayManager:
 		except:
 			# if not a number, return value as red for now
 			imag = 1.0
+			mag = 1.0
 		
 		case = {
 		1: self.green,
@@ -333,10 +334,13 @@ class DisplayManager:
 	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, count, largestmag, tsunami, alert, cluster=False):
 		currentAlarm = ""
-		if cluster: currentAlarm = "CLSTR"
-		if mag > 7: currentAlarm = "MAJOR"
-		if tsunami != 0: currentAlarm = "TSUNAMI"
-		if alert is not None: currentAlarm = "ALERT"
+		try:
+			if cluster: currentAlarm = "CLSTR"
+			if mag > 7: currentAlarm = "MAJOR"
+			if tsunami != 0: currentAlarm = "TSUNAMI"
+			if alert is not None: currentAlarm = "ALERT"
+		except:
+			currentAlarm = "UNKNOWN"
 		self.setTextSize(40)
 		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + "| HiMag:" + largestmag)
 		return True
