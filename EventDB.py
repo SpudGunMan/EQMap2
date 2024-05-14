@@ -60,7 +60,7 @@ class EventDB:
 		#spin off a table of the events and find the max
 		for event in self.EQEventQueue:
 			EQlargest.append(event[2])
-			max_value = max(EQlargest)
+			max_value = max(EQlargest).real
 
 		#find max item name
 		for event in self.EQEventQueue:
