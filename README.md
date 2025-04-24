@@ -52,15 +52,11 @@ to get 7" ribbon attached display you might need to do a few things to bullseye
 1. Reboot to "hopefully" a working Pi Screen on bullseye
 
 ### Tested
-* 2025 pygame seems to have been killed on the Pi with attached display, unable to get working at this time.
-* Raspberry Pi3 running raspOS-bullseye.SEPT.2022
+* 2025 pygame has issues on Pi  https://github.com/pygame/pygame/issues/3003pygame-display-init-fails-for-non-root-user
+  * find your display, likely fb0 `ls -l /dev/fb*` allow all access `sudo chmod a+rw /dev/fb0`
 * https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
 * https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
   * both work nice with a offical raspberry pi4/usb-c power supply at 3A and pi3 or Pi4
-* osx12 native (need to add python tools like pip3 install pygames)
-
-### Untested:
-* Raspberry nano e-ink
 
 ## EQMap Source 
 * The upstream branch is a straight copy from http://craigandheather.net/celeearthquakemap.html
