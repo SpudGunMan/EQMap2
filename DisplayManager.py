@@ -36,8 +36,7 @@ class DisplayManager:
 
 		print("DisplayManager: Initializing...")
 		try:
-			pygame.display.init()
-			pygame.font.init()
+			pygame.init()
 		except Exception as e:
 			print(f"Error initializing pygame: {e}")
 			sys.exit(1)
