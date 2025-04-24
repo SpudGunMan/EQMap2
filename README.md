@@ -48,9 +48,11 @@ if you really get stuck you can start over or try a `git reset --hard` follwed b
 to get 7" ribbon attached display you might need to do a few things to bullseye
 1. when you flash the OS to SSD open the FAT-partition on the SSD you just made and `touch ssh` to force enable SSH (or just make a empty file with the name of `ssh` nothing more no .txt)
 1. you need to then use `sudo raspi-config` to enable legacy GL drivers till [this bug is fully fixed](https://github.com/raspberrypi/linux/issues/4686) to adjust 50K rate of screen. UPDATE 9/2022 there will likely be no fix for this workaround is needed.
+   * update 2025 add `dtoverlay=edt-ft5406` to `/boot/firmware/config.txt`
 1. Reboot to "hopefully" a working Pi Screen on bullseye
 
 ### Tested
+* 2025 pygame seems to have been killed on the Pi with attached display, unable to get working at this time.
 * Raspberry Pi3 running raspOS-bullseye.SEPT.2022
 * https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
 * https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
