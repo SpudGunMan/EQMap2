@@ -34,7 +34,13 @@ class DisplayManager:
 		self.bottomTextRow = 0
 		self.eventCount = 0
 
-		pygame.init()
+		print("DisplayManager: Initializing...")
+		try:
+			pygame.display.init()
+			pygame.font.init()
+		except Exception as e:
+			print(f"Error initializing pygame: {e}")
+			sys.exit(1)
 
 		try:
 			#set monitor to use
