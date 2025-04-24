@@ -12,6 +12,7 @@ if [[ $(uname -a) == *"rpi"* ]]; then
         read -p "Do you want to autostart EQMap? (y/n) " answer
         if [[ $answer == "y" || $answer == "Y" ]]; then
             # copy the EQMap.desktop file to ~/.config/autostart
+            mkdir -p ~/.config/autostart
             cp EQMap.desktop ~/.config/autostart/
         fi
     fi
