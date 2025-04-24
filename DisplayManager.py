@@ -42,11 +42,13 @@ class DisplayManager:
 			sys.exit(1)
 
 		try:
+			# Set the display mode to fullscreen
 			#set monitor to use
 			self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 			self.displayInfo = pygame.display.Info()
 			self.screenWidth  = self.displayInfo.current_w
 			self.screenHeight = self.displayInfo.current_h
+			print("DisplayManager: Screen size: " + str(self.screenWidth) + "x" + str(self.screenHeight))
 			pygame.mouse.set_visible(0)
 
 			# Read the map into memory
