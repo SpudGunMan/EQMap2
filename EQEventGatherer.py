@@ -12,28 +12,43 @@ class EQEventGathererUSGS:
 
 	def requestEQEvent(self, days=0):
 		while True:
-			# API https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+			try:
+				# API https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+				if days == 30:
+					r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', timeout=10)
+				elif days == 7:
+					r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson', timeout=10)
+				elif days == 1:
+					r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson', timeout=10)
+				elif days == 0:
+					r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson', timeout=10)
 
-			if days == 30:
-				r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson')          
+				# Check if the request was successful
+				r.raise_for_status()
 
-			if days == 7:
-				r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson')
-
-			if days == 1:
-				r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson') 
-
-			if days == 0:
-				# past hour 2.5+ only https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.geojson
-				r = requests.get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson')
-			
-			if r.status_code == 200:
-				break
+				# If successful, break the loop
+				if r.status_code == 200:
+					break
+			except requests.exceptions.Timeout:
+				#print("Request timed out. Retrying...")
+				retrycount += 1
+			except requests.exceptions.RequestException as e:
+				#print(f"An error occurred: {e}. Retrying...")
+				retrycount += 1
+			except ValueError as ve:
+				#print(f"Error: {ve}")
+				retrycount += 1
 			time.sleep(2)
 
-		self.jsonData = json.loads(r.text)
+		try:
+			self.jsonData = r.json()
+		except json.JSONDecodeError:
+			#print("Failed to decode JSON response.")
+			self.jsonData = []
+			return False
 
-		if self.jsonData is None or []:
+		if not self.jsonData or 'features' not in self.jsonData:
+			#print("No data found in the response.")
 			self.jsonData = []
 			return False
 
@@ -127,12 +142,26 @@ class EQEventGathererEU:
 			requestTime = ''
 
 		while True:
-			# Details at https://www.seismicportal.eu/fdsn-wsevent.html
-			# over 2.5 mag only, add to request html:    &minmagnitude=2.5
-			self.r = requests.get('https://www.seismicportal.eu/fdsnws/event/1/query?limit=' + str(limit) + requestTime +'&format=json')
-			if self.r.status_code == 200:
-				break
+			try:
+				self.r = requests.get(
+					'https://www.seismicportal.eu/fdsnws/event/1/query?limit=' + str(limit) + requestTime + '&format=json',
+					timeout=10  # Set a timeout to avoid hanging indefinitely
+				)
+				self.r.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+				break  # Exit the loop if the request is successful
+			except requests.exceptions.Timeout:
+				#print("Request timed out. Retrying...")
+				retrycount += 1
+			except requests.exceptions.RequestException as e:
+				#print(f"An error occurred: {e}. Retrying...")
+				retrycount += 1
 			time.sleep(2)
+
+		try:
+			self.jsonData = self.r.json()  # Use the built-in JSON parser for better error handling
+		except json.JSONDecodeError:
+			print("Failed to decode JSON response.")
+			self.jsonData = None
 
 		try:
 			self.jsonData = json.loads(self.r.text)
