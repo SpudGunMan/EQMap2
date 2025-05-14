@@ -377,7 +377,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend) + "Today " + str(self.eventCount)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend + "Today " + str(self.eventCount))
 					time.sleep(20)
 				else:
 					self.setTextSize(30)
@@ -385,7 +385,7 @@ class DisplayManager:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend) + "Today " + str(self.eventCount)
+					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend + "Today " + str(self.eventCount))
 					time.sleep(20)
 				return True
 			
