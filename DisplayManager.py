@@ -377,7 +377,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend) + "Today " + str(self.eventCount)
 					time.sleep(20)
 				else:
 					self.setTextSize(30)
@@ -385,7 +385,7 @@ class DisplayManager:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend)
+					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend) + "Today " + str(self.eventCount)
 					time.sleep(20)
 				return True
 			
@@ -396,7 +396,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.4")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.5")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.setTextSize(40)
 				time.sleep(5)
