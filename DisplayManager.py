@@ -359,7 +359,6 @@ class DisplayManager:
 	def displayWashPage(self, largestevent, activeregion, dayTrend, max_location):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
-
 		if self.hasGUI:
 			# Refresh Display by redrawing the map to the screen
 			self.displayMap()
@@ -376,7 +375,7 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				if self.screenWidth > 1000:
-					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent + " in " + max_location)
+					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + str(largestevent) + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend)
