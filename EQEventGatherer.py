@@ -206,10 +206,12 @@ class EQEventGathererEU:
 			return ""
 
 	def getLocation(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return ""
 		try:
 			return self.jsonData['features'][0]['properties']['flynn_region']
-		except IndexError:
-				return ""
+		except (IndexError, KeyError, TypeError):
+			return ""
 				
 # Return a class instance
 eqGathererEU = EQEventGathererEU()
