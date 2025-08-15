@@ -314,6 +314,8 @@ class DisplayManager:
 
 		self.setTextColor(self.black)
 		self.setTextSize(25)
+		if max_location is None or max_location == "":
+			max_location = "No Data"
 		self.drawCenteredText(self.eventsTextRow, "HiMag: " + max_location + ". updated:" + self.eventTimeStringLong)
 		self.setTextSize(40)
 		self.setTextColor(self.white)
