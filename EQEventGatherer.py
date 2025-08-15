@@ -189,22 +189,28 @@ class EQEventGathererEU:
 			return ""
 
 	def getLat(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return ""
 		try:
 			lat = float(self.jsonData['features'][0]['properties']['lat'])
 			return float(("%.2f" % lat))
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 	def getMag(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return ""
 		try:
 			return float(self.jsonData['features'][0]['properties']['mag'])
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
-
+	
 	def getDepth(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return ""
 		try:
 			return float(self.jsonData['features'][0]['properties']['depth'])
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 	def getLocation(self):
