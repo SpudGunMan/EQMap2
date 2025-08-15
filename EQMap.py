@@ -97,11 +97,7 @@ def displayTitlePage():
 
 	# Display the title/ wash page
 	highestMag, trending, max_location = eventDB.getLargestEvent()
-	if highestMag is None:
-		highestMag_str = ""
-	else:
-		highestMag_str = str(highestMag)
-
+	highestMag = str(highestMag)
 	dayTrend = str(eventDB.getDayTrend())
 	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), dayTrend, max_location)
 
