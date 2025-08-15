@@ -180,10 +180,12 @@ class EQEventGathererEU:
 			return None
 
 	def getLon(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return ""
 		try:
 			self.lon = float(self.jsonData['features'][0]['properties']['lon'])
 			return float(("%.2f" % self.lon))
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 	def getLat(self):
