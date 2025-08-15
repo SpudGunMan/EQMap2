@@ -28,8 +28,12 @@ class EventDB:
 
 	# Add an earthquake event
 	def addEvent(self, lon, lat, mag, alert, tsunami, location):
-		# check for error on data assume 0 is bad data
-		if mag <= 0:
+		# Ensure mag is a number
+		try:
+			mag_val = float(mag)
+		except (ValueError, TypeError):
+			return False
+		if mag_val <= 0:
 			return False
 		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami, location))
 		self.EQElocations.append(location)
