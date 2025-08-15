@@ -54,32 +54,37 @@ class EventDB:
 	# Retrieve largest event related data
 	def getLargestEvent(self):
 		EQlargest = deque()
-		max_value = 0
+		max_value = None
 		max_location = ''
 		eventTrend = ''
-		#spin off a table of the events and find the max
+		# Spin off a table of the events and find the max
 		for event in self.EQEventQueue:
-			EQlargest.append(event[2])
-			max_value = max(EQlargest).real
-
-		#find max item name
+			try:
+				EQlargest.append(float(event[2]))
+			except (ValueError, TypeError):
+				continue
+		if not EQlargest:
+			return (None, '', None)
+		max_value = max(EQlargest)
+		# Find max item name
 		for event in self.EQEventQueue:
-			if event[2] >= max_value:
-				max_location = event[5]
-
-
-		#trending - this is dumb not sure its usefull?
+			try:
+				if float(event[2]) == max_value:
+					max_location = event[5]
+					break
+			except (ValueError, TypeError):
+				continue
+		# Trending - this is dumb not sure its useful?
 		try:
-			if EQlargest[1]:
+			if len(EQlargest) > 1:
 				if EQlargest[0] > EQlargest[1]:
 					eventTrend = " mag. increasing"
 				elif EQlargest[0] < EQlargest[1]:
 					eventTrend = " mag. decreasing"
 				else:
-					eventTrend = ''		
-		except:
-				eventTrend = ''
-
+					eventTrend = ''
+		except Exception:
+			eventTrend = ''
 		return (max_value, eventTrend, max_location)
 
 	# Report the most active region since last poll
