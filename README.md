@@ -1,6 +1,6 @@
  ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
 
-# About Revision:24.1
+# About Revision:25.8
 This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additional features, while keeping the orginal functionality (I hope!)
@@ -52,6 +52,7 @@ to get 7" ribbon attached display you might need to do a few things to bullseye
 1. Reboot to "hopefully" a working Pi Screen on bullseye
 
 ### Tested
+* 2025.8 Appears seismicportal.eu having issues data is wild and main page says its 2002.. updated applicaiton hope they return soon!
 * 2025 pygame has issues on Pi  https://github.com/pygame/pygame/issues/3003pygame-display-init-fails-for-non-root-user
   * find your display, likely fb0 `ls -l /dev/fb*` allow all access `sudo chmod a+rw /dev/fb0`
 * https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
