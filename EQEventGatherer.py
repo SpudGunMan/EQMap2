@@ -57,9 +57,11 @@ class EQEventGathererUSGS:
 		return days
 
 	def getEventID(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return None
 		try:
 			return self.jsonData[0]['id']
-		except IndexError:
+		except (IndexError, KeyError, TypeError):
 			return None
 
 	def getMag(self):
@@ -170,9 +172,11 @@ class EQEventGathererEU:
 		return days
 
 	def getEventID(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return None
 		try:
 			return self.jsonData['features'][0]['id']
-		except IndexError:
+		except (IndexError, KeyError, TypeError):
 			return None
 
 	def getLon(self):
