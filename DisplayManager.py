@@ -373,7 +373,7 @@ class DisplayManager:
 			self.setTextSize(40)
 			
 			# Display different data throughout the day using the timput value
-			if self.firstRun == False:
+			if self.firstRun == False and largestevent != None and max_location != None and activeregion != None:
 				if self.screenWidth > 1000:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + str(largestevent) + " in " + max_location)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion)
