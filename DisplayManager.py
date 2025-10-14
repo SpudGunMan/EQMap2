@@ -371,7 +371,19 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 			self.setTextSize(40)
-			
+
+			freq_trend = ""
+			try:
+				if len(eventDB.dailyevents) > 1:
+					if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
+						freq_trend = " +"
+					elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
+						freq_trend = " -"
+					else:
+						freq_trend = " ="
+			except Exception:
+				pass
+
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False and largestevent is not None and max_location is not None and activeregion is not None:
 				# Defensive: convert all to string, handle None/empty
@@ -379,12 +391,12 @@ class DisplayManager:
 				max_location_str = "" if not max_location else str(max_location)
 				activeregion_str = "" if not activeregion else str(activeregion)
 				dayTrend_str = "" if not dayTrend else str(dayTrend)
-			
+
 				if self.screenWidth > 1000:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
 					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion_str)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 					time.sleep(20)
 				else:
 					self.setTextSize(30)
@@ -392,8 +404,9 @@ class DisplayManager:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 350), "Yesterdays event count " + dayTrend_str)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 				return True
+			
 		else:
 			#Cli output
 			return True
