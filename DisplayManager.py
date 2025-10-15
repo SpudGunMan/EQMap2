@@ -320,6 +320,50 @@ class DisplayManager:
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
+	
+	def displayTrendingGraph(self, dayTrend):
+			# Draw a simple line graph of dayTrend on the lower part of the screen
+			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
+				return False
+	
+			graph_width = 400
+			graph_height = 100
+			margin = 40
+	
+			# Position graph at bottom right
+			x0 = self.screenWidth - graph_width - margin
+			y0 = self.screenHeight - graph_height - margin
+	
+			# Clear graph area
+			pygame.draw.rect(self.screen, self.black, (x0, y0, graph_width, graph_height))
+	
+			# Normalize data to fit graph height
+			max_val = max(dayTrend)
+			min_val = min(dayTrend)
+			val_range = max_val - min_val if max_val != min_val else 1
+	
+			points = []
+			for i, val in enumerate(dayTrend):
+				x = x0 + int(i * (graph_width / (len(dayTrend) - 1)))
+				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
+				points.append((x, y))
+	
+			# Draw axes
+			pygame.draw.line(self.screen, self.white, (x0, y0 + graph_height), (x0 + graph_width, y0 + graph_height), 1)
+			pygame.draw.line(self.screen, self.white, (x0, y0), (x0, y0 + graph_height), 1)
+	
+			# Draw line graph
+			if len(points) > 1:
+				pygame.draw.lines(self.screen, self.green, False, points, 2)
+	
+			# Optionally, draw min/max labels
+			self.setTextSize(18)
+			self.drawText(x0, y0 - 18, f"Trend (24h)")
+			self.drawText(x0, y0 + graph_height + 2, str(min_val))
+			self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
+	
+			pygame.display.flip()
+			return True
 
 	# Display Last EQ Event
 	def displayEventLong(self, location, mag, depth):
