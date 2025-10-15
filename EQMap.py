@@ -10,6 +10,7 @@ from datetime import datetime
 from DisplayManager import displayManager
 from EQEventGatherer import eqGathererEU
 from EQEventGatherer import eqGathererUSGS
+from EQEventGatherer import EQEventGathererUSGSVolcanoAlert as eqGathererUSGSVolcano
 from EventDB import eventDB
 
 # Data Sourcing
@@ -317,9 +318,7 @@ def main():
 						getUpdatesUSGS()
 						# Also check for volcano alerts
 						getUpdatesVolcano()
-
-			
-
+				# Schedule the next acquisition
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
 			# Is it time to blink EQ circle?
