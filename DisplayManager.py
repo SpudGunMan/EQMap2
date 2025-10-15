@@ -332,17 +332,15 @@ class DisplayManager:
 			graph_height = 100
 			margin_x = 40
 			margin_y = 40
-			print("debug screenWidth:", self.screenWidth)
 			if self.screenWidth > 1000:
-				# Lower right quadrant position
-				x0 = int(self.screenWidth * 0.5) + margin_x
+				# Lower right quadrant position larger screens
+				x0 = int(self.screenWidth * 0.75) + margin_x
 				y0 = int(self.screenHeight * 0.5) + margin_y - 50
 			else:
 				# Lower right quadrant position for smaller screens
-				x0 = int(self.screenWidth * 0.75) + margin_x
+				x0 = int(self.screenWidth * 0.5) + margin_x
 				y0 = int(self.screenHeight * 0.5) + margin_y - 50
 
-		
 			# Clean and normalize data
 			cleaned_dayTrend = []
 			for val in dayTrend:
