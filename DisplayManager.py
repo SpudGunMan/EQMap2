@@ -332,7 +332,7 @@ class DisplayManager:
 			graph_height = 100
 			margin_x = 40
 			margin_y = 40
-
+			print("debug screenWidth:", self.screenWidth)
 			if self.screenWidth > 1000:
 				# Lower right quadrant position
 				x0 = int(self.screenWidth * 0.5) + margin_x
