@@ -372,7 +372,6 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 			self.setTextSize(40)
-			time.sleep(5)
 
 			freq_trend = ""
 			try:
@@ -389,7 +388,6 @@ class DisplayManager:
 
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				try:
 					# Defensive: convert all to string, handle None/empty
 					largestevent_str = "" if largestevent is None else str(largestevent)
 					max_location_str = "" if not max_location else str(max_location)
@@ -408,22 +406,21 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+
+			# Initial startup display
+			else:
+					self.setTextSize(40)
+					self.drawCenteredText((self.topTextRow + 90), "Loading")
+					self.drawCenteredText((self.topTextRow + 140), "Realtime World")
+					self.setTextSize(70)
+					self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
+					self.setTextSize(30)
+					self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.10")
+					self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 					self.firstRun = False
-				except Exception as e:
-					print(f"Error displaying wash page: {e}")
-					return False
+					time.sleep(20)
+					self.firstRun = False
 		else:
-			if self.firstRun:
-				self.setTextSize(40)
-				self.drawCenteredText((self.topTextRow + 90), "Loading")
-				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
-				self.setTextSize(70)
-				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
-				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.10")
-				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
-				self.firstRun = False
-				time.sleep(20)
 			#Cli output
 			return True
 		
