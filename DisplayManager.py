@@ -394,8 +394,8 @@ class DisplayManager:
 			else:
 				# smaller screens
 				self.setTextSize(18)
-				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
-				self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
+				self.drawText(x0, y0 + graph_height + 150, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0, y0 + graph_height + 100, f"Start: {start_idx:02d}:00")
 				self.drawRightJustifiedText(y0 + graph_height + 2, f"Max Events hour:{max_val}")
 				# end smaller screens
 			pygame.display.flip()
