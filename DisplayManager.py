@@ -406,6 +406,7 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					time.sleep(10) # show wash page for 10 seconds
 
 			# Initial startup display
 			else:
@@ -418,7 +419,7 @@ class DisplayManager:
 					self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.10")
 					self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 					self.firstRun = False
-					time.sleep(20)
+					time.sleep(5) #show startup screen for 5 seconds
 					self.firstRun = False
 		else:
 			#Cli output
