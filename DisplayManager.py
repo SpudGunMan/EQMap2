@@ -372,6 +372,7 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 			self.setTextSize(40)
+			time.sleep(5)
 
 			freq_trend = ""
 			try:
@@ -409,12 +410,20 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 					time.sleep(20)
 					self.firstRun = False
-					return True
 				except Exception as e:
 					print(f"Error displaying wash page: {e}")
-					return False
-			
+					return True
 		else:
+			if self.firstRun:
+				self.drawCenteredText((self.topTextRow + 90), "Loading")
+				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
+				self.setTextSize(70)
+				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
+				self.setTextSize(30)
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.10")
+				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
+				self.firstRun = False
+				time.sleep(20)
 			#Cli output
 			return True
 		
