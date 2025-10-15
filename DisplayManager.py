@@ -360,6 +360,7 @@ class DisplayManager:
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 		if self.hasGUI:
+
 			# Refresh Display by redrawing the map to the screen
 			self.displayMap()
 
@@ -406,6 +407,7 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					self.firstRun = False
 					return True
 				except Exception as e:
 					print(f"Error displaying wash page: {e}")
