@@ -338,10 +338,11 @@ class DisplayManager:
 			pygame.draw.rect(self.screen, self.black, (x0, y0, graph_width, graph_height))
 	
 			# Normalize data to fit graph height
+			dayTrend = [float(val) for val in dayTrend]  # Ensure all values are numeric
 			max_val = max(dayTrend)
 			min_val = min(dayTrend)
 			val_range = max_val - min_val if max_val != min_val else 1
-	
+			
 			points = []
 			for i, val in enumerate(dayTrend):
 				x = x0 + int(i * (graph_width / (len(dayTrend) - 1)))
