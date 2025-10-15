@@ -248,7 +248,6 @@ def main():
 			# Is it time to display the title page ?
 			if millis() > ftForTitlePageDisplay and displayState:
 				displayTitlePage()
-				repaintMap()
 
 				# Force a redisplay of all quake data
 				repaintMap()
