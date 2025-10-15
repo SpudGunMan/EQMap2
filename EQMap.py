@@ -198,18 +198,19 @@ def main():
 
 	ftForAcquisition = 0
 	ftForBlink = 0
+	
 
 	dbCleared = False
 
 	# True if display is on; false if off
 	displayState = False
-
+	tForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
 	#exit loop handler
 	running = True
 
 	#loop
 	try:
-
+		
 		while running:
 			
 			# Get the current time
@@ -244,8 +245,9 @@ def main():
 					displayState = False
 
 			# Is it time to display the title page ?
-			if millis() > ftForTitlePageDisplay:
+			if millis() > ftForTitlePageDisplay and displayState:
 				displayTitlePage()
+				repaintMap()
 
 				# Force a redisplay of all quake data
 				repaintMap()
