@@ -401,7 +401,7 @@ class DisplayManager:
 				# self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
 				# self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
 				# self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
-				self.drawText(label_x, label_x, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(label_x, label_y, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
 				self.drawText(label_x, label_y, f"Start: {start_idx:02d}:00")
 				self.drawRightJustifiedText(label_y, f"Max Events hour:{max_val}")
 				# end larger screens
