@@ -220,10 +220,66 @@ class EQEventGathererEU:
 			return self.jsonData['features'][0]['properties']['flynn_region']
 		except (IndexError, KeyError, TypeError):
 			return ""
+
+class EQEventGathererUSGSVolcanoAlert:
+    def __init__(self, lat=0, lon=0, ignore_words=None, ignore_enable=False):
+        self.lat = lat
+        self.lon = lon
+        self.ignore_words = ignore_words if ignore_words else []
+        self.ignore_enable = ignore_enable
+        self.jsonData = []
+        self.alerts = []
+        self.logger = logging.getLogger("EQEventGathererUSGSVolcanoAlert")
+
+    def requestEQEvent(self, lat=None, lon=None):
+        url = "https://volcanoes.usgs.gov/hans-public/api/volcano/getCapElevated"
+        self.lat = lat if lat is not None else self.lat
+        self.lon = lon if lon is not None else self.lon
+        try:
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+            self.jsonData = r.json()
+        except requests.exceptions.RequestException:
+            self.logger.warning("System: Issue with fetching volcano alerts from USGS")
+            self.jsonData = []
+            return False
+
+        self.alerts = []
+        if self.jsonData and isinstance(self.jsonData, list):
+            for alert in self.jsonData:
+                # Ignore list
+                if self.ignore_enable:
+                    if any(word.lower() in alert['volcano_name_appended'].lower() for word in self.ignore_words):
+                        continue
+                # Location filter (±10 degrees)
+                if (self.lat == 0 and self.lon == 0) or (
+                    alert['latitude'] >= self.lat - 10 and alert['latitude'] <= self.lat + 10 and
+                    alert['longitude'] >= self.lon - 10 and alert['longitude'] <= self.lon + 10
+                ):
+                    self.alerts.append(alert)
+        return bool(self.alerts)
+
+    def getEventIDs(self):
+        return [a.get('volcano_id', None) for a in self.alerts]
+
+    def getLocations(self):
+        return [a.get('volcano_name_appended', '') for a in self.alerts]
+
+    def getLats(self):
+        return [a.get('latitude', None) for a in self.alerts]
+
+    def getLons(self):
+        return [a.get('longitude', None) for a in self.alerts]
+
+    def getMarkers(self):
+        # For plotting: return list of (lat, lon, color) for each alert
+        return [(a['latitude'], a['longitude'], 'red') for a in self.alerts if 'latitude' in a and 'longitude' in a]
+
 				
 # Return a class instance
 eqGathererEU = EQEventGathererEU()
 eqGathererUSGS = EQEventGathererUSGS()
+eqGathererUSGSVolcano = EQEventGathererUSGSVolcanoAlert()
 '''
 # Test Code
 eqGathererEU.requestEQEvent()
@@ -244,5 +300,8 @@ print(eqGathererUSGS.getLat())
 print(eqGathererUSGS.getDepth())
 print(eqGathererUSGS.getTsunami())
 print(eqGathererUSGS.getAlert())
+
+volcano_gatherer = EQEventGathererUSGSVolcanoAlert(lat=34, lon=-118, ignore_words=['Shasta'])
 '''
 
+# End of EQEventGatherer.py

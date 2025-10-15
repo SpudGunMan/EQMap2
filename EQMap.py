@@ -181,6 +181,48 @@ def getUpdatesEU():
 			# Display the new EQ data
 			repaintMap()
 
+def getUpdatesVolcano():
+	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	# internet check test
+	try:
+		# Check for new volcano alert event
+		eqGathererUSGSVolcano.requestEQEvent()
+	except:
+		pass
+
+	# Determine if we have seen this event before If so ignore it
+	if cqIDUSGS != eqGathererUSGSVolcano.getEventID():
+
+		#if data has no ID dont use it
+		if eqGathererUSGSVolcano.getEventID  is None:
+			return False
+		else:
+
+			# Extract the volcano alert data
+			try:
+				cqLocation = eqGathererUSGSVolcano.getLocation()
+				cqLon = eqGathererUSGSVolcano.getLon()
+				cqLat = eqGathererUSGSVolcano.getLat()
+				cqMag = 0.0
+				cqDepth = 0.0
+				cqTsunami = 0
+				cqAlert = "VOLCANO"
+			except Exception:
+				return False
+
+			# Add new event to DB if it isnt also from the other source
+			if not eventDB.checkDupLonLat(cqLon, cqLat):
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+
+				# Update the current event ID
+				cqIDUSGS = eqGathererUSGSVolcano.getEventID()
+
+				# Display the new volcano alert data
+				repaintMap()
+				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+
+	return False
+
 # Code execution start
 def main():
 	# Setup for global variable access

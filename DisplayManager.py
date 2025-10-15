@@ -297,7 +297,7 @@ class DisplayManager:
 			self
 			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,130,25))
 			self.setTextSize(40)
-			self.drawText(self.mapImageRect.x, self.topTextRow, timeString + "WTF")
+			self.drawText(self.mapImageRect.x, self.topTextRow, timeString)
 		except: 
 			return timeNow
 
