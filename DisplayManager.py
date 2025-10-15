@@ -335,7 +335,7 @@ class DisplayManager:
 			if self.screenWidth > 1000:
 				# Lower right quadrant position larger screens
 				x0 = int(self.screenWidth * 0.75) + margin_x
-				y0 = int(self.screenHeight * 0.5) + margin_y
+				y0 = int(self.screenHeight * 0.65) + margin_y
 			else:
 				# Lower right quadrant position for smaller screens
 				x0 = int(self.screenWidth * 0.5) + margin_x
