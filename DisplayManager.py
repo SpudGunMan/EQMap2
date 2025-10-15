@@ -399,7 +399,6 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-						time.sleep(20)
 					else:
 						self.setTextSize(30)
 						self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
@@ -407,9 +406,9 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-						time.sleep(45)
-						self.firstRun = False
-						return True
+					time.sleep(20)
+					self.firstRun = False
+					return True
 				except Exception as e:
 					print(f"Error displaying wash page: {e}")
 					return False
