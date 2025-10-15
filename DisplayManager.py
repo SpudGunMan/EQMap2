@@ -386,26 +386,30 @@ class DisplayManager:
 
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
-				# Defensive: convert all to string, handle None/empty
-				largestevent_str = "" if largestevent is None else str(largestevent)
-				max_location_str = "" if not max_location else str(max_location)
-				activeregion_str = "" if not activeregion else str(activeregion)
-				dayTrend_str = "" if not dayTrend else str(dayTrend)
+				try:
+					# Defensive: convert all to string, handle None/empty
+					largestevent_str = "" if largestevent is None else str(largestevent)
+					max_location_str = "" if not max_location else str(max_location)
+					activeregion_str = "" if not activeregion else str(activeregion)
+					dayTrend_str = "" if not dayTrend else str(dayTrend)
 
-				if self.screenWidth > 1000:
-					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion_str)
-					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-					time.sleep(20)
-				else:
-					self.setTextSize(30)
-					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.setTextSize(40)
-					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
-					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-				return True
+					if self.screenWidth > 1000:
+						self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
+						self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion_str)
+						self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+						time.sleep(20)
+					else:
+						self.setTextSize(30)
+						self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
+						self.setTextSize(40)
+						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
+						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					return True
+				except Exception as e:
+					print(f"Error displaying wash page: {e}")
+					return False
 			
 		else:
 			#Cli output
