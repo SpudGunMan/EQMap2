@@ -326,10 +326,14 @@ class DisplayManager:
 		if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 			return False
 	
-		graph_width = int(self.screenWidth * 0.6)
-		graph_height = 75
-		x0 = int((self.screenWidth - graph_width) / 0.8)
-		y0 = int((self.screenHeight - graph_height) / 0.8)
+		graph_width = int(self.screenWidth * 0.4)
+		graph_height = 100
+		margin_x = 40
+		margin_y = 40
+
+		# Lower right quadrant position
+		x0 = int(self.screenWidth * 0.5) + margin_x
+		y0 = int(self.screenHeight * 0.5) + margin_y
 	
 		# Clean and normalize data
 		cleaned_dayTrend = []
