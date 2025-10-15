@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Earthquake Display Program
 For the Raspberry Pi Model 3B and the official 7" display
