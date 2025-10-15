@@ -385,7 +385,7 @@ class DisplayManager:
 				pass
 
 			# Display different data throughout the day using the timput value
-			if self.firstRun == False and largestevent is not None and max_location is not None and activeregion is not None:
+			if self.firstRun == False:
 				# Defensive: convert all to string, handle None/empty
 				largestevent_str = "" if largestevent is None else str(largestevent)
 				max_location_str = "" if not max_location else str(max_location)
