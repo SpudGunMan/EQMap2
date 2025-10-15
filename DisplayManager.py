@@ -327,7 +327,9 @@ class DisplayManager:
 			# Draw a simple floating line graph of dayTrend in the middle of the screen
 			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 				return False
-		
+			x0 = 0
+			y0 = 0
+
 			if self.screenWidth > 1000:
 				# Lower right quadrant position larger screens
 				graph_width = int(self.screenWidth * 0.2)
