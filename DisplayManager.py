@@ -378,6 +378,12 @@ class DisplayManager:
 				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
 				points.append((x, y, val))
 
+			# Draw a small cross at the center of the graph area for reference
+			center_x = x0 + graph_width // 2
+			center_y = y0 + graph_height // 2
+			pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
+			pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
+
 			# Draw the line graph, skipping segments where either value is 0
 			for i in range(1, len(points)):
 				x1, y1, v1 = points[i-1]
