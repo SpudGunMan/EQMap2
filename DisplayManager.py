@@ -407,9 +407,9 @@ class DisplayManager:
 						self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-						time.sleep(20)
-					self.firstRun = False
-					return False
+						time.sleep(45)
+						self.firstRun = False
+						return True
 				except Exception as e:
 					print(f"Error displaying wash page: {e}")
 					return False
