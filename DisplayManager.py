@@ -336,8 +336,8 @@ class DisplayManager:
 				graph_height = 150
 				margin_x = 40
 				margin_y = 40
-				label_x = int(self.screenWidth * 0.60)  # 60% across, adjust as needed
-				label_y = y0 + graph_height + 10        # just below the graph
+				#label_x = int(self.screenWidth * 0.60)  # 60% across, adjust as needed
+				#label_y = y0 + graph_height + 10        # just below the graph
 				x0 = int(self.screenWidth * 0.75) + margin_x
 				y0 = int(self.screenHeight * 0.65) + margin_y
 			else:
@@ -398,12 +398,9 @@ class DisplayManager:
 			if self.screenWidth > 1000:
 				# larger screens
 				self.setTextSize(20)
-				# self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
-				# self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
-				# self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
-				self.drawText(label_x, label_y, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
-				self.drawText(label_x, label_y, f"Start: {start_idx:02d}:00")
-				self.drawRightJustifiedText(label_y, f"Max Events hour:{max_val}")
+				self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
+				self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
 				# end larger screens
 			else:
 				# smaller screens
