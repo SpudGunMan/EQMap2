@@ -7,7 +7,7 @@ from cProfile import run
 import os, time, sys
 from datetime import datetime
 
-from EventDB import EventDB
+from EventDB import eventDB 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
