@@ -382,7 +382,8 @@ class DisplayManager:
 						freq_trend = " -"
 					else:
 						freq_trend = " ="
-			except Exception:
+			except Exception as e:
+				print(f"Error determining frequency trend: {e}")
 				pass
 
 			# Display different data throughout the day using the timput value
