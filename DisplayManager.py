@@ -414,6 +414,7 @@ class DisplayManager:
 					return False
 		else:
 			if self.firstRun:
+				self.setTextSize(40)
 				self.drawCenteredText((self.topTextRow + 90), "Loading")
 				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
 				self.setTextSize(70)
