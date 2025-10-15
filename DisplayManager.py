@@ -366,11 +366,14 @@ class DisplayManager:
 			for i, val in enumerate(plotTrend):
 				x = x0 + int((i) * (graph_width / (len(dayTrend) - 1)))
 				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-				points.append((x, y))
-		
-			# Draw the line graph directly on the screen (no background)
-			if len(points) > 1:
-				pygame.draw.lines(self.screen, self.green, False, points, 2)
+				points.append((x, y, val))
+
+			# Draw the line graph, skipping segments where either value is 0
+			for i in range(1, len(points)):
+				x1, y1, v1 = points[i-1]
+				x2, y2, v2 = points[i]
+				if v1 != 0 and v2 != 0:
+					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 		
 			# Optionally, draw min/max labels
 			self.setTextSize(18)
