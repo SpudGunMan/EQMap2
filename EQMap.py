@@ -304,6 +304,8 @@ def main():
 					dataToggle = False
 					if use_usgs:
 						getUpdatesUSGS()
+						# Also check for volcano alerts
+						getUpdatesVolcano()
 					else:
 						getUpdatesEU()
 						
@@ -313,6 +315,10 @@ def main():
 						getUpdatesEU()
 					else:
 						getUpdatesUSGS()
+						# Also check for volcano alerts
+						getUpdatesVolcano()
+
+			
 
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
