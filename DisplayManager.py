@@ -322,55 +322,59 @@ class DisplayManager:
 		return True
 	
 	def displayTrendingGraph(self, dayTrend):
-			# Draw a simple line graph of dayTrend on the lower part of the screen
-			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
-				return False
+		# Draw a simple line graph of dayTrend on the lower part of the screen
+		if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
+			return False
 	
-			graph_width = 400
-			graph_height = 100
-			margin = 40
+		graph_width = 400
+		graph_height = 100
+		margin = 40
 	
-			# Position graph at bottom right
-			x0 = self.screenWidth - graph_width - margin
-			y0 = self.screenHeight - graph_height - margin
+		# Position graph at bottom right
+		x0 = self.screenWidth - graph_width - margin
+		y0 = self.screenHeight - graph_height - margin
 	
-			# Clear graph area
-			pygame.draw.rect(self.screen, self.black, (x0, y0, graph_width, graph_height))
+		# Create a transparent surface for the graph
+		graph_surface = pygame.Surface((graph_width, graph_height), pygame.SRCALPHA)
+		graph_surface.fill((0, 0, 0, 128))  # RGBA: black with 50% opacity
 	
-			# Normalize data to fit graph height
-			cleaned_dayTrend = []
-			for val in dayTrend:
-				try:
-					cleaned_dayTrend.append(float(val))
-				except (ValueError, TypeError):
-					cleaned_dayTrend.append(0.0)  # or use previous value, or skip, as needed
-			dayTrend = cleaned_dayTrend
-			max_val = max(dayTrend)
-			min_val = min(dayTrend)
-			val_range = max_val - min_val if max_val != min_val else 1
-			
-			points = []
-			for i, val in enumerate(dayTrend):
-				x = x0 + int(i * (graph_width / (len(dayTrend) - 1)))
-				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-				points.append((x, y))
+		# Normalize data to fit graph height
+		cleaned_dayTrend = []
+		for val in dayTrend:
+			try:
+				cleaned_dayTrend.append(float(val))
+			except (ValueError, TypeError):
+				cleaned_dayTrend.append(0.0)
+		dayTrend = cleaned_dayTrend
+		max_val = max(dayTrend)
+		min_val = min(dayTrend)
+		val_range = max_val - min_val if max_val != min_val else 1
 	
-			# Draw axes
-			pygame.draw.line(self.screen, self.white, (x0, y0 + graph_height), (x0 + graph_width, y0 + graph_height), 1)
-			pygame.draw.line(self.screen, self.white, (x0, y0), (x0, y0 + graph_height), 1)
+		points = []
+		for i, val in enumerate(dayTrend):
+			x = int(i * (graph_width / (len(dayTrend) - 1)))
+			y = graph_height - int((val - min_val) / val_range * (graph_height - 10))
+			points.append((x, y))
 	
-			# Draw line graph
-			if len(points) > 1:
-				pygame.draw.lines(self.screen, self.green, False, points, 2)
+		# Draw axes on the graph surface
+		pygame.draw.line(graph_surface, self.white, (0, graph_height - 1), (graph_width, graph_height - 1), 1)
+		pygame.draw.line(graph_surface, self.white, (0, 0), (0, graph_height), 1)
 	
-			# Optionally, draw min/max labels
-			self.setTextSize(18)
-			self.drawText(x0, y0 - 18, f"Trend (24h)")
-			self.drawText(x0, y0 + graph_height + 2, str(min_val))
-			self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
+		# Draw line graph
+		if len(points) > 1:
+			pygame.draw.lines(graph_surface, self.green, False, points, 2)
 	
-			pygame.display.flip()
-			return True
+		# Blit the transparent graph surface onto the main screen
+		self.screen.blit(graph_surface, (x0, y0))
+	
+		# Optionally, draw min/max labels on the main screen
+		self.setTextSize(18)
+		self.drawText(x0, y0 - 18, f"Trend (24h)")
+		self.drawText(x0, y0 + graph_height + 2, str(min_val))
+		self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
+	
+		pygame.display.flip()
+		return True
 
 	# Display Last EQ Event
 	def displayEventLong(self, location, mag, depth):
