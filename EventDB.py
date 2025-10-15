@@ -27,7 +27,7 @@ class EventDB:
 		return True
 
 	# Add an earthquake event
-	def addEvent(self, lon, lat, mag, alert, tsunami, location):
+	def addEvent(self, lon, lat, mag, alert, tsunami, location, event_time=None):
 		# Ensure mag is a number
 		try:
 			mag_val = float(mag)
