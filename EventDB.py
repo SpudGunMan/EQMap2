@@ -51,12 +51,10 @@ class EventDB:
 	def getEvent(self, index):
 		return self.EQEventQueue[index]
 
-	# Retreve the last day event count
 	def getDayTrend(self):
-		try:
-			return self.dailyevents[-1]
-		except:
-			return "no data"
+		if self.dailyevents and isinstance(self.dailyevents, list):
+			return self.dailyevents
+		return []
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
