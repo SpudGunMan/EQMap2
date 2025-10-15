@@ -37,6 +37,13 @@ class EventDB:
 			return False
 		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami, location))
 		self.EQElocations.append(location)
+		# Track hourly trend
+		if event_time is None:
+			event_time = datetime.now()
+		hour = event_time.hour
+		if not hasattr(self, 'hourlyevents'):
+			self.resetHourlyTrend()
+		self.hourlyevents[hour] += 1
 
 	# Return the number of entries
 	def numberOfEvents(self):
@@ -50,12 +57,14 @@ class EventDB:
 	# Retrieve an event by index
 	def getEvent(self, index):
 		return self.EQEventQueue[index]
+	
+	def resetHourlyTrend(self):
+		self.hourlyevents = [0] * 24
 
 	def getDayTrend(self):
-		if self.dailyevents and isinstance(self.dailyevents, list):
-			print("Day Trend:", self.dailyevents)
-			return self.dailyevents
-		return []
+		if hasattr(self, 'hourlyevents'):
+			return self.hourlyevents
+		return [0]*24
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
@@ -150,6 +159,9 @@ class EventDB:
 				self.dailyevents.append(len(self.EQEventQueue))
 		except:
 			self.dailyevents.append(0)
+
+		# reset the hourly trend
+		self.resetHourlyTrend()
 
 		# save
 		currentRTC = datetime.now()
