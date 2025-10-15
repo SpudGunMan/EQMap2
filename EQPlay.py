@@ -11,46 +11,55 @@ sleep(2)
 
 def displayDatabase(day):
 
-	# Repaint the map from the events in the DB
-	displayManager.displayMap()
+    # Repaint the map from the events in the DB
+    displayManager.displayMap()
 
-	# load DB event que
-	EQEventQueue, filecount = eventDB.load(day)
-	# event count
-	eventcount = len(EQEventQueue)
+    # load DB event que
+    EQEventQueue, filecount = eventDB.load(day)
+    # event count
+    eventcount = len(EQEventQueue)
 
-	#print event queue to map
-	for event in EQEventQueue:
-		cqLon = event[0]
-		cqLat = event[1]
-		cqMag = event[2]
-		cqTsunami = event[3]
-		cqAlert = event[4]
-		color = displayManager.colorFromMag(cqMag)
-		displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
+    #print event queue to map
+    for event in EQEventQueue:
+        cqLon = event[0]
+        cqLat = event[1]
+        cqMag = event[2]
+        cqTsunami = event[3]
+        cqAlert = event[4]
+        color = displayManager.colorFromMag(cqMag)
+        displayManager.mapEarthquake(cqLon, cqLat, cqMag, color)
 
-	return eventcount
+    return eventcount
 
 def main():
-	lastevents = 0
-	updateMap = True
-	EQEventQueue, filecount = eventDB.load() #grab filecount
-	try:
-		while updateMap:
-			for day in range(filecount):
-				#displayManager.displayMap()
-				events = displayDatabase(day)
-				if events > lastevents: trend = "up"
-				if events < lastevents: trend = "down"
-				lastevents = events
-				displayManager.drawRightJustifiedText(100, "db: " + str(day) + " Events:" + str(events) + " Trending " + trend)
-				displayManager.handleKeyPress()
-				sleep(5)
+    lastevents = 0
+    updateMap = True
+    EQEventQueue, filecount = eventDB.load() #grab filecount
+    try:
+        for day in range(filecount):
+            events = displayDatabase(day)
+            if events > lastevents:
+                trend = "up"
+            elif events < lastevents:
+                trend = "down"
+            else:
+                trend = ""
+            lastevents = events
+            displayManager.drawRightJustifiedText(100, "db: " + str(day) + " Events:" + str(events) + " Trending " + trend)
 
-	except KeyboardInterrupt:
-		pass
+            # NEW: Show the trend graph using getDayTrend
+            dayTrend = eventDB.getDayTrend()
+            displayManager.displayTrendingGraph(dayTrend)
 
+            displayManager.handleKeyPress()
+            sleep(5)
+    except KeyboardInterrupt:
+        print("Exiting EQMap")
+        displayManager.clearDisplay()
+        displayManager.drawRightJustifiedText(100, "Exiting EQMap")
+        sleep(2)
+        displayManager.clearDisplay()
+        exit()
 
 if __name__ == '__main__':
-	main()
-
+    main()
