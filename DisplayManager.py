@@ -322,49 +322,62 @@ class DisplayManager:
 		return True
 	
 	def displayTrendingGraph(self, dayTrend):
-		# Draw a simple floating line graph of dayTrend in the middle of the screen
-		if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
-			return False
+			# Draw a simple floating line graph of dayTrend in the middle of the screen
+			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
+				return False
+		
+			graph_width = int(self.screenWidth * 0.4)
+			graph_height = 100
+			margin_x = 40
+			margin_y = 40
 	
-		graph_width = int(self.screenWidth * 0.4)
-		graph_height = 100
-		margin_x = 40
-		margin_y = 40
-
-		# Lower right quadrant position
-		x0 = int(self.screenWidth * 0.5) + margin_x
-		y0 = int(self.screenHeight * 0.5) + margin_y
+			# Lower right quadrant position
+			x0 = int(self.screenWidth * 0.5) + margin_x
+			y0 = int(self.screenHeight * 0.5) + margin_y
+		
+			# Clean and normalize data
+			cleaned_dayTrend = []
+			for val in dayTrend:
+				try:
+					cleaned_dayTrend.append(float(val))
+				except (ValueError, TypeError):
+					cleaned_dayTrend.append(0.0)
+			dayTrend = cleaned_dayTrend
 	
-		# Clean and normalize data
-		cleaned_dayTrend = []
-		for val in dayTrend:
-			try:
-				cleaned_dayTrend.append(float(val))
-			except (ValueError, TypeError):
-				cleaned_dayTrend.append(0.0)
-		dayTrend = cleaned_dayTrend
-		max_val = max(dayTrend)
-		min_val = min(dayTrend)
-		val_range = max_val - min_val if max_val != min_val else 1
+			# Find the first non-zero data point
+			start_idx = 0
+			for i, val in enumerate(dayTrend):
+				if val != 0.0:
+					start_idx = i
+					break
 	
-		points = []
-		for i, val in enumerate(dayTrend):
-			x = x0 + int(i * (graph_width / (len(dayTrend) - 1)))
-			y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-			points.append((x, y))
+			# Only plot from the first real data point
+			plotTrend = dayTrend[start_idx:]
+			if len(plotTrend) < 2:
+				return False
 	
-		# Draw the line graph directly on the screen (no background)
-		if len(points) > 1:
-			pygame.draw.lines(self.screen, self.green, False, points, 2)
-	
-		# Optionally, draw min/max labels
-		self.setTextSize(18)
-		self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h)")
-		self.drawText(x0, y0 + graph_height + 2, f"Midnight Local")
-		self.drawRightJustifiedText(y0 + graph_height + 2, f"{max_val}/h")
-	
-		pygame.display.flip()
-		return True
+			max_val = max(plotTrend)
+			min_val = min(plotTrend)
+			val_range = max_val - min_val if max_val != min_val else 1
+		
+			points = []
+			for i, val in enumerate(plotTrend):
+				x = x0 + int((i) * (graph_width / (len(dayTrend) - 1)))
+				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
+				points.append((x, y))
+		
+			# Draw the line graph directly on the screen (no background)
+			if len(points) > 1:
+				pygame.draw.lines(self.screen, self.green, False, points, 2)
+		
+			# Optionally, draw min/max labels
+			self.setTextSize(18)
+			self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h)")
+			self.drawText(x0, y0 + graph_height + 2, f"Midnight Local")
+			self.drawRightJustifiedText(y0 + graph_height + 2, f"{max_val}/h")
+		
+			pygame.display.flip()
+			return True
 
 	# Display Last EQ Event
 	def displayEventLong(self, location, mag, depth):
