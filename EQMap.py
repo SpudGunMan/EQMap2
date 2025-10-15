@@ -80,6 +80,8 @@ def repaintMap():
 	else:
 		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
 	
+	# Draw a linegraph of EQ activity for the day using displayTrendingGraph
+	displayManager.displayTrendingGraph(eventDB.getDayTrendList())
 
 	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
