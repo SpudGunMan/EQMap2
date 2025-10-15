@@ -229,7 +229,6 @@ class EQEventGathererUSGSVolcanoAlert:
         self.ignore_enable = ignore_enable
         self.jsonData = []
         self.alerts = []
-        self.logger = logging.getLogger("EQEventGathererUSGSVolcanoAlert")
 
     def requestEQEvent(self, lat=None, lon=None):
         url = "https://volcanoes.usgs.gov/hans-public/api/volcano/getCapElevated"
@@ -240,7 +239,6 @@ class EQEventGathererUSGSVolcanoAlert:
             r.raise_for_status()
             self.jsonData = r.json()
         except requests.exceptions.RequestException:
-            self.logger.warning("System: Issue with fetching volcano alerts from USGS")
             self.jsonData = []
             return False
 
