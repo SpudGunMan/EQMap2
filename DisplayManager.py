@@ -338,7 +338,13 @@ class DisplayManager:
 			pygame.draw.rect(self.screen, self.black, (x0, y0, graph_width, graph_height))
 	
 			# Normalize data to fit graph height
-			dayTrend = [float(val) for val in dayTrend]  # Ensure all values are numeric
+			cleaned_dayTrend = []
+			for val in dayTrend:
+				try:
+					cleaned_dayTrend.append(float(val))
+				except (ValueError, TypeError):
+					cleaned_dayTrend.append(0.0)  # or use previous value, or skip, as needed
+			dayTrend = cleaned_dayTrend
 			max_val = max(dayTrend)
 			min_val = min(dayTrend)
 			val_range = max_val - min_val if max_val != min_val else 1
