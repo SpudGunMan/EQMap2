@@ -10,12 +10,12 @@ from datetime import datetime
 from DisplayManager import displayManager
 from EQEventGatherer import eqGathererEU
 from EQEventGatherer import eqGathererUSGS
-from EQEventGatherer import EQEventGathererUSGSVolcanoAlert as eqGathererUSGSVolcano
-from EventDB import eventDB
+from EQEventGatherer import EQEventGathererUSGSVolcanoAlert
 
 # Data Sourcing
 use_eu = True
 use_usgs = True
+eqGathererUSGSVolcano = EQEventGathererUSGSVolcanoAlert()
 
 # Colors for display
 BLACK  = (0, 0, 0)
