@@ -355,7 +355,7 @@ class DisplayManager:
 	
 		# Optionally, draw min/max labels
 		self.setTextSize(18)
-		self.drawText(x0, y0 + 2, f"Freq Trend (last 24h)")
+		self.drawText(x-10, y0 + 2, f"Freq Trend (last 24h)")
 		self.drawText(x0, y0 + graph_height + 2, str(min_val))
 		self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
 	
