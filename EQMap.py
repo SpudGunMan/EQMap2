@@ -30,7 +30,7 @@ ACQUISITION_TIME_MS = 30000
 # Blink every .5 seconds
 BLINK_TIME_MS = 500
 
-# Title page display every 15 minutes
+# Wash/Title page display every 15 minutes
 TITLEPAGE_DISPLAY_TIME_MS = 900000
 
 # Times in the future for actions to occur
@@ -50,6 +50,7 @@ cqAlert = None
 cqTsunami = 0
 dataToggle = False
 blinkToggle = False
+largestLOC = ''
 
 # Return system millisecond count
 def millis():
