@@ -322,23 +322,16 @@ class DisplayManager:
 		return True
 	
 	def displayTrendingGraph(self, dayTrend):
-		# Draw a simple line graph of dayTrend on the lower part of the screen
+		# Draw a simple floating line graph of dayTrend in the middle of the screen
 		if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 			return False
 	
-		graph_width = 400
+		graph_width = int(self.screenWidth * 0.6)
 		graph_height = 100
-		margin = 40
+		x0 = int((self.screenWidth - graph_width) / 2)
+		y0 = int((self.screenHeight - graph_height) / 2)
 	
-		# Position graph at bottom right
-		x0 = self.screenWidth - graph_width - margin
-		y0 = self.screenHeight - graph_height - margin
-	
-		# Create a transparent surface for the graph
-		graph_surface = pygame.Surface((graph_width, graph_height), pygame.SRCALPHA)
-		graph_surface.fill((0, 0, 0, 128))  # RGBA: black with 50% opacity
-	
-		# Normalize data to fit graph height
+		# Clean and normalize data
 		cleaned_dayTrend = []
 		for val in dayTrend:
 			try:
@@ -352,47 +345,21 @@ class DisplayManager:
 	
 		points = []
 		for i, val in enumerate(dayTrend):
-			x = int(i * (graph_width / (len(dayTrend) - 1)))
-			y = graph_height - int((val - min_val) / val_range * (graph_height - 10))
+			x = x0 + int(i * (graph_width / (len(dayTrend) - 1)))
+			y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
 			points.append((x, y))
 	
-		# Draw axes on the graph surface
-		pygame.draw.line(graph_surface, self.white, (0, graph_height - 1), (graph_width, graph_height - 1), 1)
-		pygame.draw.line(graph_surface, self.white, (0, 0), (0, graph_height), 1)
-	
-		# Draw line graph
+		# Draw the line graph directly on the screen (no background)
 		if len(points) > 1:
-			pygame.draw.lines(graph_surface, self.green, False, points, 2)
+			pygame.draw.lines(self.screen, self.green, False, points, 2)
 	
-		# Blit the transparent graph surface onto the main screen
-		self.screen.blit(graph_surface, (x0, y0))
-	
-		# Optionally, draw min/max labels on the main screen
+		# Optionally, draw min/max labels
 		self.setTextSize(18)
 		self.drawText(x0, y0 - 18, f"Trend (24h)")
 		self.drawText(x0, y0 + graph_height + 2, str(min_val))
 		self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
 	
 		pygame.display.flip()
-		return True
-
-	# Display Last EQ Event
-	def displayEventLong(self, location, mag, depth):
-		self.setTextSize(40)
-		self.setTextColor(self.colorFromMag(mag))
-		
-		try:
-			miles = (depth / 1.609344)
-		except:
-			miles = 0
-
-		if self.dist == "m":
-			milesStr =  str(miles)[:4] + "mi"
-		else:
-			milesStr = str(depth) + "km"
-		
-		location = location[:24] #truncate long names centering from pygame will just overlap badly
-		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + " @" + milesStr)
 		return True
 	
 	# Display LastEQ/High Mag String
