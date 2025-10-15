@@ -328,8 +328,8 @@ class DisplayManager:
 	
 		graph_width = int(self.screenWidth * 0.6)
 		graph_height = 75
-		x0 = int((self.screenWidth - graph_width) / 3)
-		y0 = int((self.screenHeight - graph_height) / 3)
+		x0 = int((self.screenWidth - graph_width) / 0.8)
+		y0 = int((self.screenHeight - graph_height) / 0.8)
 	
 		# Clean and normalize data
 		cleaned_dayTrend = []
@@ -355,7 +355,7 @@ class DisplayManager:
 	
 		# Optionally, draw min/max labels
 		self.setTextSize(18)
-		self.drawText(x0, y0 + graph_height, f"Freq Trend (last 24h)")
+		self.drawText(x0, y0 + graph_height + 20, f"Freq Trend (last 24h)")
 		self.drawText(x0, y0 + graph_height + 2, str(min_val))
 		self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
 	
