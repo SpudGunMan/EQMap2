@@ -10,6 +10,7 @@ from datetime import datetime
 from DisplayManager import displayManager
 from EQEventGatherer import eqGathererEU
 from EQEventGatherer import eqGathererUSGS
+from EventDB import eventDB
 from EQEventGatherer import EQEventGathererUSGSVolcanoAlert
 
 # Data Sourcing
