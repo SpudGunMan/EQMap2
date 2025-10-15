@@ -294,6 +294,8 @@ class DisplayManager:
 		
 		# Display time to GUI only
 		try:
+			self
+			self.setTextSize(40)
 			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,130,25))
 			self.drawText(self.mapImageRect.x, self.topTextRow, timeString)
 		except: 
