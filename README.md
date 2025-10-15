@@ -1,6 +1,6 @@
  ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
 
-# About Revision:25.8
+# About Revision:25.10
 This is a Earthquake Map Display for RaspberryPi Attached screen
 
 This fork adds additional features, while keeping the orginal functionality (I hope!)
@@ -13,7 +13,9 @@ This fork adds additional features, while keeping the orginal functionality (I h
 - Daily event Trending
 - Daily database for playback later `python3 EQPlay.py`
   - RamDisk use to lower any disk write on Pi SD-Card
-  - multi day player 
+  - multi day player
+- Volcano Tracking! new 2025!
+- New graphs showing rate per hours!
 
 Feel free to pull issues/suggestions or forks to contribute!
 
@@ -52,6 +54,7 @@ to get 7" ribbon attached display you might need to do a few things to bullseye
 1. Reboot to "hopefully" a working Pi Screen on bullseye
 
 ### Tested
+* 2025.10 Trixie
 * 2025.8 Appears seismicportal.eu having issues data is wild and main page says its 2002.. updated applicaiton hope they return soon!
 * 2025 pygame has issues on Pi  https://github.com/pygame/pygame/issues/3003pygame-display-init-fails-for-non-root-user
   * find your display, likely fb0 `ls -l /dev/fb*` allow all access `sudo chmod a+rw /dev/fb0`
@@ -65,12 +68,10 @@ to get 7" ribbon attached display you might need to do a few things to bullseye
 
 ## To-Do
 normally on a next branch if you see it try it out! `git pull origin next`
-- add other types of data (tide)
-  - volcano plotting
+- add other types of data
   - tsunami data
 - save settings
   - UTC
-- replay from larger returns in USGS (poll more in UK)
 - generate some new maps
   - fault lines
 
