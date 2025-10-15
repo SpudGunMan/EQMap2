@@ -387,8 +387,8 @@ class DisplayManager:
 			self.setTextSize(18)
 			if self.screenWidth > 1000:
 				# larger screens
-				self.drawText(x0 - 150, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
-				self.drawText(x0 - 150, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
+				self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
 				self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
 				# end larger screens
 			else:
