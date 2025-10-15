@@ -361,6 +361,25 @@ class DisplayManager:
 	
 		pygame.display.flip()
 		return True
+
+	# Display Last EQ Event
+	def displayEventLong(self, location, mag, depth):
+		self.setTextSize(40)
+		self.setTextColor(self.colorFromMag(mag))
+		
+		try:
+			miles = (depth / 1.609344)
+		except:
+			miles = 0
+
+		if self.dist == "m":
+			milesStr =  str(miles)[:4] + "mi"
+		else:
+			milesStr = str(depth) + "km"
+		
+		location = location[:24] #truncate long names centering from pygame will just overlap badly
+		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + " @" + milesStr)
+		return True
 	
 	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, count, largestmag, tsunami, alert, cluster=False):
