@@ -20,6 +20,16 @@ class EventDB:
 		self.dailyevents = []
 		self.mySettings = []
 		self.EQEventQueue.clear()
+		self.EQElocations.clear()
+		self.dailyevents.clear()
+		self.mySettings.clear()
+		self.region = ''
+		self.region_dict = {}
+		self.last_event = ()
+		self.resetHourlyTrend()
+		self.dbFileName = ''
+		self.dbFile = None
+		self.events = self.EQEventQueue  # Alias for easier access
 
 	# Clear the database of events /save a copy
 	def clear(self):
