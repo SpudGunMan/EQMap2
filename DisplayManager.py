@@ -411,7 +411,7 @@ class DisplayManager:
 					self.firstRun = False
 				except Exception as e:
 					print(f"Error displaying wash page: {e}")
-					return True
+					return False
 		else:
 			if self.firstRun:
 				self.drawCenteredText((self.topTextRow + 90), "Loading")
