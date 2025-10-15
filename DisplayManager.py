@@ -359,9 +359,9 @@ class DisplayManager:
 	
 		# Optionally, draw min/max labels
 		self.setTextSize(18)
-		self.drawText(x0, y0 + graph_height + 20, f"Freq Trend (last 24h)")
-		self.drawText(x0, y0 + graph_height + 2, str(min_val))
-		self.drawRightJustifiedText(y0 + graph_height + 2, str(max_val))
+		self.drawText(x0, y0 + graph_height + 20, f"Freq Trend (hourly, last 24h)")
+		self.drawText(x0, y0 + graph_height + 2, f"Midnight Local")
+		self.drawRightJustifiedText(y0 + graph_height + 2, f"{max_val}/h")
 	
 		pygame.display.flip()
 		return True
@@ -410,13 +410,12 @@ class DisplayManager:
 			self.displayMap()
 
 			# Data to always display
-			self.setTextSize(30)
+			self.setTextSize(40)
 			if self.screenWidth > 1000:
 				self.drawCenteredText((self.mapImageRect.y + 320), eventDayString)
 			else:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
-			self.setTextSize(40)
 
 			freq_trend = ""
 			try:
