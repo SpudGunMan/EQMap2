@@ -53,6 +53,7 @@ class EventDB:
 
 	def getDayTrend(self):
 		if self.dailyevents and isinstance(self.dailyevents, list):
+			print("Day Trend:", self.dailyevents)
 			return self.dailyevents
 		return []
 
