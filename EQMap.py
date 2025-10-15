@@ -70,6 +70,10 @@ def repaintMap():
 
 	# Display EQ location in color under map
 	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
+	# Check for volcano alert and display if found
+	displayVolcanoEvent = eventDB.checkForVolcanoAlert()
+	if displayVolcanoEvent:
+		displayManager.displayVolcanoAlert()
 
 	# Display map Draw data with event count and date
 	displayManager.displayBottomDataFeed(max_location,eventCount)

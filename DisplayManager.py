@@ -400,6 +400,21 @@ class DisplayManager:
 		self.drawCenteredText(self.bottomTextRow,location + (" Mag:" + str(mag)) + " @" + milesStr)
 		return True
 	
+	# Display Last Volcanic Event
+	def displayVolcanoEvent(self, lon, lat):
+		if self.hasGUI and lon != '':
+			# Calculate map X and Y
+			mapX = ((float(lon) + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
+			mapY = ((((-1 * float(lat)) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
+			
+			# Draw a triangle at volcano location
+			pygame.draw.polygon(self.screen, self.blue, [(mapX, mapY - 6), (mapX - 5, mapY + 4), (mapX + 5, mapY + 4)], 0)
+			pygame.display.flip()
+			return mapX, mapY, self.blue
+		else:
+			#CLI 
+			return False
+	
 	# Display LastEQ/High Mag String
 	def displayDBStats(self, mag, count, largestmag, tsunami, alert, cluster=False):
 		currentAlarm = ""
