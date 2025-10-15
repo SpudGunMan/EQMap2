@@ -328,16 +328,20 @@ class DisplayManager:
 			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 				return False
 		
-			graph_width = int(self.screenWidth * 0.4)
-			graph_height = 100
-			margin_x = 40
-			margin_y = 40
 			if self.screenWidth > 1000:
 				# Lower right quadrant position larger screens
+				graph_width = int(self.screenWidth * 0.2)
+				graph_height = 150
+				margin_x = 40
+				margin_y = 40
 				x0 = int(self.screenWidth * 0.75) + margin_x
 				y0 = int(self.screenHeight * 0.65) + margin_y
 			else:
 				# Lower right quadrant position for smaller screens
+				graph_width = int(self.screenWidth * 0.4)
+				graph_height = 100
+				margin_x = 40
+				margin_y = 40
 				x0 = int(self.screenWidth * 0.5) + margin_x
 				y0 = int(self.screenHeight * 0.5) + margin_y
 
@@ -378,13 +382,24 @@ class DisplayManager:
 				x2, y2, v2 = points[i]
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
-		
-			# Optionally, draw min/max labels
+
+			# draw labels
 			self.setTextSize(18)
-			self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
-			self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
-			self.drawRightJustifiedText(y0 + graph_height + 2, f"Max Events hour:{max_val}")
-		
+			if self.screenWidth > 1000:
+				# larger screens
+				self.setTextSize(18)
+				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
+				self.drawRightJustifiedText(y0 + graph_height + 2, f"Max Events hour:{max_val}")
+				self.drawText(x0, y0 - 5, f"Min:{min_val}")
+			
+			else:
+				# smaller screens
+				self.setTextSize(18)
+				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
+				self.drawRightJustifiedText(y0 + graph_height + 2, f"Max Events hour:{max_val}")
+			
 			pygame.display.flip()
 			return True
 
@@ -487,7 +502,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion))
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
-				time.sleep(10) # show wash page for 10 seconds
+				time.sleep(20) # show page for 20 seconds
 
 			# Initial startup display
 			else:
