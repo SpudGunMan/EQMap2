@@ -229,6 +229,13 @@ class EQEventGathererUSGSVolcanoAlert:
         self.ignore_enable = ignore_enable
         self.jsonData = []
         self.alerts = []
+	
+    def getEventID(self):
+        """Return the first volcano event ID or None if no alerts."""
+        if not self.alerts:
+            return None
+        return self.alerts[0].get('volcano_id', None)
+			
 
     def requestEQEvent(self, lat=None, lon=None):
         url = "https://volcanoes.usgs.gov/hans-public/api/volcano/getCapElevated"
