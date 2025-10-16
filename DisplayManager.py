@@ -11,6 +11,8 @@ from EventDB import eventDB
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
+current_hour = datetime.now().hour
+hours_remaining = 24- current_hour
 
 class DisplayManager:
 
@@ -398,14 +400,14 @@ class DisplayManager:
 			if self.screenWidth > 1000:
 				# larger screens
 				self.setTextSize(20)
-				self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {hours_remaining}h left)")
 				self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
 				self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
 				# end larger screens
 			else:
 				# smaller screens
 				self.setTextSize(18)
-				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {24 - start_idx}h left)")
+				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {hours_remaining}h left)")
 				self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
 				self.drawRightJustifiedText(y0 + graph_height - 8, f"Max Events hour:{max_val}")
 				# end smaller screens
