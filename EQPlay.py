@@ -2,24 +2,23 @@ from DisplayManager import displayManager
 from EQMap import BLACK
 from EventDB import eventDB
 from time import sleep
+
 EQEventQueue = []
 
-
+# Initial display
 displayManager.displayMap()
 displayManager.drawRightJustifiedText(500, "database player")
 sleep(2)
 
 def displayDatabase(day):
-
     # Repaint the map from the events in the DB
     displayManager.displayMap()
 
-    # load DB event que
+    # Load DB event queue for the given day
     EQEventQueue, filecount = eventDB.load(day)
-    # event count
     eventcount = len(EQEventQueue)
 
-    #print event queue to map
+    # Print event queue to map
     for event in EQEventQueue:
         cqLon = event[0]
         cqLat = event[1]
@@ -34,10 +33,11 @@ def displayDatabase(day):
 def main():
     lastevents = 0
     updateMap = True
-    EQEventQueue, filecount = eventDB.load() #grab filecount
+    EQEventQueue, filecount = eventDB.load() # grab filecount
     try:
         for day in range(filecount):
             events = displayDatabase(day)
+            # Determine trend direction
             if events > lastevents:
                 trend = "up"
             elif events < lastevents:
@@ -45,9 +45,11 @@ def main():
             else:
                 trend = ""
             lastevents = events
-            displayManager.drawRightJustifiedText(100, "db: " + str(day) + " Events:" + str(events) + " Trending " + trend)
 
-            # NEW: Show the trend graph using getDayTrend
+            # Display trending info
+            displayManager.drawRightJustifiedText(100, f"db: {day} Events: {events} Trending {trend}")
+
+            # Show the trend graph using getDayTrend
             dayTrend = eventDB.getDayTrend()
             displayManager.displayTrendingGraph(dayTrend)
 
