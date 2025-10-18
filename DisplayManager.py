@@ -11,7 +11,7 @@ from EventDB import eventDB
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
-current_hour = datetime(datetime.zone.utcnow()).hour
+current_hour = datetime(datetime.zone.utc).hour
 hours_remaining = 24 - current_hour
 
 class DisplayManager:
