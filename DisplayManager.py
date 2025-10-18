@@ -5,13 +5,13 @@ Concept, Design by: Craig A. Lindley
 
 from cProfile import run
 import os, time, sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 from EventDB import eventDB 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
-current_hour = datetime.now(datetime.zone.utc).hour
+current_hour = datetime.now(timezone.utc).hour
 hours_remaining = 24 - current_hour
 
 class DisplayManager:
