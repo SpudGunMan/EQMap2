@@ -458,9 +458,22 @@ class DisplayManager:
 			if alert is not None: currentAlarm = "ALERT"
 		except:
 			currentAlarm = "UNKNOWN"
+
+		freq_trend = ""
+		try:
+			if len(eventDB.dailyevents) > 1:
+				if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
+					freq_trend = "+"
+				elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
+					freq_trend = "-"
+				else:
+					freq_trend = "="
+		except Exception as e:
+			print(f"Error determining frequency trend: {e}")
+			pass
 		
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + "| HiMag:" + largestmag)
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + freq_trend + " | HiMag: " + str(largestmag))
 		return True
 
 	# Display Wash/Title page
@@ -484,11 +497,11 @@ class DisplayManager:
 			try:
 				if len(eventDB.dailyevents) > 1:
 					if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
-						freq_trend = " +"
+						freq_trend = " Trend increasing"
 					elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
-						freq_trend = " -"
+						freq_trend = " Trend decreasing"
 					else:
-						freq_trend = " ="
+						freq_trend = " Trend steady"
 			except Exception as e:
 				print(f"Error determining frequency trend: {e}")
 				pass
@@ -496,21 +509,21 @@ class DisplayManager:
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				# Defensive: convert all to string, handle None/empty
-				largestevent_str = "" if largestevent is None else str(largestevent)
-				max_location_str = "" if not max_location else str(max_location)
-				activeregion_str = "" if not activeregion else str(activeregion)
-				dayTrend_str = "" if not dayTrend else str(dayTrend)
+				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
+				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
+				activeregion_str = "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion)
+				dayTrend_str = "N/A" if not dayTrend or dayTrend in ([], (), "") else str(len(dayTrend))
 
 				if self.screenWidth > 1000:
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion))
+					self.drawCenteredText((self.topTextRow + 230), "Active Region: " + activeregion_str)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
 					self.setTextSize(40)
-					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion))
+					self.drawCenteredText((self.topTextRow + 160), "Active Region: " + activeregion_str)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 				time.sleep(20) # show page for 20 seconds
