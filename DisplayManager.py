@@ -517,16 +517,16 @@ class DisplayManager:
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.drawCenteredText((self.topTextRow + 230), "Active Region:")
-					self.drawCenteredText((self.topTextRow + 270), activeregion_str)
+					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
+					self.drawCenteredText((self.topTextRow + 170), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
 					self.setTextSize(40)
-					self.drawCenteredText((self.topTextRow + 230), "Active Region:")
-					self.drawCenteredText((self.topTextRow + 270), activeregion_str)
+					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
+					self.drawCenteredText((self.topTextRow + 170), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
 					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
 				time.sleep(20) # show page for 20 seconds
