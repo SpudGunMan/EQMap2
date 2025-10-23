@@ -402,12 +402,19 @@ class DisplayManager:
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
-				self.drawText(label_x, y0 + graph_height - 110,
+				label_y_offset = 100  # Move labels down by 100 pixels
+				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
 							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
-				self.drawText(label_x, y0 + graph_height - 130,
+				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 							  f"Start: {start_hour:02d}:00 (local)")
-				self.drawRightJustifiedText(y0 + graph_height - 130,
+				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 										   f"Max Events/hour: {max_val}")
+
+				# Draw a small cross at the center of the graph area for reference
+				center_x = x0 + graph_width // 2
+				center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
+				pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
+				pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
@@ -545,7 +552,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.10")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.11")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.firstRun = False
 				time.sleep(5) #show startup screen for 5 seconds
