@@ -400,7 +400,7 @@ class DisplayManager:
 				margin_y = 40
 				# Move graph more to the left and further down for high-res screens
 				x0 = int(self.screenWidth * 0.55) + margin_x
-				y0 = int(self.screenHeight * 0.40) + margin_y + 50  # Move graph down by 50
+				y0 = int(self.screenHeight * 0.40) + margin_y
 			
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
