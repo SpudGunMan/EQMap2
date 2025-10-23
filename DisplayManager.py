@@ -329,21 +329,18 @@ class DisplayManager:
 			# Draw a simple floating line graph of dayTrend in the middle of the screen
 			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 				return False
-			x0 = 0
-			y0 = 0
 
+			from datetime import datetime
+
+			# Graph placement and size
 			if self.screenWidth > 1000:
-				# Lower right quadrant position larger screens
 				graph_width = int(self.screenWidth * 0.2)
 				graph_height = 150
 				margin_x = 40
 				margin_y = 40
-				#label_x = int(self.screenWidth * 0.60)  # 60% across, adjust as needed
-				#label_y = y0 + graph_height + 10        # just below the graph
 				x0 = int(self.screenWidth * 0.75) + margin_x
 				y0 = int(self.screenHeight * 0.65) + margin_y
 			else:
-				# Lower right quadrant position for smaller screens
 				graph_width = int(self.screenWidth * 0.4)
 				graph_height = 100
 				margin_x = 40
@@ -359,34 +356,28 @@ class DisplayManager:
 				except (ValueError, TypeError):
 					cleaned_dayTrend.append(0.0)
 			dayTrend = cleaned_dayTrend
-	
+
 			# Find the first non-zero data point
 			start_idx = 0
 			for i, val in enumerate(dayTrend):
 				if val != 0.0:
 					start_idx = i
 					break
-	
+
 			# Only plot from the first real data point
 			plotTrend = dayTrend[start_idx:]
 			if len(plotTrend) < 2:
 				return False
-	
+
 			max_val = max(plotTrend)
 			min_val = min(plotTrend)
 			val_range = max_val - min_val if max_val != min_val else 1
 		
 			points = []
 			for i, val in enumerate(plotTrend):
-				x = x0 + int((i) * (graph_width / (len(dayTrend) - 1)))
+				x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
 				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
 				points.append((x, y, val))
-
-			# Draw a small cross at the center of the graph area for reference
-			#center_x = x0 + graph_width // 2
-			#center_y = y0 + graph_height // 2
-			#pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
-			#pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
 
 			# Draw the line graph, skipping segments where either value is 0
 			for i in range(1, len(points)):
@@ -395,22 +386,35 @@ class DisplayManager:
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-			# draw labels
-			
+			# Draw a small cross at the center of the graph area for reference
+			center_x = x0 + graph_width // 2
+			center_y = y0 + graph_height // 2
+			pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
+			pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
+
+			# Calculate dynamic hours remaining and label start hour
+			current_hour = datetime.now().hour
+			hours_remaining = 24 - current_hour
+			start_hour = start_idx  # If your data is hourly, this is the hour of the first data point
+
+			# Draw labels
 			if self.screenWidth > 1000:
-				# larger screens
 				self.setTextSize(20)
-				self.drawText(x0 - 120, y0 + graph_height - 110, f"Freq Trend (hourly, last 24h {hours_remaining}h left)")
-				self.drawText(x0 - 120, y0 + graph_height - 130, f"Start: {start_idx:02d}:00")
-				self.drawRightJustifiedText(y0 + graph_height - 130, f"Max Events hour:{max_val}")
-				# end larger screens
+				self.drawText(x0 - 120, y0 + graph_height - 110,
+							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
+				self.drawText(x0 - 120, y0 + graph_height - 130,
+							  f"Start: {start_hour:02d}:00 (local)")
+				self.drawRightJustifiedText(y0 + graph_height - 130,
+										   f"Max Events/hour: {max_val}")
 			else:
-				# smaller screens
 				self.setTextSize(18)
-				self.drawText(x0, y0 + graph_height + 15, f"Freq Trend (hourly, last 24h {hours_remaining}h left)")
-				self.drawText(x0, y0 + graph_height + 2, f"Start: {start_idx:02d}:00")
-				self.drawRightJustifiedText(y0 + graph_height - 8, f"Max Events hour:{max_val}")
-				# end smaller screens
+				self.drawText(x0, y0 + graph_height + 15,
+							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
+				self.drawText(x0, y0 + graph_height + 2,
+							  f"Start: {start_hour:02d}:00 (local)")
+				self.drawRightJustifiedText(y0 + graph_height - 8,
+										   f"Max Events/hour: {max_val}")
+
 			pygame.display.flip()
 			return True
 
