@@ -402,8 +402,6 @@ class DisplayManager:
 				x0 = int(self.screenWidth * 0.55) + margin_x
 				y0 = int(self.screenHeight * 0.40) + margin_y + 50  # Move graph down by 50
 			
-				# ... (rest of your plotting code) ...
-			
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
 				label_y_offset = 100  # Move labels down by 100 pixels
