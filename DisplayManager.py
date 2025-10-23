@@ -387,10 +387,10 @@ class DisplayManager:
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-			# Calculate dynamic hours remaining and label start hour
-			current_hour = datetime.now().hour
-			hours_remaining = 24 - current_hour
-			start_hour = start_idx  # If your data is hourly, this is the hour of the first data point
+			# Calculate hours remaining from the start of the graph
+			start_hour = start_idx  # This is the hour of the first data point shown
+			hours_remaining = (24 - start_hour) % 24
+			
 
 			# Draw labels
 			if self.screenWidth > 1000:
@@ -402,16 +402,18 @@ class DisplayManager:
 				x0 = int(self.screenWidth * 0.55) + margin_x
 				y0 = int(self.screenHeight * 0.40) + margin_y
 			
+			# Draw labels
+			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
-				label_y_offset = 150 	# Shift labels further down
+				label_y_offset = 150  # Shift labels further down
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-				f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left from start)")
+					f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left from start)")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-							  f"Start: {start_hour:02d}:00 (local)")
+					f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
-										   f"Max Events/hour: {max_val}")
-			
+					f"Max Events/hour: {max_val}")
+				
 				# # Draw a small cross at the center of the graph area for reference
 				# center_x = x0 + graph_width // 2
 				# center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
