@@ -394,6 +394,16 @@ class DisplayManager:
 
 			# Draw labels
 			if self.screenWidth > 1000:
+				graph_width = int(self.screenWidth * 0.2)
+				graph_height = 150
+				margin_x = 40
+				margin_y = 40
+				# Move graph more to the left and further down for high-res screens
+				x0 = int(self.screenWidth * 0.55) + margin_x
+				y0 = int(self.screenHeight * 0.40) + margin_y + 50  # Move graph down by 50
+			
+				# ... (rest of your plotting code) ...
+			
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
 				label_y_offset = 100  # Move labels down by 100 pixels
@@ -403,7 +413,7 @@ class DisplayManager:
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 										   f"Max Events/hour: {max_val}")
-
+			
 				# Draw a small cross at the center of the graph area for reference
 				center_x = x0 + graph_width // 2
 				center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
