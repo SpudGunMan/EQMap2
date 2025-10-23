@@ -12,7 +12,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
 from pygame.locals import *
 current_hour = datetime.now().hour
-hours_remaining = (24 - current_hour) % 24
+hours_remaining = 24 - current_hour
 
 class DisplayManager:
 
@@ -406,7 +406,7 @@ class DisplayManager:
 				label_x = x0 - 140  # Shift labels further left
 				label_y_offset = 150 	# Shift labels further down
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
+				f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left from start)")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
