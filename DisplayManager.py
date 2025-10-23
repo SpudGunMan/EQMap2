@@ -412,11 +412,11 @@ class DisplayManager:
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 										   f"Max Events/hour: {max_val}")
 			
-				# Draw a small cross at the center of the graph area for reference
-				center_x = x0 + graph_width // 2
-				center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
-				pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
-				pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
+				# # Draw a small cross at the center of the graph area for reference
+				# center_x = x0 + graph_width // 2
+				# center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
+				# pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
+				# pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
