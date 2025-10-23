@@ -400,9 +400,9 @@ class DisplayManager:
 			# Draw labels
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				self.drawText(x0 - 120, y0 + graph_height - 110,
+				self.drawText(x0 - 140, y0 + graph_height - 110,
 							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
-				self.drawText(x0 - 120, y0 + graph_height - 130,
+				self.drawText(x0 - 140, y0 + graph_height - 130,
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130,
 										   f"Max Events/hour: {max_val}")
