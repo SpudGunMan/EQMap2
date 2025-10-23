@@ -404,7 +404,7 @@ class DisplayManager:
 			
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
-				label_y_offset = 100  # Move labels down by 100 pixels
+				label_y_offset = 150 	# Shift labels further down
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
 							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
