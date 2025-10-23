@@ -338,8 +338,9 @@ class DisplayManager:
 				graph_height = 150
 				margin_x = 40
 				margin_y = 40
-				x0 = int(self.screenWidth * 0.75) + margin_x
-				y0 = int(self.screenHeight * 0.65) + margin_y
+				# Move graph more to the left and up for high-res screens
+				x0 = int(self.screenWidth * 0.55) + margin_x
+				y0 = int(self.screenHeight * 0.40) + margin_y
 			else:
 				graph_width = int(self.screenWidth * 0.4)
 				graph_height = 100
@@ -400,9 +401,10 @@ class DisplayManager:
 			# Draw labels
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				self.drawText(x0 - 140, y0 + graph_height - 110,
+				label_x = x0 - 140  # Shift labels further left
+				self.drawText(label_x, y0 + graph_height - 110,
 							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
-				self.drawText(x0 - 140, y0 + graph_height - 130,
+				self.drawText(label_x, y0 + graph_height - 130,
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130,
 										   f"Max Events/hour: {max_val}")
