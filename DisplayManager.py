@@ -387,12 +387,6 @@ class DisplayManager:
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-			# Draw a small cross at the center of the graph area for reference
-			center_x = x0 + graph_width // 2
-			center_y = y0 + graph_height // 2
-			pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
-			pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
-
 			# Calculate dynamic hours remaining and label start hour
 			current_hour = datetime.now().hour
 			hours_remaining = 24 - current_hour
