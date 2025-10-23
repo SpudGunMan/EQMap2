@@ -406,7 +406,7 @@ class DisplayManager:
 				label_x = x0 - 140  # Shift labels further left
 				label_y_offset = 150  # Shift labels further down
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left from start)")
+					f"Freq Trend (hourly, {hours_remaining}h left from start)")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 					f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
@@ -420,7 +420,7 @@ class DisplayManager:
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
-							  f"Freq Trend (hourly, {len(plotTrend)}h shown, {hours_remaining}h left today)")
+							  f"Freq Trend (hourly, {hours_remaining}h left today)")
 				self.drawText(x0, y0 + graph_height + 2,
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
