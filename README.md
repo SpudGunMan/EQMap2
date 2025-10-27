@@ -39,9 +39,20 @@ python3 EQMap.py
 ```
 if you are not running a raspberry you may need to install pre-req they are included on raspberry by default so no need to continue here for Pi use...
 
-```shell
-sudo apt-get install python3-pip python3-dev python3-pygame
+
+~~sudo apt-get install python3-pip python3-dev python3-pygame~~
+
+
+```sh
+pip uninstall pygame # Uninstall pygame first since it would conflict with pygame-ce
+pip install pygame-ce
 ```
+-# Because 'pygame' installs to the same location as 'pygame-ce', it must first be uninstalled.
+-# Note that the `import pygame` syntax has not changed with pygame-ce.
+
+
+
+
 # Issues
 If you have issues make sure your running the newest code `git pull`, let me know if you see a problem!
 if you really get stuck you can start over or try a `git reset --hard` follwed by a pull.
