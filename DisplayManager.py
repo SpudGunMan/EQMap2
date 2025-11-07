@@ -425,7 +425,7 @@ class DisplayManager:
 				self.drawText(x0, y0 + graph_height + 15,
 							  f"Freq Trend (hourly, {freq_trend} vs last 24h)")
 				self.drawText(x0, y0 + graph_height + 2,
-							  f"Start: {start_hour:02d}:00 (local)")
+							  f"Hours shown: {len(plotTrend)} | Hours remaining: {hours_remaining}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 							   f"Max Events/hour: {max_val}")
 
