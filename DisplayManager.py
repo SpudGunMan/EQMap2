@@ -389,29 +389,35 @@ class DisplayManager:
 			start_hour = start_idx  # This is the hour of the first data point shown
 			hours_remaining = (24 - start_hour) % 24
 
-			# Determine frequency trend
-			freq_trend = ""
-			try:
-				if len(dayTrend) > 1:
-					if dayTrend[-1] > dayTrend[-2]:
-						freq_trend = "Increasing"
-					elif dayTrend[-1] < dayTrend[-2]:
-						freq_trend = "Decreasing"
-					else:
-						freq_trend = "Steady"
-			except Exception as e:
-				print(f"Error determining frequency trend: {e}")
-				freq_trend = "Unknown"
+			# Trend: last hour vs previous hour
+			hour_trend = "N/A"
+			if len(dayTrend) > 1:
+				if dayTrend[-1] > dayTrend[-2]:
+					hour_trend = "Increasing"
+				elif dayTrend[-1] < dayTrend[-2]:
+					hour_trend = "Decreasing"
+				else:
+					hour_trend = "Steady"
 
-			# Draw labels
+			# Trend: last hour vs same hour yesterday (24 hours ago)
+			yesterday_trend = "N/A"
+			if len(dayTrend) > 24:
+				if dayTrend[-1] > dayTrend[-25]:
+					yesterday_trend = "Increasing"
+				elif dayTrend[-1] < dayTrend[-25]:
+					yesterday_trend = "Decreasing"
+				else:
+					yesterday_trend = "Steady"
+
+			# Display both trends
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				label_x = x0 - 140  # Shift labels further left
-				label_y_offset = 150  # Shift labels further down
+				label_x = x0 - 140
+				label_y_offset = 150
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Freq Trend (hourly, {freq_trend} vs last 24h)")
+					f"Last hour: {hour_trend} | Vs same hour yesterday: {yesterday_trend}")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-					f"Hours shown: {len(plotTrend)} | Hours remaining: {hours_remaining}")
+					f"Events (last hour): {int(dayTrend[-1]) if len(dayTrend) > 0 else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {max_val}")
 				
@@ -423,12 +429,12 @@ class DisplayManager:
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
-							  f"Freq Trend (hourly, {freq_trend} vs last 24h)")
+					f"Last hour: {hour_trend} | Vs same hour yesterday: {yesterday_trend}")
 				self.drawText(x0, y0 + graph_height + 2,
-							  f"Hours shown: {len(plotTrend)} | Hours remaining: {hours_remaining}")
+					f"Events (last hour): {int(dayTrend[-1]) if len(dayTrend) > 0 else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
-							   f"Max Events/hour: {max_val}")
-
+					f"Max Events/hour: {max_val}")
+				
 			pygame.display.flip()
 			return True
 
