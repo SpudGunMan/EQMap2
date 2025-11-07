@@ -388,25 +388,28 @@ class DisplayManager:
 			# Calculate hours remaining from the start of the graph
 			start_hour = start_idx  # This is the hour of the first data point shown
 			hours_remaining = (24 - start_hour) % 24
-			
 
-			# Draw labels
-			if self.screenWidth > 1000:
-				graph_width = int(self.screenWidth * 0.2)
-				graph_height = 150
-				margin_x = 40
-				margin_y = 40
-				# Move graph more to the left and further down for high-res screens
-				x0 = int(self.screenWidth * 0.55) + margin_x
-				y0 = int(self.screenHeight * 0.40) + margin_y
-			
+			# Determine frequency trend
+			freq_trend = ""
+			try:
+				if len(dayTrend) > 1:
+					if dayTrend[-1] > dayTrend[-2]:
+						freq_trend = "Increasing"
+					elif dayTrend[-1] < dayTrend[-2]:
+						freq_trend = "Decreasing"
+					else:
+						freq_trend = "Steady"
+			except Exception as e:
+				print(f"Error determining frequency trend: {e}")
+				freq_trend = "Unknown"
+
 			# Draw labels
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0 - 140  # Shift labels further left
 				label_y_offset = 150  # Shift labels further down
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Freq Trend (hourly, {hours_remaining}h left from start)")
+					f"Freq Trend (hourly, {freq_trend} vs last 24h)")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 					f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
@@ -420,11 +423,11 @@ class DisplayManager:
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
-							  f"Freq Trend (hourly, {hours_remaining}h left today)")
+							  f"Freq Trend (hourly, {freq_trend} vs last 24h)")
 				self.drawText(x0, y0 + graph_height + 2,
 							  f"Start: {start_hour:02d}:00 (local)")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
-										   f"Max Events/hour: {max_val}")
+							   f"Max Events/hour: {max_val}")
 
 			pygame.display.flip()
 			return True
@@ -473,22 +476,9 @@ class DisplayManager:
 			if alert is not None: currentAlarm = "ALERT"
 		except:
 			currentAlarm = "UNKNOWN"
-
-		freq_trend = ""
-		try:
-			if len(eventDB.dailyevents) > 1:
-				if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
-					freq_trend = "+"
-				elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
-					freq_trend = "-"
-				else:
-					freq_trend = "="
-		except Exception as e:
-			print(f"Error determining frequency trend: {e}")
-			pass
 		
 		self.setTextSize(40)
-		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + freq_trend + " | HiMag: " + str(largestmag))
+		self.drawRightJustifiedText(self.topTextRow, currentAlarm + " | EQTotal: " + str(count) + " | HiMag: " + str(largestmag))
 		return True
 
 	# Display Wash/Title page
