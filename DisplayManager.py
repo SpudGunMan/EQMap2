@@ -354,7 +354,9 @@ class DisplayManager:
 					cleaned_dayTrend.append(float(val))
 				except (ValueError, TypeError):
 					cleaned_dayTrend.append(0.0)
-			dayTrend = cleaned_dayTrend
+			# preserve full cleaned series for index-accurate comparisons
+			original_dayTrend = cleaned_dayTrend
+			dayTrend = original_dayTrend
 
 			# Find the first non-zero data point
 			start_idx = 0
@@ -385,26 +387,27 @@ class DisplayManager:
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-			# Calculate hours remaining from the start of the graph
-			start_hour = start_idx  # This is the hour of the first data point shown
-			hours_remaining = (24 - start_hour) % 24
+			# Use plotted series' last values for "last hour" and immediate previous
+			last_val = plotTrend[-1]
+			prev_val = plotTrend[-2] if len(plotTrend) > 1 else None
 
 			# Trend: last hour vs previous hour
 			hour_trend = "N/A"
-			if len(dayTrend) > 1:
-				if dayTrend[-1] > dayTrend[-2]:
+			if prev_val is not None:
+				if last_val > prev_val:
 					hour_trend = "Increasing"
-				elif dayTrend[-1] < dayTrend[-2]:
+				elif last_val < prev_val:
 					hour_trend = "Decreasing"
 				else:
 					hour_trend = "Steady"
 
-			# Trend: last hour vs same hour yesterday (24 hours ago)
+			# Trend: last hour vs same hour yesterday (24 hours ago) using original series
 			yesterday_trend = "N/A"
-			if len(dayTrend) > 24:
-				if dayTrend[-1] > dayTrend[-25]:
+			if len(original_dayTrend) >= 25:
+				yesterday_val = original_dayTrend[-25]
+				if last_val > yesterday_val:
 					yesterday_trend = "Increasing"
-				elif dayTrend[-1] < dayTrend[-25]:
+				elif last_val < yesterday_val:
 					yesterday_trend = "Decreasing"
 				else:
 					yesterday_trend = "Steady"
@@ -415,23 +418,17 @@ class DisplayManager:
 				label_x = x0 - 140
 				label_y_offset = 150
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Last hour: {hour_trend} | Vs same hour yesterday: {yesterday_trend}")
+					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-					f"Events (last hour): {int(dayTrend[-1]) if len(dayTrend) > 0 else 0}")
+					f"Events (last hour): {int(last_val) if last_val is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {max_val}")
-				
-				# # Draw a small cross at the center of the graph area for reference
-				# center_x = x0 + graph_width // 2
-				# center_y = y0 + graph_height // 2 + 30  # Move center down by 30 pixels
-				# pygame.draw.line(self.screen, self.red, (center_x - 5, center_y), (center_x + 5, center_y), 2)
-				# pygame.draw.line(self.screen, self.red, (center_x, center_y - 5), (center_x, center_y + 5), 2)
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 15,
-					f"Last hour: {hour_trend} | Vs same hour yesterday: {yesterday_trend}")
+					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(x0, y0 + graph_height + 2,
-					f"Events (last hour): {int(dayTrend[-1]) if len(dayTrend) > 0 else 0}")
+					f"Events (last hour): {int(last_val) if last_val is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 					f"Max Events/hour: {max_val}")
 				
