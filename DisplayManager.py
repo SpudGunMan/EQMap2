@@ -389,22 +389,14 @@ class DisplayManager:
 
 			# Draw the line graph, skipping segments where either value is 0
 			for i in range(1, len(points)):
-				x1, y1, v1 = points[i-1]
-				x2, y2, v2 = points[i]
-				if v1 != 0 and v2 != 0:
-					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
+				if points[i-1][2] != 0.0 and points[i][2] != 0.0:
+					pygame.draw.line(self.screen, self.green, (points[i-1][0], points[i-1][1]), (points[i][0], points[i][1]), 2)
 
-			# value shown on the plotted graph (visible last point)
-			plot_last_val = plotTrend[-1]
+				# Draw a small circle at each data point for visibility
+				if points[i][2] != 0.0:
+					pygame.draw.circle(self.screen, self.yellow, (points[i][0], points[i][1]), 3)
 
-			# Try to find the plotted last value in the original (full cleaned) series
-			for i in range(len(original_dayTrend) - 1, -1, -1):
-				if original_dayTrend[i] == plot_last_val:
-					last_idx = i
-					last_val = original_dayTrend[i]
-					break
-
-			# Display labels (be defensive about index bounds)
+			# Display labels
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0
