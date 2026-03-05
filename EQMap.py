@@ -102,7 +102,6 @@ def repaintMap():
 
 # Display title page and schedule next display event
 def displayTitlePage():
-
 	global ftForTitlePageDisplay
 
 	# Display the title/ wash page
@@ -111,7 +110,7 @@ def displayTitlePage():
 	dayTrend = str(eventDB.getDayTrend())
 	EQdayTrend = str(eventDB.getEQdailyTrend())
 	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), EQdayTrend, max_location)
-
+	print("Debug: Title page displayed with highestMag:", highestMag, " max_location:", max_location, " dayTrend:", dayTrend, " EQdayTrend:", EQdayTrend)
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
 
