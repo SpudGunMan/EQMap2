@@ -91,6 +91,9 @@ class EventDB:
 		if hasattr(self, 'hourlyevents'):
 			return self.hourlyevents
 		return [0]*24
+	
+	def getEQdailyTrend(self):
+		return self.EQdailyTrend
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
