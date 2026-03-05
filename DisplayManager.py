@@ -407,8 +407,6 @@ class DisplayManager:
 			currenthour = datetime.now().hour
 			thisHoursEvents = original_dayTrend[currenthour]
 			lastHoursEvents = original_dayTrend[currenthour - 1]
-			aDayAgoEvents = original_dayTrend[currenthour - 24]
-
 
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
@@ -420,8 +418,6 @@ class DisplayManager:
 					f"Events (this hour): {thisHoursEvents if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {int(round(max_val))}")
-				self.drawRightJustifiedText(y0 + graph_height - 110 + label_y_offset,
-					f"Events (24h ago): {aDayAgoEvents if aDayAgoEvents is not None else 0}")
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 2,
