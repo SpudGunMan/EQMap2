@@ -492,19 +492,6 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 
-			freq_trend = ""
-			try:
-				if len(eventDB.dailyevents) > 1:
-					if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
-						freq_trend = " Trend increasing"
-					elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
-						freq_trend = " Trend decreasing"
-					else:
-						freq_trend = " Trend steady"
-			except Exception as e:
-				print(f"Error determining frequency trend: {e}")
-				pass
-
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				# Defensive: convert all to string, handle None/empty
@@ -520,7 +507,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 160), "Active Region:")
 					self.drawCenteredText((self.topTextRow + 200), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
@@ -528,7 +515,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
 					self.drawCenteredText((self.topTextRow + 170), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
 				time.sleep(20) # show page for 20 seconds
 
 			# Initial startup display
