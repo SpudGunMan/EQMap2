@@ -413,7 +413,6 @@ class DisplayManager:
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 					f"Max Events/hour: {int(round(max_val))}")
-			pygame.display.flip()
 			return True
 
 	# Display Last EQ Event
@@ -444,7 +443,6 @@ class DisplayManager:
 			
 			# Draw a triangle at volcano location
 			pygame.draw.polygon(self.screen, self.red, [(mapX, mapY - 6), (mapX - 5, mapY + 4), (mapX + 5, mapY + 4)], 0)
-			pygame.display.flip()
 			return mapX, mapY, self.blue
 		else:
 			#CLI 
