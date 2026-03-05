@@ -23,6 +23,7 @@ class EventDB:
 		self.EQElocations.clear()
 		self.dailyevents.clear()
 		self.EQdailyTrend = []
+		self.EQdailyTrend.clear()
 		self.mySettings.clear()
 		self.region = ''
 		self.region_dict = {}
@@ -90,9 +91,6 @@ class EventDB:
 		if hasattr(self, 'hourlyevents'):
 			return self.hourlyevents
 		return [0]*24
-	
-	def EQdailyTrend(self):
-		return self.EQdailyTrend
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
