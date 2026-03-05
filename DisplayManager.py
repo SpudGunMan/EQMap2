@@ -354,9 +354,7 @@ class DisplayManager:
 			cleaned_dayTrend = []
 			for val in dayTrend:
 				try:
-					fval = float(val)
-					# Normalize NaN to 0 so labels/graph never crash on int() or math ops.
-					cleaned_dayTrend.append(fval if fval == fval else 0.0)
+					cleaned_dayTrend.append(float(val))
 				except (ValueError, TypeError):
 					cleaned_dayTrend.append(0.0)
 			# preserve full cleaned series for index-accurate comparisons
@@ -364,13 +362,8 @@ class DisplayManager:
 			dayTrend = original_dayTrend
 
 			currenthour = datetime.now().hour
-			if len(original_dayTrend) > 0:
-				thisHoursEvents = original_dayTrend[currenthour] if currenthour < len(original_dayTrend) else original_dayTrend[-1]
-				last_hour_idx = (currenthour - 1) % len(original_dayTrend)
-				lastHoursEvents = original_dayTrend[last_hour_idx]
-			else:
-				thisHoursEvents = 0.0
-				lastHoursEvents = 0.0
+			thisHoursEvents = original_dayTrend[currenthour]
+			lastHoursEvents = original_dayTrend[currenthour - 1]
 
 			# Find the first non-zero data point
 			start_idx = 0
@@ -402,23 +395,22 @@ class DisplayManager:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
 			# Display labels 
-			self.setTextColor(self.white)
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0
 				label_y_offset = 150
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None and lastHoursEvents == lastHoursEvents else 0}")
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None and thisHoursEvents == thisHoursEvents else 0}")
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {int(round(max_val))}")
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 2,
-					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None and lastHoursEvents == lastHoursEvents else 0}")
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
 				self.drawText(x0, y0 + graph_height + 22,
-					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None and thisHoursEvents == thisHoursEvents else 0}")
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 					f"Max Events/hour: {int(round(max_val))}")
 			return True
