@@ -394,12 +394,6 @@ class DisplayManager:
 				if v1 != 0 and v2 != 0:
 					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-			# Robustly determine last and previous hour values using the full cleaned series
-			# so comparisons (including "vs yesterday") use absolute indices.
-			last_val = None
-			prev_val = None
-			last_idx = None
-
 			# value shown on the plotted graph (visible last point)
 			plot_last_val = plotTrend[-1]
 
