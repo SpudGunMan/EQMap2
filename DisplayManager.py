@@ -403,7 +403,10 @@ class DisplayManager:
 					last_val = original_dayTrend[i]
 					break
 
-			# Display labels
+			# Draw a border for the graph area so we can visually confirm placement
+			pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
+
+			# Display labels (be defensive about index bounds)
 			currenthour = datetime.now().hour
 			thisHoursEvents = original_dayTrend[currenthour]
 			lastHoursEvents = original_dayTrend[currenthour - 1]
