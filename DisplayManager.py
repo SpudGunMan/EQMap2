@@ -348,7 +348,7 @@ class DisplayManager:
 				y0 = int(self.screenHeight * 0.5) + margin_y
 
 			# Draw a border for the graph area so we can visually confirm placement
-			pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
+			#pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
 
 			# Clean and normalize data
 			cleaned_dayTrend = []
