@@ -368,25 +368,20 @@ class DisplayManager:
 
 
 			# dayTrend is a list of 24 values, one for each hour of the day, representing event counts
-			# Find the first non-zero data point Only plot from the first real data point
-			# Draw the line graph in the position of the rect, skipping segments where either value is 0
-			prev_x = None
-			prev_y = None
-			for i in range(len(dayTrend)):
-				val = dayTrend[i]
-				if val == 0:
-					prev_x = None
-					prev_y = None
-					continue
-				x = x0 + (i / (len(dayTrend) - 1)) * graph_width
-				y = y0 + graph_height - (val / max_val) * graph_height if max_val > 0 else y0 + graph_height
+			# Find the first non-zero data point and draw continuously from there.
+			first_idx = next((i for i, v in enumerate(dayTrend) if v > 0), None)
+			if first_idx is not None:
+				prev_x = x0 + (first_idx / (len(dayTrend) - 1)) * graph_width
+				first_val = dayTrend[first_idx]
+				prev_y = y0 + graph_height - (first_val / max_val) * graph_height if max_val > 0 else y0 + graph_height
 
-				if prev_x is not None and prev_y is not None:
+				for i in range(first_idx + 1, len(dayTrend)):
+					val = dayTrend[i]
+					x = x0 + (i / (len(dayTrend) - 1)) * graph_width
+					y = y0 + graph_height - (val / max_val) * graph_height if max_val > 0 else y0 + graph_height
 					pygame.draw.line(self.screen, self.green, (prev_x, prev_y), (x, y), 2)
-
-				prev_x = x
-				prev_y = y
-
+					prev_x = x
+					prev_y = y
 
 			# Display labels
 			self.setTextColor(self.black)
