@@ -497,10 +497,9 @@ class DisplayManager:
 				# Defensive: convert all to string, handle None/empty
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
-				activeregion_str = str(activeregion) if activeregion and activeregion not in ([], (), "") else "N/A"
+				activeregion_str = str(activeregion) if activeregion is not [] else "No Data"
 				dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
-				print(f"Debug: largestevent={largestevent_str}, max_location={max_location_str}, activeregion={activeregion_str}, dayTrend_str={dayTrend_str}")
-				print(f"Debug dayTrend: {dayTrend}")
+
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
