@@ -362,37 +362,38 @@ class DisplayManager:
 			dayTrend = original_dayTrend
 
 			currenthour = datetime.now().hour
+			max_val = max(dayTrend)
 			thisHoursEvents = original_dayTrend[currenthour]
 			lastHoursEvents = original_dayTrend[currenthour - 1]
 
-			# Find the first non-zero data point
-			start_idx = 0
-			for i, val in enumerate(dayTrend):
-				if val != 0.0:
-					start_idx = i
-					break
+			# # Find the first non-zero data point
+			# start_idx = 0
+			# for i, val in enumerate(dayTrend):
+			# 	if val != 0.0:
+			# 		start_idx = i
+			# 		break
 
-			# Only plot from the first real data point
-			plotTrend = dayTrend[start_idx:]
-			if len(plotTrend) < 2:
-				return False
+			# # Only plot from the first real data point
+			# plotTrend = dayTrend[start_idx:]
+			# if len(plotTrend) < 2:
+			# 	return False
 
-			max_val = max(plotTrend)
-			min_val = min(plotTrend)
-			val_range = max_val - min_val if max_val != min_val else 1
+			# max_val = max(plotTrend)
+			# min_val = min(plotTrend)
+			# val_range = max_val - min_val if max_val != min_val else 1
 		
-			points = []
-			for i, val in enumerate(plotTrend):
-				x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
-				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-				points.append((x, y, val))
+			# points = []
+			# for i, val in enumerate(plotTrend):
+			# 	x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
+			# 	y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
+			# 	points.append((x, y, val))
 
-			# Draw the line graph, skipping segments where either value is 0
-			for i in range(1, len(points)):
-				x1, y1, v1 = points[i-1]
-				x2, y2, v2 = points[i]
-				if v1 != 0 and v2 != 0:
-					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
+			# # Draw the line graph, skipping segments where either value is 0
+			# for i in range(1, len(points)):
+			# 	x1, y1, v1 = points[i-1]
+			# 	x2, y2, v2 = points[i]
+			# 	if v1 != 0 and v2 != 0:
+			# 		pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
 			# Display labels 
 			if self.screenWidth > 1000:
@@ -413,6 +414,7 @@ class DisplayManager:
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 					f"Max Events/hour: {int(round(max_val))}")
+
 			return True
 
 	# Display Last EQ Event
