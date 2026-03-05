@@ -343,10 +343,6 @@ def main():
 					# Update current display time on the off beat
 					displayManager.displayCurrentTime()
 
-				# Blink drawing happens after repaintMap() and can overwrite graph labels.
-				# Repaint the trend graph each blink frame so labels remain visible.
-				displayManager.displayTrendingGraph(eventDB.getDayTrend())
-
 				ftForBlink = millis() + BLINK_TIME_MS
 	except KeyboardInterrupt:
 		print("closing EQMap")
