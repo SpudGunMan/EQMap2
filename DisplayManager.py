@@ -407,42 +407,17 @@ class DisplayManager:
 			if last_idx is not None and last_idx >= 1:
 				prev_val = original_dayTrend[last_idx - 1]
 
-			# Trend: last hour vs previous hour
-			hour_trend = "N/A"
-			if prev_val is not None:
-				if last_val > prev_val:
-					hour_trend = "Increasing"
-				elif last_val < prev_val:
-					hour_trend = "Decreasing"
-				else:
-					hour_trend = "Steady"
-
-			# Trend: last hour vs same hour yesterday (24 hours ago) using original series
-			yesterday_trend = "N/A"
-			if len(original_dayTrend) >= 25:
-				yesterday_val = original_dayTrend[-25]
-				if last_val > yesterday_val:
-					yesterday_trend = "Increasing"
-				elif last_val < yesterday_val:
-					yesterday_trend = "Decreasing"
-				else:
-					yesterday_trend = "Steady"
-
 			# Display both trends
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0 - 140
 				label_y_offset = 150
-				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 					f"Events (last hour): {int(round(last_val)) if last_val is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {int(round(max_val))}")
 			else:
 				self.setTextSize(18)
-				self.drawText(x0, y0 + graph_height + 15,
-					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(x0, y0 + graph_height + 2,
 					f"Events (last hour): {int(round(last_val)) if last_val is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
