@@ -324,118 +324,114 @@ class DisplayManager:
 		return True
 	
 	def displayTrendingGraph(self, dayTrend):
-			try:
-				# Draw a simple floating line graph of dayTrend in the middle of the screen
-				if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
-					return False
-
-				from datetime import datetime
-
-				# Graph placement and size
-				if self.screenWidth > 1000:
-					graph_width = int(self.screenWidth * 0.3)
-					graph_height = 150
-					margin_x = 40
-					margin_y = 100
-					# Move graph more to the left and up for high-res screens
-					x0 = int(self.screenWidth * 0.55) + margin_x
-					y0 = int(self.screenHeight * 0.40) + margin_y
-				else:
-					graph_width = int(self.screenWidth * 0.2)
-					graph_height = 100
-					margin_x = 40
-					margin_y = 40
-					x0 = int(self.screenWidth * 0.5) + margin_x
-					y0 = int(self.screenHeight * 0.5) + margin_y
-
-				# Clean and normalize data
-				cleaned_dayTrend = []
-				for val in dayTrend:
-					try:
-						cleaned_dayTrend.append(float(val))
-					except (ValueError, TypeError):
-						cleaned_dayTrend.append(0.0)
-				# preserve full cleaned series for index-accurate comparisons
-				original_dayTrend = cleaned_dayTrend
-				dayTrend = original_dayTrend
-
-				# Find the first non-zero data point
-				start_idx = 0
-				for i, val in enumerate(dayTrend):
-					if val != 0.0:
-						start_idx = i
-						break
-
-				# Only plot from the first real data point
-				plotTrend = dayTrend[start_idx:]
-				if len(plotTrend) < 2:
-					return False
-
-				max_val = max(plotTrend)
-				min_val = min(plotTrend)
-				val_range = max_val - min_val if max_val != min_val else 1
-			
-				points = []
-				for i, val in enumerate(plotTrend):
-					x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
-					y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-					points.append((x, y, val))
-
-				# Draw the line graph, skipping segments where either value is 0
-				for i in range(1, len(points)):
-					x1, y1, v1 = points[i-1]
-					x2, y2, v2 = points[i]
-					if v1 != 0 and v2 != 0:
-						pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
-
-				# Robustly determine last and previous hour values using the full cleaned series
-				# so comparisons (including "vs yesterday") use absolute indices.
-				last_val = None
-				prev_val = None
-				last_idx = None
-
-				# value shown on the plotted graph (visible last point)
-				plot_last_val = plotTrend[-1]
-
-				# Try to find the plotted last value in the original (full cleaned) series
-				for i in range(len(original_dayTrend) - 1, -1, -1):
-					if original_dayTrend[i] == plot_last_val:
-						last_idx = i
-						last_val = original_dayTrend[i]
-						break
-
-				# Draw a border for the graph area so we can visually confirm placement
-				pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
-
-				# Display labels (be defensive about index bounds)
-				currenthour = datetime.now().hour
-				thisHoursEvents = original_dayTrend[currenthour]
-				lastHoursEvents = original_dayTrend[currenthour - 1]
-
-				if self.screenWidth > 1000:
-					self.setTextSize(20)
-					label_x = x0
-					label_y_offset = 150
-					self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-						f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
-					self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-						f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
-					self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
-						f"Max Events/hour: {int(round(max_val))}")
-				else:
-					self.setTextSize(18)
-					self.drawText(x0, y0 + graph_height + 2,
-						f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
-					self.drawText(x0, y0 + graph_height + 22,
-						f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
-					self.drawRightJustifiedText(y0 + graph_height - 8,
-						f"Max Events/hour: {int(round(max_val))}")
-					
-				pygame.display.flip()
-				return True
-			except Exception as e:
-				print("Error in displayTrendingGraph:", e)
+			# Draw a simple floating line graph of dayTrend in the middle of the screen
+			if not self.hasGUI or not dayTrend or len(dayTrend) < 2:
 				return False
+
+			from datetime import datetime
+
+			# Graph placement and size
+			if self.screenWidth > 1000:
+				graph_width = int(self.screenWidth * 0.3)
+				graph_height = 150
+				margin_x = 40
+				margin_y = 100
+				# Move graph more to the left and up for high-res screens
+				x0 = int(self.screenWidth * 0.55) + margin_x
+				y0 = int(self.screenHeight * 0.40) + margin_y
+			else:
+				graph_width = int(self.screenWidth * 0.2)
+				graph_height = 100
+				margin_x = 40
+				margin_y = 40
+				x0 = int(self.screenWidth * 0.5) + margin_x
+				y0 = int(self.screenHeight * 0.5) + margin_y
+
+			# Clean and normalize data
+			cleaned_dayTrend = []
+			for val in dayTrend:
+				try:
+					cleaned_dayTrend.append(float(val))
+				except (ValueError, TypeError):
+					cleaned_dayTrend.append(0.0)
+			# preserve full cleaned series for index-accurate comparisons
+			original_dayTrend = cleaned_dayTrend
+			dayTrend = original_dayTrend
+
+			# Find the first non-zero data point
+			start_idx = 0
+			for i, val in enumerate(dayTrend):
+				if val != 0.0:
+					start_idx = i
+					break
+
+			# Only plot from the first real data point
+			plotTrend = dayTrend[start_idx:]
+			if len(plotTrend) < 2:
+				return False
+
+			max_val = max(plotTrend)
+			min_val = min(plotTrend)
+			val_range = max_val - min_val if max_val != min_val else 1
+		
+			points = []
+			for i, val in enumerate(plotTrend):
+				x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
+				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
+				points.append((x, y, val))
+
+			# Draw the line graph, skipping segments where either value is 0
+			for i in range(1, len(points)):
+				x1, y1, v1 = points[i-1]
+				x2, y2, v2 = points[i]
+				if v1 != 0 and v2 != 0:
+					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
+
+			# Robustly determine last and previous hour values using the full cleaned series
+			# so comparisons (including "vs yesterday") use absolute indices.
+			last_val = None
+			prev_val = None
+			last_idx = None
+
+			# value shown on the plotted graph (visible last point)
+			plot_last_val = plotTrend[-1]
+
+			# Try to find the plotted last value in the original (full cleaned) series
+			for i in range(len(original_dayTrend) - 1, -1, -1):
+				if original_dayTrend[i] == plot_last_val:
+					last_idx = i
+					last_val = original_dayTrend[i]
+					break
+
+			# Draw a border for the graph area so we can visually confirm placement
+			pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
+
+			# Display labels (be defensive about index bounds)
+			currenthour = datetime.now().hour
+			thisHoursEvents = original_dayTrend[currenthour]
+			lastHoursEvents = original_dayTrend[currenthour - 1]
+
+			if self.screenWidth > 1000:
+				self.setTextSize(20)
+				label_x = x0
+				label_y_offset = 150
+				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
+				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
+				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
+					f"Max Events/hour: {int(round(max_val))}")
+			else:
+				self.setTextSize(18)
+				self.drawText(x0, y0 + graph_height + 2,
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
+				self.drawText(x0, y0 + graph_height + 22,
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
+				self.drawRightJustifiedText(y0 + graph_height - 8,
+					f"Max Events/hour: {int(round(max_val))}")
+				
+			pygame.display.flip()
+			return True
 
 	# Display Last EQ Event
 	def displayEventLong(self, location, mag, depth):
