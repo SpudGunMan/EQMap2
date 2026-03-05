@@ -410,8 +410,8 @@ class DisplayManager:
 
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				label_x = x0 + 50
-				label_y_offset = 180
+				label_x = x0 
+				label_y_offset = 190
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 					f"Events (last hour): {lastHoursEvents if lastHoursEvents is not None else 0}")
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
