@@ -389,14 +389,12 @@ class DisplayManager:
 
 			# Draw the line graph, skipping segments where either value is 0
 			for i in range(1, len(points)):
-				if points[i-1][2] != 0.0 and points[i][2] != 0.0:
-					pygame.draw.line(self.screen, self.green, (points[i-1][0], points[i-1][1]), (points[i][0], points[i][1]), 2)
+				x1, y1, v1 = points[i-1]
+				x2, y2, v2 = points[i]
+				if v1 != 0 and v2 != 0:
+					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
 
-				# Draw a small circle at each data point for visibility
-				if points[i][2] != 0.0:
-					pygame.draw.circle(self.screen, self.yellow, (points[i][0], points[i][1]), 3)
-
-			# Display labels
+			# Display labels 
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0
