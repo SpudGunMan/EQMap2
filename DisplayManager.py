@@ -347,6 +347,9 @@ class DisplayManager:
 				x0 = int(self.screenWidth * 0.5) + margin_x
 				y0 = int(self.screenHeight * 0.5) + margin_y
 
+			# Draw a border for the graph area so we can visually confirm placement
+			pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
+
 			# Clean and normalize data
 			cleaned_dayTrend = []
 			for val in dayTrend:
@@ -357,6 +360,10 @@ class DisplayManager:
 			# preserve full cleaned series for index-accurate comparisons
 			original_dayTrend = cleaned_dayTrend
 			dayTrend = original_dayTrend
+			
+			currenthour = datetime.now().hour
+			thisHoursEvents = original_dayTrend[currenthour]
+			lastHoursEvents = original_dayTrend[currenthour - 1]
 
 			# Find the first non-zero data point
 			start_idx = 0
@@ -403,14 +410,7 @@ class DisplayManager:
 					last_val = original_dayTrend[i]
 					break
 
-			# Draw a border for the graph area so we can visually confirm placement
-			pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
-
 			# Display labels (be defensive about index bounds)
-			currenthour = datetime.now().hour
-			thisHoursEvents = original_dayTrend[currenthour]
-			lastHoursEvents = original_dayTrend[currenthour - 1]
-
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0
