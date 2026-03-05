@@ -93,7 +93,10 @@ class EventDB:
 		return [0]*24
 	
 	def getEQdailyTrend(self):
-		return self.EQdailyTrend
+		# Return the daily trend of earthquake counts, which is a list of counts for each day
+		if self.EQdailyTrend:
+			return self.EQdailyTrend
+		return "No Data"
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
