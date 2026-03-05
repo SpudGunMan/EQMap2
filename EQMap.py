@@ -87,9 +87,6 @@ def repaintMap():
 	else:
 		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
 	
-	# Draw a linegraph of EQ activity for the day using displayTrendingGraph
-	displayManager.displayTrendingGraph(eventDB.getDayTrend())
-
 	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
 	if count > 0:
@@ -98,6 +95,9 @@ def repaintMap():
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
+
+	# Draw trend graph last so map plotting does not overwrite labels
+	displayManager.displayTrendingGraph(eventDB.getDayTrend())
 	return True
 
 # Display title page and schedule next display event
