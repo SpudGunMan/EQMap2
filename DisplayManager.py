@@ -410,11 +410,10 @@ class DisplayManager:
 
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				label_x = x0 + graph_width + 10
 				label_y_offset = 180
-				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
+				self.drawText(y0 + graph_height - 130 + label_y_offset,
 					f"Events (last hour): {lastHoursEvents if lastHoursEvents is not None else 0}")
-				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
+				self.drawText(y0 + graph_height - 110 + label_y_offset,
 					f"Events (this hour): {thisHoursEvents if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {int(round(max_val))}")
