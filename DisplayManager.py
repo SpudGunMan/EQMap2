@@ -389,7 +389,7 @@ class DisplayManager:
 
 
 			# Display labels
-			self.setTextColor(self.green)
+			self.setTextColor(self.black)
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0
