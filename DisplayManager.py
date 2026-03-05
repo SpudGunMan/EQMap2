@@ -399,7 +399,7 @@ class DisplayManager:
 				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
-					f"Max Events/hour: {int(round(max_val))}")
+					f"Max Events/hour: {int(round(max_val))} ")
 			else:
 				self.setTextSize(18)
 				self.drawText(x0, y0 + graph_height + 2,
@@ -407,7 +407,7 @@ class DisplayManager:
 				self.drawText(x0, y0 + graph_height + 22,
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
-					f"Max Events/hour: {int(round(max_val))}")
+					f"Max Events/hour: {int(round(max_val))} ")
 
 			return True
 
