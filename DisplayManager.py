@@ -405,8 +405,8 @@ class DisplayManager:
 
 			# Display labels
 			currenthour = datetime.now().hour
-			thisHoursEvents = original_dayTrend[currenthour]
-			lastHoursEvents = original_dayTrend[currenthour - 1]
+			thisHoursEvents = original_dayTrend[currenthour - 1]
+			lastHoursEvents = original_dayTrend[currenthour - 2]
 
 
 			if self.screenWidth > 1000:
