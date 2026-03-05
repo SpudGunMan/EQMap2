@@ -22,6 +22,7 @@ class EventDB:
 		self.EQEventQueue.clear()
 		self.EQElocations.clear()
 		self.dailyevents.clear()
+		self.EQdailyTrend = []
 		self.mySettings.clear()
 		self.region = ''
 		self.region_dict = {}
@@ -89,6 +90,9 @@ class EventDB:
 		if hasattr(self, 'hourlyevents'):
 			return self.hourlyevents
 		return [0]*24
+	
+	def EQdailyTrend(self):
+		return self.EQdailyTrend
 
 	# Retrieve largest event related data
 	def getLargestEvent(self):
@@ -180,9 +184,9 @@ class EventDB:
 		#this only works with default save of once a day - daily event trending
 		try:
 			if len(self.EQEventQueue) > 0:
-				self.dailyevents.append(len(self.EQEventQueue))
+				self.EQdailyTrend.append(len(self.EQEventQueue))
 		except:
-			self.dailyevents.append(0)
+			self.EQdailyTrend.append(0)
 
 		# reset the hourly trend
 		self.resetHourlyTrend()
