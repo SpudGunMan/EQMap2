@@ -403,17 +403,20 @@ class DisplayManager:
 					last_val = original_dayTrend[i]
 					break
 
-			# If we found the last value's index, determine the previous hour's value
-			if last_idx is not None and last_idx >= 1:
-				prev_val = original_dayTrend[last_idx - 1]
+			# Display labels
+			currenthour = datetime.now().hour
+			thisHoursEvents = original_dayTrend[currenthour]
+			lastHoursEvents = original_dayTrend[currenthour - 1]
 
-			# Display both trends
+
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
 				label_x = x0 - 140
 				label_y_offset = 150
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-					f"Events (last hour): {int(round(last_val)) if last_val is not None else 0}")
+					f"Events (last hour): {thisHoursEvents if thisHoursEvents is not None else 0}")
+				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
+					f"Events (this hour): {lastHoursEvents if lastHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
 					f"Max Events/hour: {int(round(max_val))}")
 			else:
