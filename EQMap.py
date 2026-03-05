@@ -109,7 +109,8 @@ def displayTitlePage():
 	highestMag, trending, max_location = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
 	dayTrend = str(eventDB.getDayTrend())
-	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), dayTrend, max_location)
+	EQdayTrend = str(eventDB.EQdailyTrend())
+	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), EQdayTrend, max_location)
 
 	# Schedule next title page display
 	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
