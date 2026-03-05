@@ -511,7 +511,8 @@ class DisplayManager:
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
 				activeregion_str = "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion)
-				dayTrend_str = "N/A" if not dayTrend or dayTrend in ([], (), "") else str(len(dayTrend))
+				# show yesterday's event count and trend if available, otherwise show N/A
+				dayTrend_str = "N/A" if not dayTrend or dayTrend in ([], (), "") else str(dayTrend[-1])
 
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
