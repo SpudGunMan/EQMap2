@@ -501,7 +501,7 @@ class DisplayManager:
 				# show yesterday's event count and trend if available, otherwise show N/A
 				dayTrend_str = str(dayTrend[-1]) if dayTrend and len(dayTrend) > 0 else "N/A"
 				print(f"Debug: largestevent={largestevent_str}, max_location={max_location_str}, activeregion={activeregion_str}, dayTrend_str={dayTrend_str}")
-
+				print(f"Debug dayTrend: {dayTrend}")
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
