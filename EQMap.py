@@ -348,6 +348,10 @@ def main():
 				ftForBlink = millis() + BLINK_TIME_MS
 	except KeyboardInterrupt:
 		print("closing EQMap")
+		running = False
+	except Exception as e:
+		print("Error in main loop:", e)
+		running = False
 		
 
 # Earthquake Map Program Entry Point
