@@ -499,7 +499,7 @@ class DisplayManager:
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
 				activeregion_str = str(activeregion) if activeregion and activeregion not in ([], (), "") else "N/A"
 				# show yesterday's event count and trend if available, otherwise show N/A
-				dayTrend_str = str(dayTrend) if dayTrend and len(dayTrend) > 0 else "N/A"
+				dayTrend_str = str(dayTrend[-1]) if dayTrend and len(dayTrend) > 0 else "N/A"
 
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
