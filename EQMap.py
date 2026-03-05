@@ -74,7 +74,7 @@ def repaintMap():
 	# Check for volcano alert and display if found
 	displayVolcanoEvent = eventDB.checkForVolcanoAlert()
 	if displayVolcanoEvent:
-		displayManager.displayVolcanoAlert()
+		displayManager.displayVolcanoEvent()
 
 	# Display map Draw data with event count and date
 	displayManager.displayBottomDataFeed(max_location,eventCount)
