@@ -510,9 +510,9 @@ class DisplayManager:
 				# Defensive: convert all to string, handle None/empty
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
-				activeregion_str = "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion)
+				activeregion_str = str(activeregion) if activeregion and activeregion not in ([], (), "") else "N/A"
 				# show yesterday's event count and trend if available, otherwise show N/A
-				dayTrend_str = "N/A" if not dayTrend or dayTrend in ([], (), "") else str(dayTrend[-1])
+				dayTrend_str = str(dayTrend) if dayTrend is not None else "N/A"
 
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
