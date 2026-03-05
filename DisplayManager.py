@@ -332,13 +332,13 @@ class DisplayManager:
 
 			# Graph placement and size
 			if self.screenWidth > 1000:
-				graph_width = int(self.screenWidth * 0.2)
+				graph_width = int(self.screenWidth * 0.4)
 				graph_height = 150
 				margin_x = 40
 				margin_y = 40
 				# Move graph more to the left and up for high-res screens
-				x0 = int(self.screenWidth * 0.55) + margin_x
-				y0 = int(self.screenHeight * 0.40) + margin_y
+				x0 = int(self.screenWidth * 0.5) + margin_x
+				y0 = int(self.screenHeight * 0.5) + margin_y
 			else:
 				graph_width = int(self.screenWidth * 0.2)
 				graph_height = 100
