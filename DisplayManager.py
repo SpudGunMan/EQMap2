@@ -413,7 +413,6 @@ class DisplayManager:
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 8,
 					f"Max Events/hour: {int(round(max_val))}")
-			pygame.display.flip()
 			return True
 
 	# Display Last EQ Event
