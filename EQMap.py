@@ -110,11 +110,9 @@ def displayTitlePage():
 		highestMag = str(highestMag)
 		dayTrend = str(eventDB.getDayTrend())
 		EQdayTrend = str(eventDB.getEQdailyTrend())
-		print("Title Page Data: ", highestMag, eventDB.getActiveRegion(), dayTrend, max_location)
 		displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), EQdayTrend, max_location)
 		# Schedule next title page display
 		ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
-		return True
 	except Exception as e:
 		print("Error displaying title page:", e)
 		return False
