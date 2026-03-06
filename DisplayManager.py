@@ -407,7 +407,7 @@ class DisplayManager:
 					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
 				self.drawText(x0, y0 + graph_height + 22,
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
-				self.drawRightJustifiedText(y0 + graph_height - 8,
+				self.drawRightJustifiedText(y0 + graph_height + 2,
 					f"Max Events/hour: {int(round(max_val))} ")
 			self.setTextColor(self.white)
 			return True
