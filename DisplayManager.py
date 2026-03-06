@@ -332,20 +332,23 @@ class DisplayManager:
 
 			# Graph placement and size
 			if self.screenWidth > 1000:
-				graph_width = int(self.screenWidth * 0.2)
+				graph_width = int(self.screenWidth * 0.3)
 				graph_height = 150
 				margin_x = 40
-				margin_y = 40
+				margin_y = 100
 				# Move graph more to the left and up for high-res screens
 				x0 = int(self.screenWidth * 0.55) + margin_x
 				y0 = int(self.screenHeight * 0.40) + margin_y
 			else:
-				graph_width = int(self.screenWidth * 0.4)
+				graph_width = int(self.screenWidth * 0.2)
 				graph_height = 100
 				margin_x = 40
 				margin_y = 40
 				x0 = int(self.screenWidth * 0.5) + margin_x
 				y0 = int(self.screenHeight * 0.5) + margin_y
+
+			# Draw a border for the graph area so we can visually confirm placement
+			#pygame.draw.rect(self.screen, self.white, (int(x0) - 2, int(y0) - 2, int(graph_width) + 4, int(graph_height) + 4), 1)
 
 			# Clean and normalize data
 			cleaned_dayTrend = []
@@ -358,97 +361,55 @@ class DisplayManager:
 			original_dayTrend = cleaned_dayTrend
 			dayTrend = original_dayTrend
 
-			# Find the first non-zero data point
-			start_idx = 0
-			for i, val in enumerate(dayTrend):
-				if val != 0.0:
-					start_idx = i
-					break
+			currenthour = datetime.now().hour
+			max_val = max(dayTrend)
+			thisHoursEvents = original_dayTrend[currenthour]
+			lastHoursEvents = original_dayTrend[currenthour - 1]
 
-			# Only plot from the first real data point
-			plotTrend = dayTrend[start_idx:]
-			if len(plotTrend) < 2:
-				return False
 
-			max_val = max(plotTrend)
-			min_val = min(plotTrend)
-			val_range = max_val - min_val if max_val != min_val else 1
-		
-			points = []
-			for i, val in enumerate(plotTrend):
-				x = x0 + int((i) * (graph_width / (len(plotTrend) - 1)))
-				y = y0 + graph_height - int((val - min_val) / val_range * (graph_height - 10))
-				points.append((x, y, val))
+			# dayTrend is a list of 24 values, one for each hour of the day, representing event counts.
+			# Ignore values below 1 so tiny/noise values do not render in the trend line.
+			first_idx = next((i for i, v in enumerate(dayTrend) if v >= 1), None)
+			if first_idx is not None:
+				prev_x = x0 + (first_idx / (len(dayTrend) - 1)) * graph_width
+				first_val = dayTrend[first_idx]
+				prev_y = y0 + graph_height - (first_val / max_val) * graph_height if max_val > 0 else y0 + graph_height
 
-			# Draw the line graph, skipping segments where either value is 0
-			for i in range(1, len(points)):
-				x1, y1, v1 = points[i-1]
-				x2, y2, v2 = points[i]
-				if v1 != 0 and v2 != 0:
-					pygame.draw.line(self.screen, self.green, (x1, y1), (x2, y2), 2)
+				for i in range(first_idx + 1, len(dayTrend)):
+					val = dayTrend[i]
+					if val < 1:
+						# Break continuity when a point is below threshold.
+						prev_x = None
+						prev_y = None
+						continue
+					x = x0 + (i / (len(dayTrend) - 1)) * graph_width
+					y = y0 + graph_height - (val / max_val) * graph_height if max_val > 0 else y0 + graph_height
+					if prev_x is not None and prev_y is not None:
+						pygame.draw.line(self.screen, self.green, (prev_x, prev_y), (x, y), 2)
+					prev_x = x
+					prev_y = y
 
-			# Robustly determine last and previous hour values using the full cleaned series
-			# so comparisons (including "vs yesterday") use absolute indices.
-			last_val = None
-			prev_val = None
-			last_idx = None
-
-			# value shown on the plotted graph (visible last point)
-			plot_last_val = plotTrend[-1]
-
-			# Try to find the plotted last value in the original (full cleaned) series
-			for i in range(len(original_dayTrend) - 1, -1, -1):
-				if original_dayTrend[i] == plot_last_val:
-					last_idx = i
-					last_val = original_dayTrend[i]
-					break
-
-			# If we found the last value's index, determine the previous hour's value
-			if last_idx is not None and last_idx >= 1:
-				prev_val = original_dayTrend[last_idx - 1]
-
-			# Trend: last hour vs previous hour
-			hour_trend = "N/A"
-			if prev_val is not None:
-				if last_val > prev_val:
-					hour_trend = "Increasing"
-				elif last_val < prev_val:
-					hour_trend = "Decreasing"
-				else:
-					hour_trend = "Steady"
-
-			# Trend: last hour vs same hour yesterday (24 hours ago) using original series
-			yesterday_trend = "N/A"
-			if len(original_dayTrend) >= 25:
-				yesterday_val = original_dayTrend[-25]
-				if last_val > yesterday_val:
-					yesterday_trend = "Increasing"
-				elif last_val < yesterday_val:
-					yesterday_trend = "Decreasing"
-				else:
-					yesterday_trend = "Steady"
-
-			# Display both trends
+			# Display labels
+			self.setTextColor(self.black)
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				label_x = x0 - 140
+				label_x = x0
 				label_y_offset = 150
-				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
-					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
-					f"Events (last hour): {int(round(last_val)) if last_val is not None else 0}")
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
+				self.drawText(label_x, y0 + graph_height - 110 + label_y_offset,
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
 				self.drawRightJustifiedText(y0 + graph_height - 130 + label_y_offset,
-					f"Max Events/hour: {int(round(max_val))}")
+					f"Max Events/hour: {int(round(max_val))} ")
 			else:
 				self.setTextSize(18)
-				self.drawText(x0, y0 + graph_height + 15,
-					f"Last hour: {hour_trend} | Vs yesterday: {yesterday_trend}")
 				self.drawText(x0, y0 + graph_height + 2,
-					f"Events (last hour): {int(round(last_val)) if last_val is not None else 0}")
-				self.drawRightJustifiedText(y0 + graph_height - 8,
-					f"Max Events/hour: {int(round(max_val))}")
-				
-			pygame.display.flip()
+					f"Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
+				self.drawText(x0, y0 + graph_height + 22,
+					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0}")
+				self.drawRightJustifiedText(y0 + graph_height + 2,
+					f"Max Events/hour: {int(round(max_val))} ")
+			self.setTextColor(self.white)
 			return True
 
 	# Display Last EQ Event
@@ -479,7 +440,6 @@ class DisplayManager:
 			
 			# Draw a triangle at volcano location
 			pygame.draw.polygon(self.screen, self.red, [(mapX, mapY - 6), (mapX - 5, mapY + 4), (mapX + 5, mapY + 4)], 0)
-			pygame.display.flip()
 			return mapX, mapY, self.blue
 		else:
 			#CLI 
@@ -517,34 +477,21 @@ class DisplayManager:
 				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 
-			freq_trend = ""
-			try:
-				if len(eventDB.dailyevents) > 1:
-					if eventDB.dailyevents[-1] > eventDB.dailyevents[-2]:
-						freq_trend = " Trend increasing"
-					elif eventDB.dailyevents[-1] < eventDB.dailyevents[-2]:
-						freq_trend = " Trend decreasing"
-					else:
-						freq_trend = " Trend steady"
-			except Exception as e:
-				print(f"Error determining frequency trend: {e}")
-				pass
-
 			# Display different data throughout the day using the timput value
 			if self.firstRun == False:
 				# Defensive: convert all to string, handle None/empty
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
-				activeregion_str = "N/A" if not activeregion or activeregion in ([], (), "") else str(activeregion)
-				dayTrend_str = "N/A" if not dayTrend or dayTrend in ([], (), "") else str(len(dayTrend))
+				activeregion_str = str(activeregion) if activeregion is not [] else "No Data"
+				dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
 
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
 					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
+					self.drawCenteredText((self.topTextRow + 160), "Active Region:")
 					self.drawCenteredText((self.topTextRow + 200), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
 				else:
 					self.setTextSize(30)
 					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
@@ -552,7 +499,7 @@ class DisplayManager:
 					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
 					self.drawCenteredText((self.topTextRow + 170), activeregion_str)
 					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str + freq_trend)
+					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
 				time.sleep(20) # show page for 20 seconds
 
 			# Initial startup display
@@ -563,7 +510,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:25.11")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.03")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.firstRun = False
 				time.sleep(5) #show startup screen for 5 seconds

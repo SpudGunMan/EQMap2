@@ -74,7 +74,7 @@ def repaintMap():
 	# Check for volcano alert and display if found
 	displayVolcanoEvent = eventDB.checkForVolcanoAlert()
 	if displayVolcanoEvent:
-		displayManager.displayVolcanoAlert()
+		displayManager.displayVolcanoEvent()
 
 	# Display map Draw data with event count and date
 	displayManager.displayBottomDataFeed(max_location,eventCount)
@@ -87,9 +87,6 @@ def repaintMap():
 	else:
 		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
 	
-	# Draw a linegraph of EQ activity for the day using displayTrendingGraph
-	displayManager.displayTrendingGraph(eventDB.getDayTrend())
-
 	# Display all of the EQ events in the DB as circles
 	count = eventDB.numberOfEvents()
 	if count > 0:
@@ -98,21 +95,27 @@ def repaintMap():
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
+
+	# Draw trend graph last so map plotting does not overwrite labels
+	displayManager.displayTrendingGraph(eventDB.getDayTrend())
 	return True
 
 # Display title page and schedule next display event
 def displayTitlePage():
+	try:
+		global ftForTitlePageDisplay
 
-	global ftForTitlePageDisplay
-
-	# Display the title/ wash page
-	highestMag, trending, max_location = eventDB.getLargestEvent()
-	highestMag = str(highestMag)
-	dayTrend = str(eventDB.getDayTrend())
-	displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), dayTrend, max_location)
-
-	# Schedule next title page display
-	ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
+		# Display the title/ wash page
+		highestMag, trending, max_location = eventDB.getLargestEvent()
+		highestMag = str(highestMag)
+		dayTrend = str(eventDB.getDayTrend())
+		EQdayTrend = str(eventDB.getEQdailyTrend())
+		displayManager.displayWashPage(highestMag, str(eventDB.getActiveRegion()), EQdayTrend, max_location)
+		# Schedule next title page display
+		ftForTitlePageDisplay = millis() + TITLEPAGE_DISPLAY_TIME_MS
+	except Exception as e:
+		print("Error displaying title page:", e)
+		return False
 
 # getUSGS Function
 def getUpdatesUSGS():
@@ -276,25 +279,25 @@ def main():
 				dbCleared = True
 
 			# Now check to see if the display should be off or on TODO settings menu
-			if now.hour > 6 and now.hour < 22: 
+			#if now.hour > 6 and now.hour < 22: 
 				# Normal viewing hours have arrived TODO is this working?
 				# If display is off, turn it on
-				if displayState == False:
-					displayManager.backlight(True)
-					displayState = True
-					dbCleared = False
+			if displayState == False:
+				displayManager.backlight(True)
+				displayState = True
+				dbCleared = False
 
-					# Display the title page
-					displayTitlePage()
+				# Display the title page
+				displayTitlePage()
 
-					# Force a redisplay of all quake data
-					repaintMap()
-			else:
-				# Normal viewing hours over. Turn the display off
-				if displayState == True:
-					# Turn the display off
-					displayManager.backlight(False)
-					displayState = False
+				# Force a redisplay of all quake data
+				repaintMap()
+			# else:
+			# 	# Normal viewing hours over. Turn the display off
+			# 	if displayState == True:
+			# 		# Turn the display off
+			# 		displayManager.backlight(False)
+			# 		displayState = False
 
 			# Is it time to display the title page ?
 			if millis() > ftForTitlePageDisplay and displayState:
@@ -343,6 +346,10 @@ def main():
 				ftForBlink = millis() + BLINK_TIME_MS
 	except KeyboardInterrupt:
 		print("closing EQMap")
+		running = False
+	except Exception as e:
+		print("Error in main loop:", e)
+		running = False
 		
 
 # Earthquake Map Program Entry Point
