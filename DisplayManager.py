@@ -367,9 +367,9 @@ class DisplayManager:
 			lastHoursEvents = original_dayTrend[currenthour - 1]
 
 
-			# dayTrend is a list of 24 values, one for each hour of the day, representing event counts
-			# Find the first non-zero data point and draw continuously from there.
-			first_idx = next((i for i, v in enumerate(dayTrend) if v > 0), None)
+			# dayTrend is a list of 24 values, one for each hour of the day, representing event counts.
+			# Ignore values below 1 so tiny/noise values do not render in the trend line.
+			first_idx = next((i for i, v in enumerate(dayTrend) if v >= 1), None)
 			if first_idx is not None:
 				prev_x = x0 + (first_idx / (len(dayTrend) - 1)) * graph_width
 				first_val = dayTrend[first_idx]
@@ -377,9 +377,15 @@ class DisplayManager:
 
 				for i in range(first_idx + 1, len(dayTrend)):
 					val = dayTrend[i]
+					if val < 1:
+						# Break continuity when a point is below threshold.
+						prev_x = None
+						prev_y = None
+						continue
 					x = x0 + (i / (len(dayTrend) - 1)) * graph_width
 					y = y0 + graph_height - (val / max_val) * graph_height if max_val > 0 else y0 + graph_height
-					pygame.draw.line(self.screen, self.green, (prev_x, prev_y), (x, y), 2)
+					if prev_x is not None and prev_y is not None:
+						pygame.draw.line(self.screen, self.green, (prev_x, prev_y), (x, y), 2)
 					prev_x = x
 					prev_y = y
 
