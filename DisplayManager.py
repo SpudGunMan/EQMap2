@@ -393,7 +393,7 @@ class DisplayManager:
 			self.setTextColor(self.black)
 			if self.screenWidth > 1000:
 				self.setTextSize(20)
-				label_x = x0
+				label_x = x0 - 40
 				label_y_offset = 150
 				self.drawText(label_x, y0 + graph_height - 130 + label_y_offset,
 					f"Events (this hour): {int(thisHoursEvents) if thisHoursEvents is not None else 0} Events (last hour): {int(lastHoursEvents) if lastHoursEvents is not None else 0}")
