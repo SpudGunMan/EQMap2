@@ -74,7 +74,8 @@ def repaintMap():
 	# Check for volcano alert and display if found
 	displayVolcanoEvent = eventDB.checkForVolcanoAlert()
 	if displayVolcanoEvent:
-		displayManager.displayVolcanoEvent()
+		#displayManager.displayVolcanoEvent()
+		print("Volcano Alert Found in DB")
 
 	# Display map Draw data with event count and date
 	displayManager.displayBottomDataFeed(max_location,eventCount)
@@ -315,7 +316,7 @@ def main():
 					if use_usgs:
 						getUpdatesUSGS()
 						# Also check for volcano alerts
-						getUpdatesVolcano()
+						#getUpdatesVolcano()
 					else:
 						getUpdatesEU()
 						
@@ -326,7 +327,7 @@ def main():
 					else:
 						getUpdatesUSGS()
 						# Also check for volcano alerts
-						getUpdatesVolcano()
+						#getUpdatesVolcano()
 				# Schedule the next acquisition
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
