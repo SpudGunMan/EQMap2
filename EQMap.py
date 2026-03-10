@@ -256,7 +256,7 @@ def main():
 	ftForBlink = 0
 	
 
-	dbCleared = False
+	last_db_clear_date = None
 
 	# True if display is on; false if off
 	displayState = False
@@ -272,12 +272,13 @@ def main():
 			# Get the current time
 			now = datetime.now()
 
-			# Reset the DB at 0:00 so display show EQs per day TODO settings menu
-			# And we don't loose the EQ events
-			if now.hour == 0 and dbCleared == False:
+			# Reset once per calendar day during the midnight hour.
+			# This is independent of display power state, so daily save/clear is reliable.
+			if now.hour == 0 and last_db_clear_date != now.date():
+				print("DEBUG: Clearing DB at midnight with ", eventDB.numberOfEvents(), " events in the DB")
 				eventDB.save()
 				eventDB.clear()
-				dbCleared = True
+				last_db_clear_date = now.date()
 
 			# Now check to see if the display should be off or on TODO settings menu
 			#if now.hour > 6 and now.hour < 22: 
@@ -286,7 +287,6 @@ def main():
 			if displayState == False:
 				displayManager.backlight(True)
 				displayState = True
-				dbCleared = False
 
 				# Display the title page
 				displayTitlePage()
