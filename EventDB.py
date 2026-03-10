@@ -37,7 +37,7 @@ class EventDB:
 	def clear(self):
 		self.EQEventQueue.clear()
 		self.EQElocations.clear()
-		self.EQdailyTrend.clear()
+		#self.EQdailyTrend.clear()
 		return True
 
 	# Add an earthquake event
