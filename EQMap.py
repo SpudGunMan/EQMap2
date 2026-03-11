@@ -280,10 +280,6 @@ def main():
 				eventDB.clear()
 				last_db_clear_date = now.date()
 
-			# Now check to see if the display should be off or on TODO settings menu
-			#if now.hour > 6 and now.hour < 22: 
-				# Normal viewing hours have arrived TODO is this working?
-				# If display is off, turn it on
 			if displayState == False:
 				displayManager.backlight(True)
 				displayState = True
@@ -293,12 +289,6 @@ def main():
 
 				# Force a redisplay of all quake data
 				repaintMap()
-			# else:
-			# 	# Normal viewing hours over. Turn the display off
-			# 	if displayState == True:
-			# 		# Turn the display off
-			# 		displayManager.backlight(False)
-			# 		displayState = False
 
 			# Is it time to display the title page ?
 			if millis() > ftForTitlePageDisplay and displayState:
