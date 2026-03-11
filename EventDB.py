@@ -63,14 +63,9 @@ class EventDB:
 		"""
 		Returns True if there is at least one volcano alert in the database.
 		"""
-		for event in self.events:  # adjust 'self.events' to your actual event storage
-			if hasattr(event, 'alert') and event.alert == "VOLCANO":
+		for event in self.events:
+			if isinstance(event, tuple) and len(event) > 3 and event[3] == "VOLCANO":
 				return True
-			# If events are tuples or dicts, adjust accordingly:
-			# if isinstance(event, dict) and event.get('alert') == "VOLCANO":
-			#     return True
-			# if isinstance(event, tuple) and len(event) > 3 and event[3] == "VOLCANO":
-			#     return True
 		return False
 
 	# Return the number of entries

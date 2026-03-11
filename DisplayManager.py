@@ -438,6 +438,7 @@ class DisplayManager:
 			
 			# Draw a triangle at volcano location
 			pygame.draw.polygon(self.screen, self.red, [(mapX, mapY - 6), (mapX - 5, mapY + 4), (mapX + 5, mapY + 4)], 0)
+			pygame.display.flip()
 			return mapX, mapY, self.blue
 		else:
 			#CLI 
