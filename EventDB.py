@@ -155,17 +155,26 @@ class EventDB:
 	def checkDupLonLat(self, lon, lat):
 		if self.EQEventQueue:
 			self.last_event = self.EQEventQueue[0]
-			if str(lon) in str(self.last_event[0]):
-				if str(lat) in str(self.last_event[1]):
-					#data is a dupe
-					return True
+			try:
+				new_lon = float(lon)
+				new_lat = float(lat)
+				last_lon = float(self.last_event[0])
+				last_lat = float(self.last_event[1])
+			except (ValueError, TypeError, IndexError):
+				return False
+
+			# Rounded feed data can differ by a tiny amount; treat very close points as duplicates.
+			tolerance = 0.01
+			if abs(new_lon - last_lon) <= tolerance and abs(new_lat - last_lat) <= tolerance:
+				return True
 
 			# Data is not a duplicate
 			return False
+		return False
 
 	# for the future use of day to day trending graph?
 	def getTrend(self):
-		return self.getTrend 
+		return self.getDayTrend()
 
 	# Save the settings local path
 	def saveSettings(self):
@@ -178,9 +187,12 @@ class EventDB:
 	# Load the settings local path
 	def loadSettings(self):
 		self.dbFileName = "EQMsettings.dat"
-		self.dbFile = open(self.dbFileName, "wb")
-		self.mySettings = pickle.load(self.dbFile)
-		self.dbFile.close()
+		try:
+			self.dbFile = open(self.dbFileName, "rb")
+			self.mySettings = pickle.load(self.dbFile)
+			self.dbFile.close()
+		except (FileNotFoundError, EOFError, pickle.UnpicklingError):
+			self.mySettings = []
 		return self.mySettings
 
 	# Save the database to local path by default at 0:00

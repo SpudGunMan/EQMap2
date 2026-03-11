@@ -11,7 +11,11 @@ from datetime import datetime, timedelta
 class EQEventGathererUSGS:
 
 	def requestEQEvent(self, days=0):
-		while True:
+		max_retries = 5
+		retrycount = 0
+		r = None
+		success = False
+		while retrycount < max_retries:
 			try:
 				# API https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
 				if days == 30:
@@ -28,17 +32,21 @@ class EQEventGathererUSGS:
 
 				# If successful, break the loop
 				if r.status_code == 200:
+					success = True
 					break
 			except requests.exceptions.Timeout:
-				#print("Request timed out. Retrying...")
 				retrycount += 1
-			except requests.exceptions.RequestException as e:
-				#print(f"An error occurred: {e}. Retrying...")
+			except requests.exceptions.RequestException:
 				retrycount += 1
-			except ValueError as ve:
-				#print(f"Error: {ve}")
+			except ValueError:
 				retrycount += 1
-			time.sleep(2)
+			if retrycount < max_retries:
+				# Backoff to avoid hammering remote APIs during outages.
+				time.sleep(min(2 * retrycount, 10))
+
+		if not success or r is None:
+			self.jsonData = []
+			return False
 
 		try:
 			self.jsonData = r.json()
@@ -143,21 +151,29 @@ class EQEventGathererEU:
 			end=''
 			requestTime = ''
 
-		while True:
+		max_retries = 5
+		retrycount = 0
+		success = False
+		while retrycount < max_retries:
 			try:
 				self.r = requests.get(
 					'https://www.seismicportal.eu/fdsnws/event/1/query?limit=' + str(limit) + requestTime + '&format=json',
 					timeout=10  # Set a timeout to avoid hanging indefinitely
 				)
 				self.r.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+				success = True
 				break  # Exit the loop if the request is successful
 			except requests.exceptions.Timeout:
-				#print("Request timed out. Retrying...")
 				retrycount += 1
-			except requests.exceptions.RequestException as e:
-				#print(f"An error occurred: {e}. Retrying...")
+			except requests.exceptions.RequestException:
 				retrycount += 1
-			time.sleep(2)
+			if retrycount < max_retries:
+				# Backoff to avoid hammering remote APIs during outages.
+				time.sleep(min(2 * retrycount, 10))
+
+		if not success:
+			self.jsonData = None
+			return False
 
 		try:
 			self.jsonData = self.r.json()  # Use the built-in JSON parser for better error handling
