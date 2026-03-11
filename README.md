@@ -20,6 +20,7 @@ This fork keeps the original EQMap behavior and adds:
 cd ~
 git clone https://github.com/SpudGunMan/EQMap2
 cd EQMap2
+pip install -r requirements.txt
 python3 EQMap.py
 ```
 
@@ -29,7 +30,7 @@ python3 EQMap.py
 - `requests`
 - `pygame-ce` (recommended over legacy `pygame`)
 
-If needed:
+If you already have legacy `pygame` installed, switch cleanly:
 
 ```sh
 pip uninstall -y pygame
