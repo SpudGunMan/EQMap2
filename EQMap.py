@@ -64,42 +64,46 @@ def repaintMap():
 	highestMag, trending, max_location = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
 	eventCount = eventDB.numberOfEvents()
+	displayManager.beginFrame()
+	try:
 
-	# Display fresh map
-	displayManager.displayMap()
+		# Display fresh map
+		displayManager.displayMap()
 
-	# Display current local time upper left
-	displayManager.displayCurrentTime()
+		# Display current local time upper left
+		displayManager.displayCurrentTime()
 
-	# Display EQ location in color under map
-	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
+		# Display EQ location in color under map
+		displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
 
-	# Display map Draw data with event count and date
-	displayManager.displayBottomDataFeed(max_location,eventCount)
+		# Display map Draw data with event count and date
+		displayManager.displayBottomDataFeed(max_location,eventCount)
 
-	# Display EQ depth and last EQ timestamp upper right
-	isCluster = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
+		# Display EQ depth and last EQ timestamp upper right
+		isCluster = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))
 
-	if isCluster and eventCount > 4:
-		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert, cluster=True)
-	else:
-		displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
+		if isCluster and eventCount > 4:
+			displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert, cluster=True)
+		else:
+			displayManager.displayDBStats(cqMag, eventCount, highestMag, cqTsunami, cqAlert)
 	
-	# Display all of the EQ events in the DB as circles
-	count = eventDB.numberOfEvents()
-	if count > 0:
-		for i in range(count):
-			lon, lat, mag, alert, tsunami, location = eventDB.getEvent(i)
-			# Color depends upon magnitude
-			color = displayManager.colorFromMag(mag)
-			displayManager.mapEarthquake(lon, lat, mag, color)
+		# Display all of the EQ events in the DB as circles
+		count = eventDB.numberOfEvents()
+		if count > 0:
+			for i in range(count):
+				lon, lat, mag, alert, tsunami, location = eventDB.getEvent(i)
+				# Color depends upon magnitude
+				color = displayManager.colorFromMag(mag)
+				displayManager.mapEarthquake(lon, lat, mag, color)
 
-	# Draw active volcano alerts as triangle markers.
-	for alert in volcanoAlerts:
-		displayManager.displayVolcanoEvent(alert['lon'], alert['lat'])
+		# Draw active volcano alerts as triangle markers.
+		for alert in volcanoAlerts:
+			displayManager.displayVolcanoEvent(alert['lon'], alert['lat'])
 
-	# Draw trend graph last so map plotting does not overwrite labels
-	displayManager.displayTrendingGraph(eventDB.getDayTrend())
+		# Draw trend graph last so map plotting does not overwrite labels
+		displayManager.displayTrendingGraph(eventDB.getDayTrend())
+	finally:
+		displayManager.endFrame()
 	return True
 
 # Display title page and schedule next display event
@@ -125,9 +129,11 @@ def getUpdatesUSGS():
 	# internet check test
 	try:
 		# Check for new earthquake event
-		eqGathererUSGS.requestEQEvent()
-	except:
-		pass
+		success = eqGathererUSGS.requestEQEvent()
+		if not success:
+			return False
+	except Exception:
+		return False
 
 	# Determine if we have seen this event before If so ignore it
 	if cqIDUSGS != eqGathererUSGS.getEventID():
@@ -168,9 +174,11 @@ def getUpdatesEU():
 	# internet check test
 	try:
 		# Check for new earthquake event
-		eqGathererEU.requestEQEvent()
-	except:
-		pass
+		success = eqGathererEU.requestEQEvent()
+		if not success:
+			return False
+	except Exception:
+		return False
 		
 	# Determine if we have seen this event before If so ignore it
 	if cqIDUK != eqGathererEU.getEventID():

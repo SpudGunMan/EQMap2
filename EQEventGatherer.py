@@ -61,7 +61,7 @@ class EQEventGathererUSGS:
 
 		# Extracting all the important key features.
 		self.jsonData = self.jsonData['features']
-		return days
+		return True
 
 	def getEventID(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
@@ -181,14 +181,14 @@ class EQEventGathererEU:
 		try:
 			self.jsonData = self.r.json()  # Use the built-in JSON parser for better error handling
 		except json.JSONDecodeError:
-			print("Failed to decode JSON response.")
 			self.jsonData = None
+			return False
 
-		try:
-			self.jsonData = json.loads(self.r.text)
-		except:
+		if not self.jsonData or 'features' not in self.jsonData:
 			self.jsonData = None
-		return days
+			return False
+
+		return True
 
 	def getEventID(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:

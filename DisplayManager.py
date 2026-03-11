@@ -16,6 +16,7 @@ class DisplayManager:
 		self.hasGUI = False
 		self.screen = None
 		self.mapImageRect = None
+		self._batchMode = False
 		self.fontSize = 40
 		self.dist = "m" # or k miles/kilo
 		self.time24h = False
@@ -82,12 +83,25 @@ class DisplayManager:
 			self.hasGUI = False
 
 	# Clear the screen
+	def beginFrame(self):
+		if self.hasGUI:
+			self._batchMode = True
+
+	def endFrame(self):
+		if self.hasGUI:
+			self._batchMode = False
+			pygame.display.flip()
+
+	def _present(self):
+		if self.hasGUI and not self._batchMode:
+			pygame.display.flip()
+
 	def clearScreen(self):
 		try:
 			if not self.hasGUI or self.screen is None:
 				return False
 			self.screen.fill(self.black)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			return False
@@ -134,7 +148,7 @@ class DisplayManager:
 				return False
 			self.clearScreen()
 			self.screen.blit(self.mapImage, self.mapImageRect)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			return False
@@ -146,7 +160,7 @@ class DisplayManager:
 				print(text)
 				return False
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			print(text)
@@ -161,7 +175,7 @@ class DisplayManager:
 			textSurface, rect = self.font.render(text, self.textColor)
 			x = (self.screenWidth - rect.width) / 2
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			print(text)
@@ -176,7 +190,7 @@ class DisplayManager:
 			textSurface, rect = self.font.render(text, self.textColor)
 			x = (self.mapImageRect.x + self.mapImageRect.width) - rect.width - 2
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			print(text)
@@ -198,7 +212,7 @@ class DisplayManager:
 			if not self.hasGUI or self.screen is None:
 				return False
 			pygame.draw.circle(self.screen, color, (int(x), int(y)), int(radius), 2)
-			pygame.display.flip()
+			self._present()
 			return True
 		except:
 			return False
@@ -287,6 +301,7 @@ class DisplayManager:
 					self.eventsTextRow = self.topTextRow + 400
 					self.bottomTextRow = self.topTextRow + 430
 					self.screen.blit(self.mapImage, self.mapImageRect)
+					self._present()
 					return True
 				if event.key == pygame.K_u:
 					#go UTC
@@ -455,7 +470,7 @@ class DisplayManager:
 			
 			# Draw a triangle at volcano location
 			pygame.draw.polygon(self.screen, self.red, [(mapX, mapY - 6), (mapX - 5, mapY + 4), (mapX + 5, mapY + 4)], 0)
-			pygame.display.flip()
+			self._present()
 			return mapX, mapY, self.blue
 		else:
 			#CLI 
