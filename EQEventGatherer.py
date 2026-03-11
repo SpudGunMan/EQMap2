@@ -83,7 +83,7 @@ class EQEventGathererUSGS:
 	def getLocation(self):
 		try:
 			self.place = self.jsonData[0]['properties']['place']
-		except (IndexError, KeyError, TypeError):
+		except:
 			self.place = ""
 		# Since we are on a map remove the "xx km H of " from the start of the string and use best location name
 		self.marker = " of "
