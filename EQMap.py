@@ -129,9 +129,11 @@ def getUpdatesUSGS():
 	# internet check test
 	try:
 		# Check for new earthquake event
-		eqGathererUSGS.requestEQEvent()
-	except:
-		pass
+		success = eqGathererUSGS.requestEQEvent()
+		if not success:
+			return False
+	except Exception:
+		return False
 
 	# Determine if we have seen this event before If so ignore it
 	if cqIDUSGS != eqGathererUSGS.getEventID():
@@ -172,9 +174,11 @@ def getUpdatesEU():
 	# internet check test
 	try:
 		# Check for new earthquake event
-		eqGathererEU.requestEQEvent()
-	except:
-		pass
+		success = eqGathererEU.requestEQEvent()
+		if not success:
+			return False
+	except Exception:
+		return False
 		
 	# Determine if we have seen this event before If so ignore it
 	if cqIDUK != eqGathererEU.getEventID():

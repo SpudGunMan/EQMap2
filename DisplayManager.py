@@ -301,6 +301,7 @@ class DisplayManager:
 					self.eventsTextRow = self.topTextRow + 400
 					self.bottomTextRow = self.topTextRow + 430
 					self.screen.blit(self.mapImage, self.mapImageRect)
+					self._present()
 					return True
 				if event.key == pygame.K_u:
 					#go UTC
