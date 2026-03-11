@@ -103,7 +103,7 @@ class DisplayManager:
 			self.screen.fill(self.black)
 			self._present()
 			return True
-		except:
+		except Exception:
 			return False
 
 	# Backlight control
@@ -150,7 +150,7 @@ class DisplayManager:
 			self.screen.blit(self.mapImage, self.mapImageRect)
 			self._present()
 			return True
-		except:
+		except Exception:
 			return False
 
 	# Draw text
@@ -162,7 +162,7 @@ class DisplayManager:
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			self._present()
 			return True
-		except:
+		except Exception:
 			print(text)
 			return False
 
@@ -177,7 +177,7 @@ class DisplayManager:
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			self._present()
 			return True
-		except:
+		except Exception:
 			print(text)
 			return False
 
@@ -192,7 +192,7 @@ class DisplayManager:
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			self._present()
 			return True
-		except:
+		except Exception:
 			print(text)
 			return False
 
@@ -214,7 +214,7 @@ class DisplayManager:
 			pygame.draw.circle(self.screen, color, (int(x), int(y)), int(radius), 2)
 			self._present()
 			return True
-		except:
+		except Exception:
 			return False
 
 	# Draw a circle with size based on mag at lon, lat position on map
@@ -448,8 +448,8 @@ class DisplayManager:
 		self.setTextColor(self.colorFromMag(mag))
 		
 		try:
-			miles = (depth / 1.609344)
-		except:
+			miles = (float(depth) / 1.609344)
+		except (TypeError, ValueError):
 			miles = 0
 
 		if self.dist == "m":
@@ -484,7 +484,7 @@ class DisplayManager:
 			if mag > 7: currentAlarm = "MAJOR"
 			if tsunami != 0: currentAlarm = "TSUNAMI"
 			if alert is not None: currentAlarm = "ALERT"
-		except:
+		except Exception:
 			currentAlarm = "UNKNOWN"
 		
 		self.setTextSize(40)
@@ -496,56 +496,59 @@ class DisplayManager:
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
 		if self.hasGUI and self.screen is not None and self.mapImageRect is not None:
+			self.beginFrame()
+			try:
+				# Refresh Display by redrawing the map to the screen
+				self.displayMap()
 
-			# Refresh Display by redrawing the map to the screen
-			self.displayMap()
-
-			# Data to always display
-			self.setTextSize(40)
-			if self.screenWidth > 1000:
-				self.drawCenteredText((self.mapImageRect.y + 320), eventDayString)
-			else:
-				self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
+				# Data to always display
+				self.setTextSize(40)
+				if self.screenWidth > 1000:
+					self.drawCenteredText((self.mapImageRect.y + 320), eventDayString)
+				else:
+					self.drawCenteredText((self.mapImageRect.y + 220), eventDayString)
 			
 
-			# Display different data throughout the day using the timput value
-			if self.firstRun == False:
+				# Display different data throughout the day using the timput value
+				if self.firstRun == False:
 				# Defensive: convert all to string, handle None/empty
-				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
-				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
-				activeregion_str = "No Data" if activeregion in (None, "", []) else str(activeregion)
-				dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
+					largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
+					max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
+					activeregion_str = "No Data" if activeregion in (None, "", []) else str(activeregion)
+					dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
 
-				if self.screenWidth > 1000:
-					self.setTextSize(40)
-					self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
-					self.drawCenteredText((self.topTextRow + 160), "Active Region:")
-					self.drawCenteredText((self.topTextRow + 200), activeregion_str)
-					self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
+					if self.screenWidth > 1000:
+						self.setTextSize(40)
+						self.drawCenteredText((self.topTextRow + 120), "HiMag:" + largestevent_str + " in " + max_location_str)
+						self.drawCenteredText((self.topTextRow + 160), "Active Region:")
+						self.drawCenteredText((self.topTextRow + 200), activeregion_str)
+						self.drawCenteredText((self.topTextRow + 390), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
+					else:
+						self.setTextSize(30)
+						self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
+						self.setTextSize(40)
+						self.drawCenteredText((self.topTextRow + 130), "Active Region:")
+						self.drawCenteredText((self.topTextRow + 170), activeregion_str)
+						self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
+						self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
+					time.sleep(20) # show page for 20 seconds
+
+				# Initial startup display
 				else:
-					self.setTextSize(30)
-					self.drawCenteredText((self.topTextRow + 90), "HiMag:" + largestevent_str + " in " + max_location_str)
 					self.setTextSize(40)
-					self.drawCenteredText((self.topTextRow + 130), "Active Region:")
-					self.drawCenteredText((self.topTextRow + 170), activeregion_str)
-					self.drawCenteredText((self.topTextRow + 300), str(self.eventCount) + " events, last quake @" + self.eventTimeStringLong)
-					self.drawCenteredText((self.topTextRow + 430), "Yesterdays event count " + dayTrend_str)
-				time.sleep(20) # show page for 20 seconds
-
-			# Initial startup display
-			else:
-				self.setTextSize(40)
-				self.drawCenteredText((self.topTextRow + 90), "Loading")
-				self.drawCenteredText((self.topTextRow + 140), "Realtime World")
-				self.setTextSize(70)
-				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
-				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.03")
-				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
-				self.firstRun = False
-				time.sleep(5) #show startup screen for 5 seconds
-				self.firstRun = False
+					self.drawCenteredText((self.topTextRow + 90), "Loading")
+					self.drawCenteredText((self.topTextRow + 140), "Realtime World")
+					self.setTextSize(70)
+					self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
+					self.setTextSize(30)
+					self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.03")
+					self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
+					self.firstRun = False
+					time.sleep(5) #show startup screen for 5 seconds
+					self.firstRun = False
+			finally:
+				self.endFrame()
 		else:
 			#Cli output
 			return True
