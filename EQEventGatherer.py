@@ -4,7 +4,6 @@ The returned results are processed by a JSON parser and 6 pertinent data items a
 Concept, Design by: Craig A. Lindley adapted to USGS by SpudGunMan see github
 """
 import json
-from operator import truediv
 import requests, time
 from datetime import datetime, timedelta
 
@@ -73,9 +72,13 @@ class EQEventGathererUSGS:
 			return None
 
 	def getMag(self):
-		self.mag = float(self.jsonData[0]['properties']['mag'])
-		if self.mag is None: self.mag = 0
-		return float(("%.2f" % self.mag))
+		try:
+			mag = self.jsonData[0]['properties']['mag']
+			if mag is None:
+				return 0.0
+			return float(("%.2f" % float(mag)))
+		except (IndexError, KeyError, TypeError, ValueError):
+			return 0.0
 
 	def getLocation(self):
 		try:
@@ -95,34 +98,34 @@ class EQEventGathererUSGS:
 		try:
 			self.alert = self.jsonData[0]['properties']['alert']
 			return self.alert
-		except IndexError:
+		except (IndexError, KeyError, TypeError):
 			return ""
 
 	def getTsunami(self):
 		try:
 			self.tsunami = self.jsonData[0]['properties']['tsunami']
 			return self.tsunami
-		except IndexError:
+		except (IndexError, KeyError, TypeError):
 			return ""
 
 	def getLon(self):
 		try:
 			self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
 			return float(("%.2f" % self.lon))
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 	def getLat(self):
 		try:
 			self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
 			return float(("%.2f" % self.lat))
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 	def getDepth(self):
 		try:
 			return float(self.jsonData[0]['geometry']['coordinates'][2])
-		except IndexError:
+		except (IndexError, KeyError, TypeError, ValueError):
 			return ""
 
 class EQEventGathererEU:

@@ -3,19 +3,19 @@ This code handles display by writing directly to the framebuffer in pygame
 Concept, Design by: Craig A. Lindley
 """
 
-from cProfile import run
 import os, time, sys
-from datetime import datetime, timezone
+from datetime import datetime
 
-from EventDB import eventDB 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame prompt message
 import pygame, pygame.freetype
-from pygame.locals import *
 
 class DisplayManager:
 
 	# Class constructor
 	def __init__(self):
+		self.hasGUI = False
+		self.screen = None
+		self.mapImageRect = None
 		self.fontSize = 40
 		self.dist = "m" # or k miles/kilo
 		self.time24h = False
@@ -73,17 +73,19 @@ class DisplayManager:
 			#self.font = pygame.font.SysFont('arial',self.fontSize)
 			self.hasGUI = True
 		
-		except:
+		except Exception:
 			#command line settings for display to console display
 			self.screenWidth = -1
 			self.screenHeight = -1
-			self.screen = (-1, -1)
-			self.mapImageRect = (-1, -1, -1, -1)
+			self.screen = None
+			self.mapImageRect = None
 			self.hasGUI = False
 
 	# Clear the screen
 	def clearScreen(self):
 		try:
+			if not self.hasGUI or self.screen is None:
+				return False
 			self.screen.fill(self.black)
 			pygame.display.flip()
 			return True
@@ -106,11 +108,10 @@ class DisplayManager:
 			imag = int(mag + 0.5)
 
 			if imag < 1:
-				imag = 1.0
-		except:
+				imag = 1
+		except (TypeError, ValueError):
 			# if not a number, return value as red for now
-			imag = 1.0
-			mag = 1.0
+			imag = 1
 		
 		case = {
 		1: self.green,
@@ -124,11 +125,13 @@ class DisplayManager:
 		9: self.red
 		}
 
-		return case.get(imag)
+		return case.get(imag, self.red)
 
 	# Display the map
 	def displayMap(self):
 		try:
+			if not self.hasGUI or self.screen is None or self.mapImageRect is None:
+				return False
 			self.clearScreen()
 			self.screen.blit(self.mapImage, self.mapImageRect)
 			pygame.display.flip()
@@ -139,6 +142,9 @@ class DisplayManager:
 	# Draw text
 	def drawText(self, x, y, text):
 		try:
+			if not self.hasGUI or self.screen is None:
+				print(text)
+				return False
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
 			pygame.display.flip()
 			return True
@@ -149,6 +155,9 @@ class DisplayManager:
 	# Draw centered text
 	def drawCenteredText(self, y, text):
 		try:
+			if not self.hasGUI or self.screen is None:
+				print(text)
+				return False
 			textSurface, rect = self.font.render(text, self.textColor)
 			x = (self.screenWidth - rect.width) / 2
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
@@ -161,6 +170,9 @@ class DisplayManager:
 	# Draw right justified text
 	def drawRightJustifiedText(self, y, text):
 		try:
+			if not self.hasGUI or self.screen is None or self.mapImageRect is None:
+				print(text)
+				return False
 			textSurface, rect = self.font.render(text, self.textColor)
 			x = (self.mapImageRect.x + self.mapImageRect.width) - rect.width - 2
 			self.font.render_to(self.screen, (x, y), text, self.textColor)
@@ -183,6 +195,8 @@ class DisplayManager:
 	# Draw a circle on the scrren
 	def drawCircle(self, x, y, radius, color):
 		try:
+			if not self.hasGUI or self.screen is None:
+				return False
 			pygame.draw.circle(self.screen, color, (int(x), int(y)), int(radius), 2)
 			pygame.display.flip()
 			return True
@@ -192,7 +206,7 @@ class DisplayManager:
 	# Draw a circle with size based on mag at lon, lat position on map
 	def mapEarthquake(self, lon, lat, mag, color):
 		
-		if self.hasGUI and lon != '':
+		if self.hasGUI and self.mapImageRect is not None and lon != '':
 			# Calculate map X and Y
 			mapX = ((float(lon) + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
 			mapY = ((((-1 * float(lat)) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
@@ -211,6 +225,8 @@ class DisplayManager:
 
 	# pygames key press
 	def handleKeyPress(self):
+		if not self.hasGUI or self.screen is None or self.mapImageRect is None:
+			return False
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.display.quit()
@@ -294,11 +310,12 @@ class DisplayManager:
 		
 		# Display time to GUI only
 		try:
-			self
+			if not self.hasGUI or self.mapImageRect is None:
+				return timeNow
 			pygame.draw.rect(self.screen,self.black,(self.mapImageRect.x,self.topTextRow,130,25))
 			self.setTextSize(40)
 			self.drawText(self.mapImageRect.x, self.topTextRow, timeString)
-		except: 
+		except Exception: 
 			return timeNow
 
 
@@ -431,7 +448,7 @@ class DisplayManager:
 	
 	# Display Last Volcanic Event
 	def displayVolcanoEvent(self, lon, lat):
-		if self.hasGUI and lon != '':
+		if self.hasGUI and self.screen is not None and self.mapImageRect is not None and lon != '':
 			# Calculate map X and Y
 			mapX = ((float(lon) + 180.0) * self.mapImageRect.width) / 360.0 + self.mapImageRect.x
 			mapY = ((((-1 * float(lat)) + 90.0) * self.mapImageRect.height) / 180.0) + self.mapImageRect.y
@@ -463,7 +480,7 @@ class DisplayManager:
 	def displayWashPage(self, largestevent, activeregion, dayTrend, max_location):
 		currentRTC = datetime.now()
 		eventDayString = currentRTC.strftime("%A %B %d week %U day %j") #https://strftime.org
-		if self.hasGUI:
+		if self.hasGUI and self.screen is not None and self.mapImageRect is not None:
 
 			# Refresh Display by redrawing the map to the screen
 			self.displayMap()
@@ -481,7 +498,7 @@ class DisplayManager:
 				# Defensive: convert all to string, handle None/empty
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
-				activeregion_str = str(activeregion) if activeregion is not [] else "No Data"
+				activeregion_str = "No Data" if activeregion in (None, "", []) else str(activeregion)
 				dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
 
 				if self.screenWidth > 1000:

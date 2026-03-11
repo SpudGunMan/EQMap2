@@ -1,89 +1,102 @@
- ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
+![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
 
-# About Revision:26.03
-This is a Earthquake Map Display for RaspberryPi Attached screen
+# EQMap2 (Revision 26.03)
 
-This fork adds additional features, while keeping the orginal functionality (I hope!)
-- added parallel data souce earthquake.usgs.gov 60s polling each source
-- command line output 
-- realtime clock
-- new display data and reporting
-- hi-res ability to extend to any monitor
-- ability to change basic settings in runtime
-- Daily event Trending
-- Daily database for playback later `python3 EQPlay.py`
-  - RamDisk use to lower any disk write on Pi SD-Card
-  - multi day player
-- Volcano Tracking! new 2025!
-- New graphs showing rate per hours!
+EQMap2 is a real-time earthquake map display for Raspberry Pi screens and desktop monitors.
 
-Feel free to pull issues/suggestions or forks to contribute!
+This fork keeps the original EQMap behavior and adds:
+- Dual feed polling (USGS + SeismicPortal EU)
+- Real-time clock and additional on-screen stats
+- High-resolution display support
+- Runtime display settings (time format, distance units, map mode)
+- Daily event trending graph
+- Daily database playback via `python3 EQPlay.py`
+- Optional RAM disk storage support (`/run/shm`) to reduce SD card writes
+- Volcano alert tracking (USGS HANS)
 
-# Settings Keys
-
-| Command | Description |
-| --- | --- |
-| esc / q | end program, exit fuillscreen |
-| d | *D*istance calculations in mi/km |
-| h | *H*ours calculations in 12p/24h |
-| f | Set *f*ullscreen mode |
-| w | Set *w*indow mode |
-| m | Cycle *m*aps |
-
-# Installation
-```shell
-cd ~
-git clone https://github.com/SpudGunMan/EQMap2
-cd EQMap2/
-python3 EQMap.py
-```
-if you are not running a raspberry you may need to install pre-req they are included on raspberry by default so no need to continue here for Pi use...
-
-
-~~sudo apt-get install python3-pip python3-dev python3-pygame~~
-
+## Quick Start
 
 ```sh
-pip uninstall pygame # Uninstall pygame first since it would conflict with pygame-ce
-pip install pygame-ce
+cd ~
+git clone https://github.com/SpudGunMan/EQMap2
+cd EQMap2
+python3 EQMap.py
 ```
--# Because 'pygame' installs to the same location as 'pygame-ce', it must first be uninstalled.
--# Note that the `import pygame` syntax has not changed with pygame-ce.
 
+## Requirements
 
+- Python 3
+- `requests`
+- `pygame-ce` (recommended over legacy `pygame`)
 
+If needed:
 
-# Issues
-If you have issues make sure your running the newest code `git pull`, let me know if you see a problem!
-if you really get stuck you can start over or try a `git reset --hard` follwed by a pull.
+```sh
+pip uninstall -y pygame
+pip install pygame-ce requests
+```
 
-## Hardware:
-to get 7" ribbon attached display you might need to do a few things to bullseye
-1. when you flash the OS to SSD open the FAT-partition on the SSD you just made and `touch ssh` to force enable SSH (or just make a empty file with the name of `ssh` nothing more no .txt)
-1. you need to then use `sudo raspi-config` to enable legacy GL drivers till [this bug is fully fixed](https://github.com/raspberrypi/linux/issues/4686) to adjust 50K rate of screen. UPDATE 9/2022 there will likely be no fix for this workaround is needed.
-   * update 2025 add `dtoverlay=edt-ft5406` to `/boot/firmware/config.txt`
-1. Reboot to "hopefully" a working Pi Screen on bullseye
+## Controls
 
-### Tested
-* 2025.10 Trixie
-* 2025.8 Appears seismicportal.eu having issues data is wild and main page says its 2002.. updated applicaiton hope they return soon!
-* 2025 pygame has issues on Pi  https://github.com/pygame/pygame/issues/3003pygame-display-init-fails-for-non-root-user
-  * find your display, likely fb0 `ls -l /dev/fb*` allow all access `sudo chmod a+rw /dev/fb0`
-* https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
-* https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
-  * both work nice with a offical raspberry pi4/usb-c power supply at 3A and pi3 or Pi4
+| Key | Action |
+| --- | --- |
+| `Esc` / `q` | Quit program |
+| `d` | Toggle distance units (`mi` / `km`) |
+| `h` | Toggle time format (`12h` / `24h`) |
+| `f` | Fullscreen mode |
+| `w` | Window mode |
+| `m` | Cycle map |
 
-## EQMap Source 
-* The upstream branch is a straight copy from http://craigandheather.net/celeearthquakemap.html
-  * EQMap orginal project in doc/src directory by Craig A. Lindley 2021
+## Playback
 
-## To-Do
-normally on a next branch if you see it try it out! `git pull origin next`
-- add other types of data
-  - tsunami data
-- save settings
-  - UTC
-- generate some new maps
-  - fault lines
+Replay saved daily data:
 
+```sh
+python3 EQPlay.py
+```
 
+## Raspberry Pi Notes
+
+For 7-inch ribbon-attached displays on newer Raspberry Pi OS builds:
+1. Enable SSH on first boot if needed by creating an empty `ssh` file in the boot FAT partition.
+1. Run `sudo raspi-config` and enable graphics options needed by your display stack.
+1. If touchscreen detection is unreliable, add `dtoverlay=edt-ft5406` to `/boot/firmware/config.txt`.
+1. Reboot.
+
+## Troubleshooting
+
+- Update first: `git pull`
+- If display initialization fails with pygame permissions issues, verify framebuffer permissions:
+
+```sh
+ls -l /dev/fb*
+sudo chmod a+rw /dev/fb0
+```
+
+- If one data source is down, the other source should continue to update.
+- Test playback mode (`EQPlay.py`) to validate rendering and stored data.
+
+## Tested Notes
+
+- 2025.10 Trixie
+- Known upstream feed instability has occurred at times with SeismicPortal EU.
+- Known pygame Pi issue reference:
+  - https://github.com/pygame/pygame/issues/3003
+
+## Hardware Tested
+
+- https://www.amazon.com/ElecLab-Raspberry-Touchscreen-Monitor-Capacitive/dp/B08LVC4KRM/
+- https://www.amazon.com/Eviciv-Portable-Monitor-Display-1024X600/dp/B07L6WT77H/
+
+## Upstream Credits
+
+- Original project source: http://craigandheather.net/celeearthquakemap.html
+- Original EQMap code is included under `docs/src` by Craig A. Lindley (2021).
+
+## Roadmap Ideas
+
+- Additional feeds (tsunami, fault overlays)
+- Persist all runtime settings
+- More map themes and overlays
+
+Contributions and bug reports are welcome.
