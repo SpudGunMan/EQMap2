@@ -17,6 +17,7 @@ from EQEventGatherer import EQEventGathererUSGSVolcanoAlert
 use_eu = True
 use_usgs = True
 eqGathererUSGSVolcano = EQEventGathererUSGSVolcanoAlert()
+volcanoAlerts = []
 
 # Colors for display
 BLACK  = (0, 0, 0)
@@ -58,6 +59,7 @@ def millis():
 
 # Repaint the map from the events in the DB
 def repaintMap():
+	global volcanoAlerts
 
 	highestMag, trending, max_location = eventDB.getLargestEvent()
 	highestMag = str(highestMag)
@@ -71,11 +73,6 @@ def repaintMap():
 
 	# Display EQ location in color under map
 	displayManager.displayEventLong(cqLocation, cqMag, cqDepth)
-	# Check for volcano alert and display if found
-	displayVolcanoEvent = eventDB.checkForVolcanoAlert()
-	if displayVolcanoEvent:
-		#displayManager.displayVolcanoEvent()
-		print("Volcano Alert Found in DB")
 
 	# Display map Draw data with event count and date
 	displayManager.displayBottomDataFeed(max_location,eventCount)
@@ -96,6 +93,10 @@ def repaintMap():
 			# Color depends upon magnitude
 			color = displayManager.colorFromMag(mag)
 			displayManager.mapEarthquake(lon, lat, mag, color)
+
+	# Draw active volcano alerts as triangle markers.
+	for alert in volcanoAlerts:
+		displayManager.displayVolcanoEvent(alert['lon'], alert['lat'])
 
 	# Draw trend graph last so map plotting does not overwrite labels
 	displayManager.displayTrendingGraph(eventDB.getDayTrend())
@@ -132,7 +133,7 @@ def getUpdatesUSGS():
 	if cqIDUSGS != eqGathererUSGS.getEventID():
 
 		#if data has no ID dont use it
-		if eqGathererUSGS.getEventID  is None:
+		if eqGathererUSGS.getEventID() is None:
 			return False
 		else:
 
@@ -150,7 +151,7 @@ def getUpdatesUSGS():
 
 			# Add new event to DB if it isnt also from the other source
 			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+				eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
 
 				# Update the current event ID
 				cqIDUSGS = eqGathererUSGS.getEventID()
@@ -184,7 +185,7 @@ def getUpdatesEU():
 
 		# Add new event to DB if it isnt also from the other source
 		if not eventDB.checkDupLonLat(cqLon, cqLat):
-			eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
 
 			# Update the current event ID
 			cqIDUK = eqGathererEU.getEventID()
@@ -193,46 +194,43 @@ def getUpdatesEU():
 			repaintMap()
 
 def getUpdatesVolcano():
-	global cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-	# internet check test
+	global volcanoAlerts
+	# Query USGS volcano alert feed.
 	try:
-		# Check for new volcano alert event
-		eqGathererUSGSVolcano.requestEQEvent()
-	except:
-		pass
+		has_alerts = eqGathererUSGSVolcano.requestEQEvent()
+	except Exception:
+		return False
 
-	# Determine if we have seen this event before If so ignore it
-	if cqIDUSGS != eqGathererUSGSVolcano.getEventID():
+	if not has_alerts:
+		if volcanoAlerts:
+			volcanoAlerts = []
+			repaintMap()
+		return False
 
-		#if data has no ID dont use it
-		if eqGathererUSGSVolcano.getEventID  is None:
-			return False
-		else:
+	ids = eqGathererUSGSVolcano.getEventIDs()
+	locations = eqGathererUSGSVolcano.getLocations()
+	lats = eqGathererUSGSVolcano.getLats()
+	lons = eqGathererUSGSVolcano.getLons()
 
-			# Extract the volcano alert data
-			try:
-				cqLocation = eqGathererUSGSVolcano.getLocation()
-				cqLon = eqGathererUSGSVolcano.getLon()
-				cqLat = eqGathererUSGSVolcano.getLat()
-				cqMag = 0.0
-				cqDepth = 0.0
-				cqTsunami = 0
-				cqAlert = "VOLCANO"
-			except Exception:
-				return False
+	new_alerts = []
+	for idx, volcano_id in enumerate(ids):
+		lat = lats[idx] if idx < len(lats) else None
+		lon = lons[idx] if idx < len(lons) else None
+		if lat is None or lon is None:
+			continue
+		new_alerts.append({
+			'id': volcano_id,
+			'name': locations[idx] if idx < len(locations) else '',
+			'lat': float(lat),
+			'lon': float(lon)
+		})
 
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqTsunami, cqAlert, cqLocation)
+	# Repaint only when the alert set changes.
+	if new_alerts != volcanoAlerts:
+		volcanoAlerts = new_alerts
+		repaintMap()
 
-				# Update the current event ID
-				cqIDUSGS = eqGathererUSGSVolcano.getEventID()
-
-				# Display the new volcano alert data
-				repaintMap()
-				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
-	return False
+	return bool(volcanoAlerts)
 
 # Code execution start
 def main():
@@ -251,9 +249,11 @@ def main():
 	global blinkToggle
 	global dataToggle
 	global largestLOC
+	global volcanoAlerts
 
 	ftForAcquisition = 0
 	ftForBlink = 0
+	volcanoAlerts = []
 	
 
 	last_db_clear_date = None
@@ -315,8 +315,6 @@ def main():
 					dataToggle = False
 					if use_usgs:
 						getUpdatesUSGS()
-						# Also check for volcano alerts
-						#getUpdatesVolcano()
 					else:
 						getUpdatesEU()
 						
@@ -326,8 +324,9 @@ def main():
 						getUpdatesEU()
 					else:
 						getUpdatesUSGS()
-						# Also check for volcano alerts
-						#getUpdatesVolcano()
+
+				# Always check the volcano feed during acquisition.
+				getUpdatesVolcano()
 				# Schedule the next acquisition
 				ftForAcquisition = millis() + ACQUISITION_TIME_MS
 
