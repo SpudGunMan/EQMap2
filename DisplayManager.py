@@ -514,7 +514,12 @@ class DisplayManager:
 				largestevent_str = "No Data" if largestevent is None or largestevent == "" else str(largestevent)
 				max_location_str = "No Data" if max_location is None or max_location == "" else str(max_location)
 				activeregion_str = "No Data" if activeregion in (None, "", []) else str(activeregion)
-				dayTrend_str = str(dayTrend[-1]) if type(dayTrend) in (list, tuple) and len(dayTrend) > 0 else "No Data"
+				if isinstance(dayTrend, (list, tuple)) and len(dayTrend) > 0:
+					dayTrend_str = str(dayTrend[-1])
+				elif dayTrend not in (None, "", "No Data"):
+					dayTrend_str = str(dayTrend)
+				else:
+					dayTrend_str = "No Data"
 
 				if self.screenWidth > 1000:
 					self.setTextSize(40)
