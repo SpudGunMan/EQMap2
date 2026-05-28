@@ -369,26 +369,10 @@ class DisplayManager:
 
 		trend_text = "Trend n/a"
 		trend_color = self.white
-		if len(daily_counts) >= 2:
-			try:
-				yesterday = int(daily_counts[-2])
-				delta = today - yesterday
-				if delta > 0:
-					trend_text = f"Trend up +{delta} vs yday"
-					trend_color = self.green
-				elif delta < 0:
-					trend_text = f"Trend down {delta} vs yday"
-					trend_color = self.red
-				else:
-					trend_text = "Trend flat vs yday"
-					trend_color = self.white
-			except (ValueError, TypeError):
-				trend_text = "Trend n/a"
-				trend_color = self.white
 
-		# Draw a compact 5-day sparkline in the lower-left corner.
+		# Draw a compact 7-day sparkline in the lower-left corner.
 		spark_vals = []
-		for val in daily_counts[-5:]:
+		for val in daily_counts[-7:]:
 			try:
 				spark_vals.append(float(val))
 			except (ValueError, TypeError):
@@ -417,13 +401,9 @@ class DisplayManager:
 				prev_x = x
 				prev_y = y
 
-		self.setTextSize(22)
-		self.setTextColor(trend_color)
-		label = f"Today: {today}  |  {trend_text}"
-		self.drawText(self.mapImageRect.x + 2, self.bottomTextRow - 82, label)
 		self.setTextSize(18)
 		self.setTextColor(self.white)
-		self.drawText(self.mapImageRect.x + 2, self.bottomTextRow - 56, "5-day")
+		self.drawText(self.mapImageRect.x + 2, self.bottomTextRow - 56, "7-day")
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
