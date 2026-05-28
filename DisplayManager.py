@@ -599,7 +599,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.03")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.06")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.firstRun = False
 				time.sleep(5) #show startup screen for 5 seconds
