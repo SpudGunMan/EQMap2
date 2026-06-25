@@ -177,7 +177,7 @@ class EventDB:
 		return self.getDayTrend()
 
 	# Retrieve recent daily event counts from saved DB files plus current day.
-	def getRecentDailyCounts(self, days=5, include_today=True):
+	def getRecentDailyCounts(self, days=7, include_today=True):
 		if days < 1:
 			return []
 
