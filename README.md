@@ -1,6 +1,6 @@
 ![EarthQuakeMapDisplay](/maps/display.jpg) ![EarthQuakeMap](/maps/logo.jpg)
 
-# EQMap2 (Revision 26.03)
+# EQMap2 (Revision 26.07)
 
 EQMap2 is a real-time earthquake map display for Raspberry Pi screens and desktop monitors.
 
@@ -13,6 +13,7 @@ This fork keeps the original EQMap behavior and adds:
 - Daily database playback via `python3 EQPlay.py`
 - Optional RAM disk storage support (`/run/shm`) to reduce SD card writes
 - Volcano alert tracking (USGS HANS)
+- Day and Week graph of event volume
 
 ## Quick Start
 
