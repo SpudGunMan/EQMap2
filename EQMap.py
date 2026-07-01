@@ -78,6 +78,7 @@ def repaintMap():
 
 		# Display map Draw data with event count and date
 		displayManager.displayBottomDataFeed(max_location,eventCount)
+		displayManager.displayDailyTrendBottomLeft(eventDB.getRecentDailyCounts(days=7))
 
 		# Display EQ depth and last EQ timestamp upper right
 		isCluster = cqLocation in (str(eventDB.getActiveRegion(preserve=True)))

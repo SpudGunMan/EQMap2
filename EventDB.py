@@ -176,6 +176,38 @@ class EventDB:
 	def getTrend(self):
 		return self.getDayTrend()
 
+	# Retrieve recent daily event counts from saved DB files plus current day.
+	def getRecentDailyCounts(self, days=7, include_today=True):
+		if days < 1:
+			return []
+
+		counts = []
+		filenames = []
+
+		# Prefer ramdisk, then local files.
+		for path in ("/run/shm/EQMdatabase*.dat", "EQMdatabase*.dat"):
+			files = sorted(glob.glob(path))
+			if files:
+				filenames = files
+				break
+
+		# Keep file reads bounded: we only need recent history.
+		file_days = max(0, days - (1 if include_today else 0))
+		if file_days > 0 and filenames:
+			for filename in filenames[-file_days:]:
+				try:
+					with open(filename, "rb") as db_file:
+						events = pickle.load(db_file)
+						counts.append(len(events))
+				except Exception:
+					# Skip unreadable/corrupt history files.
+					continue
+
+		if include_today:
+			counts.append(len(self.EQEventQueue))
+
+		return counts[-days:]
+
 	# Save the settings local path
 	def saveSettings(self):
 		self.dbFileName = "EQMsettings.dat"

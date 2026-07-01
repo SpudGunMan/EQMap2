@@ -354,6 +354,59 @@ class DisplayManager:
 		self.setTextSize(40)
 		self.setTextColor(self.white)
 		return True
+
+	def displayDailyTrendBottomLeft(self, daily_counts):
+		if not self.hasGUI or self.screen is None or self.mapImageRect is None:
+			return False
+
+		if not isinstance(daily_counts, (list, tuple)) or len(daily_counts) == 0:
+			return False
+
+		try:
+			today = int(daily_counts[-1])
+		except (ValueError, TypeError):
+			today = 0
+
+		trend_text = "Trend n/a"
+		trend_color = self.white
+
+		# Draw a compact 7-day sparkline in the lower-left corner.
+		spark_vals = []
+		for val in daily_counts[-7:]:
+			try:
+				spark_vals.append(float(val))
+			except (ValueError, TypeError):
+				spark_vals.append(0.0)
+
+		x0 = self.mapImageRect.x + 4
+		y0 = self.bottomTextRow - 58
+		spark_w = 120
+		spark_h = 28
+
+		if len(spark_vals) >= 2:
+			max_val = max(spark_vals)
+			min_val = min(spark_vals)
+			span = max_val - min_val
+			if span <= 0:
+				span = 1.0
+
+			prev_x = None
+			prev_y = None
+			for i, val in enumerate(spark_vals):
+				x = int(x0 + (i / (len(spark_vals) - 1)) * spark_w)
+				y = int(y0 + spark_h - (((val - min_val) / span) * spark_h))
+				if prev_x is not None:
+					pygame.draw.line(self.screen, trend_color, (prev_x, prev_y), (x, y), 2)
+				pygame.draw.circle(self.screen, trend_color, (x, y), 2)
+				prev_x = x
+				prev_y = y
+
+		self.setTextSize(18)
+		self.setTextColor(self.white)
+		self.drawText(self.mapImageRect.x + 2, self.bottomTextRow - 56, "7-day")
+		self.setTextSize(40)
+		self.setTextColor(self.white)
+		return True
 	
 	def displayTrendingGraph(self, dayTrend):
 			# Draw a simple floating line graph of dayTrend in the middle of the screen
@@ -546,7 +599,7 @@ class DisplayManager:
 				self.setTextSize(70)
 				self.drawCenteredText((self.topTextRow + 165), "Earthquake Map")
 				self.setTextSize(30)
-				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.03")
+				self.drawText((self.mapImageRect.x +2), (self.bottomTextRow - 80), "   Revision:26.06")
 				self.drawRightJustifiedText((self.bottomTextRow - 80), "C.Lindley   ")
 				self.firstRun = False
 				time.sleep(5) #show startup screen for 5 seconds
