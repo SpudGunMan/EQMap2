@@ -272,6 +272,12 @@ def main():
 	#exit loop handler
 	running = True
 
+	# Load today's saved database on startup
+	try:
+		eventDB.load_today()
+	except Exception:
+		pass
+
 	#loop
 	try:
 		
@@ -342,12 +348,18 @@ def main():
 					displayManager.displayCurrentTime()
 
 				ftForBlink = millis() + BLINK_TIME_MS
-	except KeyboardInterrupt:
+	except (KeyboardInterrupt, SystemExit):
 		print("closing EQMap")
 		running = False
 	except Exception as e:
 		print("Error in main loop:", e)
 		running = False
+	finally:
+		try:
+			print("saving EQMap database before exit")
+			eventDB.save()
+		except Exception as e:
+			print("failed to save DB on exit:", e)
 		
 
 # Earthquake Map Program Entry Point

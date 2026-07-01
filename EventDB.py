@@ -254,6 +254,23 @@ class EventDB:
 		self.dbFile.close()
 		return True
 
+	def load_today(self):
+		"""Load today's saved database only."""
+		self.EQEventQueue.clear()
+		currentRTC = datetime.now()
+		eventLogTime = currentRTC.strftime("%Y%m%d")
+		paths = ["/run/shm/EQMdatabase" + eventLogTime + ".dat", "EQMdatabase" + eventLogTime + ".dat"]
+		for path in paths:
+			try:
+				with open(path, "rb") as db_file:
+					self.EQEventQueue = pickle.load(db_file)
+					return self.EQEventQueue, 1
+			except FileNotFoundError:
+				continue
+			except Exception:
+				break
+		return self.EQEventQueue, 0
+
 	def load(self, file=0):
 		# Load file from database dump file
 		self.EQEventQueue.clear()
