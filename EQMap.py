@@ -6,7 +6,7 @@ Concept, Design by: Craig A. Lindley
 """
 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from DisplayManager import displayManager
 from EQEventGatherer import eqGathererEU
 from EQEventGatherer import eqGathererUSGS
@@ -289,8 +289,9 @@ def main():
 			# Reset once per calendar day during the midnight hour.
 			# This is independent of display power state, so daily save/clear is reliable.
 			if now.hour == 0 and last_db_clear_date != now.date():
+				yesterday = now.date() - timedelta(days=1)
 				print("DEBUG: Clearing DB at midnight with ", eventDB.numberOfEvents(), " events in the DB")
-				eventDB.save()
+				eventDB.save(save_date=yesterday)
 				eventDB.clear()
 				last_db_clear_date = now.date()
 
@@ -355,9 +356,13 @@ def main():
 		print("Error in main loop:", e)
 		running = False
 	finally:
+		now = datetime.now()
+		save_date = now.date()
+		if now.hour == 0 and last_db_clear_date != now.date():
+			save_date = now.date() - timedelta(days=1)
 		try:
 			print("saving EQMap database before exit")
-			eventDB.save()
+			eventDB.save(save_date=save_date)
 		except Exception as e:
 			print("failed to save DB on exit:", e)
 		

@@ -228,7 +228,7 @@ class EventDB:
 		return self.mySettings
 
 	# Save the database to local path by default at 0:00
-	def save(self):
+	def save(self, save_date=None):
 		#this only works with default save of once a day - daily event trending
 		try:
 			if len(self.EQEventQueue) > 0:
@@ -241,7 +241,10 @@ class EventDB:
 
 		# save
 		currentRTC = datetime.now()
-		eventLogTime = currentRTC.strftime("%Y%m%d") #https://strftime.org
+		if save_date is None:
+			eventLogTime = currentRTC.strftime("%Y%m%d")
+		else:
+			eventLogTime = save_date.strftime("%Y%m%d")
 
 		try:
 			self.dbFileName = "/run/shm/" + "EQMdatabase" + eventLogTime + ".dat"
