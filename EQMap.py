@@ -135,37 +135,50 @@ def getUpdatesUSGS():
 	except Exception:
 		return False
 
-	# Determine if we have seen this event before If so ignore it
-	if cqIDUSGS != eqGathererUSGS.getEventID():
+	# Get all records from API response
+	try:
+		ids = eqGathererUSGS.getEventID()
+		locations = eqGathererUSGS.getLocation()
+		lons = eqGathererUSGS.getLon()
+		lats = eqGathererUSGS.getLat()
+		mags = eqGathererUSGS.getMag()
+		depths = eqGathererUSGS.getDepth()
+		tsunamis = eqGathererUSGS.getTsunami()
+		alerts = eqGathererUSGS.getAlert()
+	except Exception:
+		return False
 
-		#if data has no ID dont use it
-		if eqGathererUSGS.getEventID() is None:
-			return False
-		else:
+	# Process all records from the API response
+	events_processed = False
+	for idx, event_id in enumerate(ids):
+		# Get corresponding data for this record
+		cqLocation = locations[idx] if idx < len(locations) else ""
+		cqLon = lons[idx] if idx < len(lons) else None
+		cqLat = lats[idx] if idx < len(lats) else None
+		cqMag = mags[idx] if idx < len(mags) else 0.0
+		cqDepth = depths[idx] if idx < len(depths) else None
+		cqTsunami = tsunamis[idx] if idx < len(tsunamis) else ""
+		cqAlert = alerts[idx] if idx < len(alerts) else ""
 
-			# Extract the EQ data
-			try:
-				cqLocation = eqGathererUSGS.getLocation()
-				cqLon = eqGathererUSGS.getLon()
-				cqLat = eqGathererUSGS.getLat()
-				cqMag = eqGathererUSGS.getMag()
-				cqDepth = eqGathererUSGS.getDepth()
-				cqTsunami = eqGathererUSGS.getTsunami()
-				cqAlert = eqGathererUSGS.getAlert()
-			except Exception:
-				return False
+		# Skip if coordinates are invalid
+		if cqLon is None or cqLat is None:
+			continue
 
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
+		# Check if this is a new event (ID check) and not a duplicate location
+		if cqIDUSGS != event_id and not eventDB.checkDupLonLat(cqLon, cqLat):
+			# Add new event to DB
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
+			
+			# Update the current event ID to the most recent (first processed)
+			if not events_processed:
+				cqIDUSGS = event_id
+				events_processed = True
 
-				# Update the current event ID
-				cqIDUSGS = eqGathererUSGS.getEventID()
+			# Display the new EQ data
+			repaintMap()
 
-				# Display the new EQ data
-				repaintMap()
-				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
-
+	if events_processed:
+		return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
 	return False
 
 # getEU Function
