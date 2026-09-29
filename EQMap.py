@@ -151,6 +151,10 @@ def getUpdatesUSGS():
 	# Process all records from the API response
 	events_processed = False
 	for idx, event_id in enumerate(ids):
+		# Skip if event ID has already been added to database
+		if eventDB.hasSeenEventID(event_id):
+			continue
+
 		# Get corresponding data for this record
 		cqLocation = locations[idx] if idx < len(locations) else ""
 		cqLon = lons[idx] if idx < len(lons) else None
@@ -164,10 +168,10 @@ def getUpdatesUSGS():
 		if cqLon is None or cqLat is None:
 			continue
 
-		# Check if this is a new event (ID check) and not a duplicate location
-		if cqIDUSGS != event_id and not eventDB.checkDupLonLat(cqLon, cqLat):
-			# Add new event to DB
-			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
+		# Check if location is not a duplicate (cross-source dedup with EU/Volcano)
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			# Add new event to DB with event ID tracking
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation, event_id=event_id)
 			
 			# Update the current event ID to the most recent (first processed)
 			if not events_processed:

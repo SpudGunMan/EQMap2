@@ -28,6 +28,7 @@ class EventDB:
 		self.region = ''
 		self.region_dict = {}
 		self.last_event = ()
+		self.seenEventIDs = set()  # Track event IDs to prevent duplicates
 		self.resetHourlyTrend()
 		self.dbFileName = ''
 		self.dbFile = None
@@ -37,11 +38,12 @@ class EventDB:
 	def clear(self):
 		self.EQEventQueue.clear()
 		self.EQElocations.clear()
+		self.seenEventIDs.clear()  # Reset seen event IDs for new day
 		#self.EQdailyTrend.clear()
 		return True
 
 	# Add an earthquake event
-	def addEvent(self, lon, lat, mag, alert, tsunami, location, event_time=None):
+	def addEvent(self, lon, lat, mag, alert, tsunami, location, event_id=None, event_time=None):
 		# Ensure mag is a number
 		try:
 			mag_val = float(mag)
@@ -51,6 +53,11 @@ class EventDB:
 			return False
 		self.EQEventQueue.appendleft((lon, lat, mag, alert, tsunami, location))
 		self.EQElocations.append(location)
+		
+		# Track event ID to prevent future duplicates
+		if event_id is not None:
+			self.seenEventIDs.add(event_id)
+		
 		# Track hourly trend
 		if event_time is None:
 			event_time = datetime.now()
@@ -171,6 +178,11 @@ class EventDB:
 			# Data is not a duplicate
 			return False
 		return False
+
+	# Check if event ID has already been stored
+	def hasSeenEventID(self, event_id):
+		"""Check if this event ID has already been added to the database."""
+		return event_id in self.seenEventIDs
 
 	# for the future use of day to day trending graph?
 	def getTrend(self):
