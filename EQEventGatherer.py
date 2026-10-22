@@ -45,6 +45,7 @@ class EQEventGathererUSGS:
 
 		if not success or r is None:
 			self.jsonData = []
+			print("Failed to retrieve USGS earthquake data.")
 			return False
 
 		try:
@@ -201,6 +202,7 @@ class EQEventGathererEU:
 
 		if not success:
 			self.jsonData = None
+			print("Failed to retrieve EU earthquake data")
 			return False
 
 		try:
@@ -311,6 +313,7 @@ class EQEventGathererUSGSVolcanoAlert:
             r.raise_for_status()
             self.jsonData = r.json()
         except requests.exceptions.RequestException:
+			print("Failed to retrieve USGS volcano alert data")
             self.jsonData = []
             return False
 
