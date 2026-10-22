@@ -155,7 +155,7 @@ class EQEventGathererUSGS:
 
 class EQEventGathererEU:
 
-	def requestEQEvent(self, limit=3, days=0):
+	def requestEQEvent(self, limit=5, days=0):
 		currentRTC = datetime.now()
 
 		if days > 1:
