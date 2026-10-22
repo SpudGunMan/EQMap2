@@ -313,7 +313,7 @@ class EQEventGathererUSGSVolcanoAlert:
             r.raise_for_status()
             self.jsonData = r.json()
         except requests.exceptions.RequestException:
-			print("Failed to retrieve USGS volcano alert data")
+            print("Failed to retrieve USGS volcano alert data")
             self.jsonData = []
             return False
 
