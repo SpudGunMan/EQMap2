@@ -45,6 +45,7 @@ class EQEventGathererUSGS:
 
 		if not success or r is None:
 			self.jsonData = []
+			print("Failed to retrieve USGS earthquake data.")
 			return False
 
 		try:
@@ -65,72 +66,97 @@ class EQEventGathererUSGS:
 
 	def getEventID(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return None
+			return []
 		try:
-			return self.jsonData[0]['id']
+			return [feature['id'] for feature in self.jsonData]
 		except (IndexError, KeyError, TypeError):
-			return None
+			return []
 
 	def getMag(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			mag = self.jsonData[0]['properties']['mag']
-			if mag is None:
-				return 0.0
-			return float(("%.2f" % float(mag)))
+			mags = []
+			for feature in self.jsonData:
+				mag = feature['properties']['mag']
+				if mag is None:
+					mags.append(0.0)
+				else:
+					mags.append(float(("%.2f" % float(mag))))
+			return mags
 		except (IndexError, KeyError, TypeError, ValueError):
-			return 0.0
+			return []
 
 	def getLocation(self):
-		try:
-			self.place = self.jsonData[0]['properties']['place']
-		except:
-			self.place = ""
-		# Since we are on a map remove the "xx km H of " from the start of the string and use best location name
-		self.marker = " of "
-		if self.marker in self.place:
-			self.place = self.place.split(self.marker)
-			return str(self.place[1])
-		else:
-			#print("Debug USGS Name Split Error: ",place)  #DEBUG 
-			return str(self.place)
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
+		locations = []
+		for feature in self.jsonData:
+			try:
+				place = feature['properties']['place']
+			except:
+				place = ""
+			# Since we are on a map remove the "xx km H of " from the start of the string and use best location name
+			marker = " of "
+			if marker in place:
+				place = place.split(marker)
+				locations.append(str(place[1]))
+			else:
+				#print("Debug USGS Name Split Error: ",place)  #DEBUG 
+				locations.append(str(place))
+		return locations
 			
 	def getAlert(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			self.alert = self.jsonData[0]['properties']['alert']
-			return self.alert
+			return [feature['properties'].get('alert', '') for feature in self.jsonData]
 		except (IndexError, KeyError, TypeError):
-			return ""
+			return []
 
 	def getTsunami(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			self.tsunami = self.jsonData[0]['properties']['tsunami']
-			return self.tsunami
+			return [feature['properties'].get('tsunami', '') for feature in self.jsonData]
 		except (IndexError, KeyError, TypeError):
-			return ""
+			return []
 
 	def getLon(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			self.lon = float(self.jsonData[0]['geometry']['coordinates'][0])
-			return float(("%.2f" % self.lon))
+			lons = []
+			for feature in self.jsonData:
+				lon = float(feature['geometry']['coordinates'][0])
+				lons.append(float(("%.2f" % lon)))
+			return lons
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 	def getLat(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			self.lat = float(self.jsonData[0]['geometry']['coordinates'][1])
-			return float(("%.2f" % self.lat))
+			lats = []
+			for feature in self.jsonData:
+				lat = float(feature['geometry']['coordinates'][1])
+				lats.append(float(("%.2f" % lat)))
+			return lats
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 	def getDepth(self):
+		if not hasattr(self, 'jsonData') or self.jsonData is None:
+			return []
 		try:
-			return float(self.jsonData[0]['geometry']['coordinates'][2])
+			return [float(feature['geometry']['coordinates'][2]) for feature in self.jsonData]
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 class EQEventGathererEU:
 
-	def requestEQEvent(self, limit=1, days=0):
+	def requestEQEvent(self, limit=5, days=0):
 		currentRTC = datetime.now()
 
 		if days > 1:
@@ -176,6 +202,7 @@ class EQEventGathererEU:
 
 		if not success:
 			self.jsonData = None
+			print("Failed to retrieve EU earthquake data")
 			return False
 
 		try:
@@ -192,53 +219,74 @@ class EQEventGathererEU:
 
 	def getEventID(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return None
+			return []
 		try:
-			return self.jsonData['features'][0]['id']
+			return [feature['id'] for feature in self.jsonData['features']]
 		except (IndexError, KeyError, TypeError):
-			return None
+			return []
 
 	def getLon(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return ""
+			return []
 		try:
-			self.lon = float(self.jsonData['features'][0]['properties']['lon'])
-			return float(("%.2f" % self.lon))
+			lons = []
+			for feature in self.jsonData['features']:
+				lon = float(feature['properties']['lon'])
+				lons.append(float(("%.2f" % lon)))
+			return lons
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 	def getLat(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return ""
+			return []
 		try:
-			lat = float(self.jsonData['features'][0]['properties']['lat'])
-			return float(("%.2f" % lat))
+			lats = []
+			for feature in self.jsonData['features']:
+				lat = float(feature['properties']['lat'])
+				lats.append(float(("%.2f" % lat)))
+			return lats
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 	def getMag(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return ""
+			return []
 		try:
-			return float(self.jsonData['features'][0]['properties']['mag'])
+			mags = []
+			for feature in self.jsonData['features']:
+				mag = feature['properties']['mag']
+				if mag is None:
+					mags.append(0.0)
+				else:
+					mags.append(float(mag))
+			return mags
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 	
 	def getDepth(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return ""
+			return []
 		try:
-			return float(self.jsonData['features'][0]['properties']['depth'])
+			depths = []
+			for feature in self.jsonData['features']:
+				depth = float(feature['properties']['depth'])
+				depths.append(depth)
+			return depths
 		except (IndexError, KeyError, TypeError, ValueError):
-			return ""
+			return []
 
 	def getLocation(self):
 		if not hasattr(self, 'jsonData') or self.jsonData is None:
-			return ""
+			return []
 		try:
-			return self.jsonData['features'][0]['properties']['flynn_region']
+			locations = []
+			for feature in self.jsonData['features']:
+				location = feature['properties']['flynn_region']
+				locations.append(location)
+			return locations
 		except (IndexError, KeyError, TypeError):
-			return ""
+			return []
 
 class EQEventGathererUSGSVolcanoAlert:
     def __init__(self, lat=0, lon=0, ignore_words=None, ignore_enable=False):
@@ -265,6 +313,7 @@ class EQEventGathererUSGSVolcanoAlert:
             r.raise_for_status()
             self.jsonData = r.json()
         except requests.exceptions.RequestException:
+            print("Failed to retrieve USGS volcano alert data")
             self.jsonData = []
             return False
 

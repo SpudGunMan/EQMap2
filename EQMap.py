@@ -135,37 +135,54 @@ def getUpdatesUSGS():
 	except Exception:
 		return False
 
-	# Determine if we have seen this event before If so ignore it
-	if cqIDUSGS != eqGathererUSGS.getEventID():
+	# Get all records from API response
+	try:
+		ids = eqGathererUSGS.getEventID()
+		locations = eqGathererUSGS.getLocation()
+		lons = eqGathererUSGS.getLon()
+		lats = eqGathererUSGS.getLat()
+		mags = eqGathererUSGS.getMag()
+		depths = eqGathererUSGS.getDepth()
+		tsunamis = eqGathererUSGS.getTsunami()
+		alerts = eqGathererUSGS.getAlert()
+	except Exception:
+		return False
 
-		#if data has no ID dont use it
-		if eqGathererUSGS.getEventID() is None:
-			return False
-		else:
+	# Process all records from the API response
+	events_processed = False
+	for idx, event_id in enumerate(ids):
+		# Skip if event ID has already been added to database
+		if eventDB.hasSeenEventID(event_id):
+			continue
 
-			# Extract the EQ data
-			try:
-				cqLocation = eqGathererUSGS.getLocation()
-				cqLon = eqGathererUSGS.getLon()
-				cqLat = eqGathererUSGS.getLat()
-				cqMag = eqGathererUSGS.getMag()
-				cqDepth = eqGathererUSGS.getDepth()
-				cqTsunami = eqGathererUSGS.getTsunami()
-				cqAlert = eqGathererUSGS.getAlert()
-			except Exception:
-				return False
+		# Get corresponding data for this record
+		cqLocation = locations[idx] if idx < len(locations) else ""
+		cqLon = lons[idx] if idx < len(lons) else None
+		cqLat = lats[idx] if idx < len(lats) else None
+		cqMag = mags[idx] if idx < len(mags) else 0.0
+		cqDepth = depths[idx] if idx < len(depths) else None
+		cqTsunami = tsunamis[idx] if idx < len(tsunamis) else ""
+		cqAlert = alerts[idx] if idx < len(alerts) else ""
 
-			# Add new event to DB if it isnt also from the other source
-			if not eventDB.checkDupLonLat(cqLon, cqLat):
-				eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
+		# Skip if coordinates are invalid
+		if cqLon is None or cqLat is None:
+			continue
 
-				# Update the current event ID
-				cqIDUSGS = eqGathererUSGS.getEventID()
+		# Check if location is not a duplicate (cross-source dedup with EU/Volcano)
+		if not eventDB.checkDupLonLat(cqLon, cqLat):
+			# Add new event to DB with event ID tracking
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation, event_id=event_id)
+			
+			# Update the current event ID to the most recent (first processed)
+			if not events_processed:
+				cqIDUSGS = event_id
+				events_processed = True
 
-				# Display the new EQ data
-				repaintMap()
-				return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+			# Display the new EQ data
+			repaintMap()
 
+	if events_processed:
+		return cqIDUSGS,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
 	return False
 
 # getEU Function
@@ -174,32 +191,59 @@ def getUpdatesEU():
 	# internet check test
 	try:
 		# Check for new earthquake event
-		success = eqGathererEU.requestEQEvent()
+		success = eqGathererEU.requestEQEvent(limit=3)
 		if not success:
 			return False
 	except Exception:
 		return False
-		
-	# Determine if we have seen this event before If so ignore it
-	if cqIDUK != eqGathererEU.getEventID():
-		# Extract the EQ data
-		cqLocation = eqGathererEU.getLocation()
-		cqLon = eqGathererEU.getLon()
-		cqLat = eqGathererEU.getLat()
-		cqMag = eqGathererEU.getMag()
-		cqDepth = eqGathererEU.getDepth()
-		cqTsunami = 0
-		cqAlert = None
 
-		# Add new event to DB if it isnt also from the other source
+	# Get all records from API response
+	try:
+		ids = eqGathererEU.getEventID()
+		locations = eqGathererEU.getLocation()
+		lons = eqGathererEU.getLon()
+		lats = eqGathererEU.getLat()
+		mags = eqGathererEU.getMag()
+		depths = eqGathererEU.getDepth()
+	except Exception:
+		return False
+
+	# Process all records from the API response
+	events_processed = False
+	for idx, event_id in enumerate(ids):
+		# Skip if event ID has already been added to database
+		if eventDB.hasSeenEventID(event_id):
+			continue
+
+		# Get corresponding data for this record
+		cqLocation = locations[idx] if idx < len(locations) else ""
+		cqLon = lons[idx] if idx < len(lons) else None
+		cqLat = lats[idx] if idx < len(lats) else None
+		cqMag = mags[idx] if idx < len(mags) else 0.0
+		cqDepth = depths[idx] if idx < len(depths) else None
+		cqTsunami = 0  # EU API doesn't provide tsunami info
+		cqAlert = None  # EU API doesn't provide alert info
+
+		# Skip if coordinates are invalid
+		if cqLon is None or cqLat is None:
+			continue
+
+		# Check if location is not a duplicate (cross-source dedup with USGS/Volcano)
 		if not eventDB.checkDupLonLat(cqLon, cqLat):
-			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation)
-
-			# Update the current event ID
-			cqIDUK = eqGathererEU.getEventID()
+			# Add new event to DB with event ID tracking
+			eventDB.addEvent(cqLon, cqLat, cqMag, cqAlert, cqTsunami, cqLocation, event_id=event_id)
+			
+			# Update the current event ID to the most recent (first processed)
+			if not events_processed:
+				cqIDUK = event_id
+				events_processed = True
 
 			# Display the new EQ data
 			repaintMap()
+
+	if events_processed:
+		return cqIDUK,cqLocation,cqLon,cqLat,cqMag,cqDepth,cqTsunami,cqAlert
+	return False
 
 def getUpdatesVolcano():
 	global volcanoAlerts
